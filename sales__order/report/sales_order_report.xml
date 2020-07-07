@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+            id="sales_order_famotain_action_report"
+            string="Internal"
+            model="sales__order.sales__order"
+            report_type="qweb-pdf"
+            file="sales__order.report_sales__order_famotain"
+            name="sales__order.report_sales__order_famotain"
+            print_report_name="'%s' % (object.name)"
+            paperformat="famotain.paper_format_A4_internal"
+        />
+        <report
+            id="sales_order_quotation_action_report"
+            string="Quotation/Sales order"
+            model="sales__order.sales__order"
+            report_type="qweb-pdf"
+            file="sales__order.report_sales__order_quotation"
+            name="sales__order.report_sales__order_quotation"
+            print_report_name="'%s - %s' % (object.name, ('Sales Order' if object.state != 'draft' else 'Quotation'))"
+            paperformat="famotain.paper_format_A4_external"
+        />
+        <report
+            id="sales_order_invoice_wo_payment_action_report"
+            string="Invoice without Payment"
+            model="sales__order.sales__order"
+            report_type="qweb-pdf"
+            file="sales__order.report_sales__order_invoice_wo_payment"
+            name="sales__order.report_sales__order_invoice_wo_payment"
+            print_report_name="'Invoice - %s' % (object.name)"
+            paperformat="famotain.paper_format_A4_external"
+        />
+        <report
+            id="sales_order_surat_jalan_action_report"
+            string="Surat Jalan"
+            model="sales__order.sales__order"
+            report_type="qweb-pdf"
+            file="sales__order.report_sales__order_surat_jalan"
+            name="sales__order.report_sales__order_surat_jalan"
+            print_report_name="'Surat Jalan - %s' % (object.name)"
+            paperformat="famotain.paper_format_A4_external"
+        />
+        <report
+            id="sales_order_invoice_action_report"
+            string="Invoice"
+            model="sales__order.invoice"
+            report_type="qweb-pdf"
+            file="sales__order.report_sales__order_invoice"
+            name="sales__order.report_sales__order_invoice"
+            print_report_name="'%s - %s' % (object.name, object.source_document)"
+            paperformat="famotain.paper_format_A4_external"
+        />
+    </data>
+</odoo>

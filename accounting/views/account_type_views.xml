@@ -1,0 +1,62 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="accounting.account_type_tree">
+          <field name="name">Account Type Tree</field>
+          <field name="model">accounting.account_type</field>
+          <field name="arch" type="xml">
+            <tree>
+                <field name="prefix"/>
+                <field name="name"/>
+                <field name="account_type"/>
+                <field name="state"/>
+            </tree>
+          </field>
+        </record>
+
+        <record model="ir.ui.view" id="accounting.account_type_form">
+          <field name="name">Account Type Form</field>
+          <field name="model">accounting.account_type</field>
+          <field name="arch" type="xml">
+            <form create="0">
+                <header>
+                    <button string="Confirm" name="action_confirm" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'in', ['confirm'])]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="account_type"/>
+                            <field name="prefix"/>
+                        </group>
+                        <group>
+                            <label for="confirm_uid" string="Confirmed By"/>
+                            <div>
+                                <field name="confirm_uid" class="oe_inline"/> -
+                                <field name="confirm_date" class="oe_inline"/>
+                            </div>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+          </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="accounting.account_type_action_window">
+          <field name="name">Account Type</field>
+          <field name="res_model">accounting.account_type</field>
+          <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</odoo>

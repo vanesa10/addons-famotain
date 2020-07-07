@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_accounting_account_type,accounting.account_type,model_accounting_account_type,base.group_user,1,1,1,1
+access_accounting_account,accounting.account,model_accounting_account,base.group_user,1,1,1,1
+access_accounting_journal,accounting.journal,model_accounting_journal,base.group_user,1,1,1,1
+access_accounting_journal_account,accounting.journal_account,model_accounting_journal_account,base.group_user,1,1,1,1

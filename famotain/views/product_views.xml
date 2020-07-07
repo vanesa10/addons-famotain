@@ -1,0 +1,194 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="famotain.product_search">
+            <field name="name">Product Search</field>
+            <field name="model">famotain.product</field>
+            <field name="arch" type="xml">
+                <search string="Search Product">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <separator/>
+                    <group>
+                        <filter string="All" name="all"/>
+                        <filter string="Product" name="product" domain="[('product_type','=','product')]"/>
+                        <filter string="Package" name="package" domain="[('product_type','=','package')]"/>
+                        <filter string="Label" name="label" domain="[('product_type','=','label')]"/>
+                        <filter string="Add-ons" name="addons" domain="[('product_type','=','addons')]"/>
+                    </group>
+                    <separator/>
+                    <group string="Group By">
+                        <filter string="Product Type" name="group_product_type" domain="[]" context="{'group_by':'product_type'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="famotain.product_kanban">
+          <field name="name">Product Kanban</field>
+          <field name="model">famotain.product</field>
+          <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" quick_create="0" archivable="0">
+                    <field name="id"/>
+                    <field name="image_medium"/>
+                    <field name="name"/>
+                    <field name="description"/>
+                    <field name="price"/>
+                    <field name="currency_id"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_global_click">
+                                <div class="o_kanban_image">
+                                    <img alt="Avatar" t-att-src="kanban_image('famotain.product', 'image_medium', record.id.raw_value)"/>
+                                </div>
+                                <div class="oe_kanban_details">
+                                    <ul>
+                                        <li><field name="product_type"/></li>
+                                        <li><h2><field name="name"/></h2></li>
+                                        <li><field name="price" widget="monetary"/></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+          </field>
+        </record>
+
+        <record model="ir.ui.view" id="famotain.product_tree">
+          <field name="name">Product Tree</field>
+          <field name="model">famotain.product</field>
+          <field name="arch" type="xml">
+            <tree>
+                <field name="image"  widget="image" class="oe_avatar oe_left" options='{"preview_image": "image_medium"}'/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="price"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="notes"/>
+            </tree>
+          </field>
+        </record>
+
+        <record model="ir.ui.view" id="famotain.product_form">
+          <field name="name">Product Form</field>
+          <field name="model">famotain.product</field>
+          <field name="arch" type="xml">
+            <form delete="0">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object"
+                                class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"
+                                options='{"terminology": "archive"}'/>
+                        </button>
+                    </div>
+
+                    <field name="image" widget="image" class="oe_avatar oe_left" options='{"preview_image": "image_medium"}'/>
+                    <div class="oe_title">
+                        <field name="product_type" widget='radio' options="{'horizontal': true}"/>
+                        <h2>
+                            <field name="name" default_focus="1" placeholder="Name"/>
+                        </h2>
+                        <h3>
+                            <field name="code" placeholder="Code"/>
+                        </h3>
+                    </div>
+                    <group string="General Information">
+                        <group>
+                            <field name="price" />
+                            <field name="description"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <label for="create_uid" string="Created By"/>
+                            <div>
+                                <field name="create_uid" class="oe_inline"/> -
+                                <field name="create_date" class="oe_inline"/>
+                            </div>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+          </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="famotain.product_action_all">
+            <field name="name">Product</field>
+            <field name="res_model">famotain.product</field>
+            <field name="view_mode">kanban,tree,form</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="famotain.product_action_product">
+            <field name="name">Product</field>
+            <field name="res_model">famotain.product</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="search_view_id" ref="famotain.product_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'famotain.product_form',
+                    'tree_view_ref': 'famotain.product_tree',
+                    'kanban_view_ref': 'famotain.product_kanban',
+                    'search_default_product': 1
+                }
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="famotain.product_action_package">
+            <field name="name">Product</field>
+            <field name="res_model">famotain.product</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="search_view_id" ref="famotain.product_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'famotain.product_form',
+                    'tree_view_ref': 'famotain.product_tree',
+                    'kanban_view_ref': 'famotain.product_kanban',
+                    'search_default_package': 1
+                }
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="famotain.product_action_label">
+            <field name="name">Product</field>
+            <field name="res_model">famotain.product</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="search_view_id" ref="famotain.product_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'famotain.product_form',
+                    'tree_view_ref': 'famotain.product_tree',
+                    'kanban_view_ref': 'famotain.product_kanban',
+                    'search_default_label': 1
+                }
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="famotain.product_action_addons">
+            <field name="name">Product</field>
+            <field name="res_model">famotain.product</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="search_view_id" ref="famotain.product_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'famotain.product_form',
+                    'tree_view_ref': 'famotain.product_tree',
+                    'kanban_view_ref': 'famotain.product_kanban',
+                    'search_default_addons': 1
+                }
+            </field>
+        </record>
+
+        <menuitem name="Famotain" id="famotain.menu_root" sequence="99" web_icon="famotain,static/img/logo.png"/>
+        <menuitem name="Product" id="famotain.product_menu" parent="famotain.menu_root" action="famotain.product_action_all" sequence="1"/>
+        <menuitem name="All" id="famotain.product_submenu_all" parent="famotain.product_menu" action="famotain.product_action_all" sequence="1"/>
+        <menuitem name="Product" id="famotain.product_submenu_product" parent="famotain.product_menu" action="famotain.product_action_product" sequence="2"/>
+        <menuitem name="Package" id="famotain.product_submenu_package" parent="famotain.product_menu" action="famotain.product_action_package" sequence="3"/>
+        <menuitem name="Label" id="famotain.product_submenu_label" parent="famotain.product_menu" action="famotain.product_action_label" sequence="4"/>
+        <menuitem name="Add-ons" id="famotain.product_submenu_add_ons" parent="famotain.product_menu" action="famotain.product_action_addons" sequence="5"/>
+    </data>
+</odoo>

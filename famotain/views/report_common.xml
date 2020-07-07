@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="assets_common" name="Report Assets Common Famotain" inherit_id="web.report_assets_common">
+        <xpath expr="." position="inside">
+            <link href="/famotain/static/src/less/report.less" rel="stylesheet" type="text/less"/>
+        </xpath>
+    </template>
+
+    <template id="famotain.external_layout_header">
+        <div class="header" style="border-bottom: 1px solid #A9A9A9;">
+            <div class="row" style="margin:10px 0px;">
+                <div class="col-1">
+                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 95px;" alt="Logo"/>
+                </div>
+                <div class="col-5" style="padding-left: 50px; margin-top: 17px;">
+                    <span t-esc="company.name" style="font-size: 16pt;"/> <span class="text-muted" style="font-size: 11pt;" t-esc="company.report_header"/>
+                    <br/>
+                    <span style="font-size: 11pt;" t-esc="res_company.phone"/>
+                </div>
+                <div class="col-6 text-right">
+                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%b-%Y %H:%M')"/>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="famotain.external_layout_footer">
+        <div class="footer o_standard_footer">
+            <div class="text-center" style="border-top: 1px solid black;">
+                <ul class="list-inline mb4">
+                    <li t-if="company.social_instagram" class="list-inline-item"><i class="fa fa-instagram" role="img" aria-label="Instagram" title="Instagram"/> <span t-field="company.social_instagram"/></li>
+                    <li t-if="company.phone" class="list-inline-item"><i class="fa fa-whatsapp" role="img" aria-label="Phone" title="Phone"/> <span t-field="company.phone"/></li>
+                    <li t-if="company.email" class="list-inline-item"><i class="fa fa-envelope" role="img" aria-label="Email" title="Email"/> <span t-field="company.email"/></li>
+                    <li t-if="company.website" class="list-inline-item"><i class="fa fa-globe" role="img" aria-label="Website" title="Website"/> <span t-field="company.website"/></li>
+                </ul>
+
+                <div name="financial_infos">
+                    <span t-field="company.report_footer"/>
+                </div>
+
+                <div t-if="report_type == 'pdf'" class="text-muted">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="famotain.external_layout">
+        <t t-if="not o and doc">
+            <t t-set="o" t-value="doc"/>
+        </t>
+        <t t-if="o and 'company_id' in o">
+            <t t-set="company" t-value="o.company_id"/>
+        </t>
+        <t t-if="not o or not 'company_id' in o">
+            <t t-set="company" t-value="res_company"/>
+        </t>
+        <t t-call="famotain.external_layout_header" />
+        <div class="article">
+            <t t-raw="0"/>
+        </div>
+        <t t-call="famotain.external_layout_footer" />
+    </template>
+
+    <template id="famotain.internal_layout">
+        <t t-if="not o and doc">
+            <t t-set="o" t-value="doc"/>
+        </t>
+        <t t-if="o and 'company_id' in o">
+            <t t-set="company" t-value="o.company_id"/>
+        </t>
+        <t t-if="not o or not 'company_id' in o">
+            <t t-set="company" t-value="res_company"/>
+        </t>
+
+        <div class="article mt0">
+          <t t-raw="0"/>
+        </div>
+        <div class="footer">
+            <div class="row">
+                <div class="col-3">
+                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%b-%Y %H:%M')"/>
+                </div>
+                <div class="col-2 offset-2 text-center">
+                    <span t-esc="company.name"/>
+                </div>
+                <div class="col-2 offset-3 text-right">
+                    <ul class="list-inline">
+                        <li class="list-inline-item"><span class="page"/></li>
+                        <li class="list-inline-item">/</li>
+                        <li class="list-inline-item"><span class="topage"/></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

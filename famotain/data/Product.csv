@@ -1,0 +1,75 @@
+product_type;code;name;price;description
+product;MP-001;Pouch;11500;20x15
+product;MP-002;Travel Pouch Mika;15000;20x5x10
+product;MP-003;Big Pouch;17000;20x7x15
+product;MP-004;Canvas Pouch;20000;25x15
+product;MP-005;Travel Pouch;21000;20x10x10
+product;MP-006;Oval Pouch;23000;20x8x13
+product;MP-007;Shoe Bag;28000;25x10x17
+product;MP-008;Exclusive Pouch;30000;15x4x10
+product;MP-009;Pouch Case;30000;20x10x10
+product;MP-010;Clear Jolly Bag;43000;27x10x34
+product;MP-011;Basket Synthetic Leather;52000;29x15x13
+product;MP-012;Cosmetic Hamper;65000;-
+product;TB-001;Magnetic Tote Bag;24000;25x10x18
+product;TB-002;Tote Bag;31000;35x10x25
+product;LB-001;Small Lunch Bag;17000;20x7x15
+product;LB-002;Lunch Bag Travel;26000;25x7x18
+product;LB-003;Picnic Lunch Bag;30000;25x7x18
+product;LB-004;Lunch Bag;33000;25x7x18
+product;LB-005;Picnic Lunch Bag Serut;36000;16x20
+product;LB-006;Double Lunch Bag;39000;20x12x12
+product;LB-007;Lunch Bag Oval;40000;20x14x22
+product;LB-008;Cube Lunch Bag;41000;24x14x15
+product;LB-009;Triangle Lunch Bag;46000;22x27x15
+product;LB-010;Lunch Case;55000;25x15x14
+product;SL-001;Bottle Bag;21000;25x10
+product;SL-002;Sling Bag;26000;25x10x18
+product;SL-003;Transparent Sling Bag;35000;25x10x18
+product;WB-001;Canvas Waistbag;50000;40x4.5x18
+product;PC-001;Pencil Case;10500;19x10
+product;PC-002;Art Case;39000;26x17x5
+product;TP-001;Pouch Mika;14000;20x10x10
+product;TP-002;Handbag Mika;24000;25x13x20
+product;TP-003;Transparent Tote Bag;31000;35x10x25
+product;TP-004;Small Swimming Bag;32000;30x10x20
+product;TP-005;Square Swimming Bag;52000;40x15x28
+product;TP-006;Ransel TK Mika;41000;20x10x25
+product;TP-007;Swimming Bag;42000;35x25x10
+product;TP-008;Bowling Bag;46000;35x10x25
+product;TP-009;Travel Bag Mika;62000;36x13x25
+product;BP-001;Ransel TK;41000;20x10x25
+product;BP-002;Drawstring Bag;50000;23x37
+product;BP-003;Round Backpack;52000;29x7x37
+product;BP-004;Double Backpack;53000;25x12x31
+product;BP-005;Oval Backpack;62000;33x13x25
+product;BP-006;Transparent Backpack;62000;33x13x25
+product;BP-007;Anello Bag;73000;40x30x10
+product;FB-001;Flat Bag;41000;37x26
+product;FB-002;Map Folder Bag;52000;39x29x12
+product;WA-001;Passport Case;12000;12x9
+product;WA-002;Child's Wallet;23000;27x5x15
+product;TS-001;Travel Tissue Pouch;21000;21x15
+product;TS-002;Tissue Box;29000;25x13x10
+product;TS-003;Small Leather Tissue Box;40000;13x13x9
+product;TL-001;Toiletries;29000;24x6x19
+product;TL-002;Toiletries Case;50000;24x10x16
+product;TL-003;Exclusive Toiletries;57000;25x20x18
+product;HM-001;Pillow;28000;30x30
+product;HM-002;Toy Box;35000;21x19x19
+product;HM-003;Car Organizer;40000;35x25x10
+product;HM-004;Folded Desk;53000;42x30x23
+product;HM-005;Big Laundry Bag;70000;38x40
+product;SB-001;Marhen J;68000;25x20x15
+product;SB-002;KILA Transparent Slingbag;80000;27x13x21
+product;MC-001;Tumbler;24000;8.5x19
+product;MC-002;Thermos;42000;6,5x23
+package;PP;Plastik;5000;
+package;PT;Tile;8000;
+package;PJ;Plastik Jinjing;5000;
+package;TC;Thankyou Card Saja;1000;
+label;label;Name Tag;1000;
+addons;TW-001;Bordir Towel;5000;
+addons;TW-002;Towel 30x70;20000;
+addons;TW-003;Towel 50x100;30000;
+addons;CD-001;Candy;5000;

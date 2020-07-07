@@ -1,0 +1,113 @@
+@font-face {
+  font-family: "Poppins-Regular";
+  src: url("../fonts/poppins/Poppins-Regular.ttf"); }
+@font-face {
+  font-family: "Poppins-SemiBold";
+  src: url("../fonts/poppins/Poppins-SemiBold.ttf"); }
+@font-face {
+  font-family: "Poppins-Medium";
+  src: url("../fonts/poppins/Poppins-Medium.ttf"); }
+@font-face {
+  font-family: "Muli-Bold";
+  src: url("../fonts/muli/Muli-Bold.ttf"); }
+@font-face {
+font-family: "Poppins-Light";
+src: url("../fonts/poppins/Poppins-Light.ttf"); }
+/*@import url("https://fonts.googleapis.com/css?family=Barlow:300,400,500,600,700|Hind:400,500,600,700|Quattrocento:400,700");*/
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; }
+
+body {
+  font-family: "Poppins-Regular";
+  font-size: 0.897rem;
+  background-color: #fff;
+  background-image: url("../img/bg.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+:focus {
+  outline: none; }
+
+textarea {
+  resize: none; }
+
+input, textarea, select, button {
+  font-family: "Poppins-Regular";
+}
+
+p, h1, h2, h3, h4, h5, h6, ul {
+  margin: 0; }
+
+ul {
+  padding: 0;
+  margin: 0;
+  list-style: none; }
+
+a {
+  text-decoration: none; }
+
+textarea {
+  resize: none; }
+
+/*select {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  border: none; }
+  select option[value=""][disabled] {
+    display: none; }
+*/
+
+img {
+  max-width: 100%;
+  vertical-align: middle; }
+
+body {
+  /*background: url("../images/form-wizard-bg.jpg");
+  background-size: cover; */
+  /*background-color: #f3d4b7;*/
+  }
+
+.form-control{
+    font-size: 0.85rem;
+}
+
+.navbar{
+    background-color: #fff8f0;
+    border-bottom: 10px solid #fcd1c8;
+}
+
+.page-footer {
+    background-color: #fff8f0;
+    margin-bottom: 50px;
+}
+
+.logo-img{
+    max-height: 70px;
+}
+
+.shopping-img{
+    max-width: 140px;
+}
+
+.footer-logo{
+    color: #212529;
+}
+
+.footer-logo:hover{
+    text-decoration: none;
+    color: #6c757d;
+}
+
+@media (min-width: 768px){
+    .logo-img{
+        max-height: 100px;
+    }
+
+    .shopping-img{
+        max-width: 240px;
+    }
+}

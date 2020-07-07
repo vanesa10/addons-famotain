@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_journal" model="ir.sequence">
+            <field name="name">Journal</field>
+            <field name="code">accounting.journal</field>
+            <field name="prefix">J.%(range_year)s%(range_month)s%(range_day)s</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_journal_account" model="ir.sequence">
+            <field name="name">Journal Account</field>
+            <field name="code">accounting.journal_account</field>
+            <field name="prefix">JA.%(range_year)s%(range_month)s%(range_day)s</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_expense" model="ir.sequence">
+            <field name="name">Expenses</field>
+            <field name="code">accounting.expense</field>
+            <field name="prefix">FE.%(range_year)s%(range_month)s%(range_day)s</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

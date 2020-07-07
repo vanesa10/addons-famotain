@@ -1,0 +1,26 @@
+<odoo>
+    <data>
+        <record model="ir.actions.act_window" id="famotain.fabric_action_window">
+          <field name="name">Fabric</field>
+          <field name="res_model">famotain.fabric</field>
+          <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.ui.view" id="famotain.fabric_tree">
+          <field name="name">Fabric Tree</field>
+          <field name="model">famotain.fabric</field>
+          <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="price"/>
+                <field name="price_total"/>
+                <field name="width"/>
+                <field name="notes"/>
+            </tree>
+          </field>
+        </record>
+
+        <menuitem name="Fabric" id="famotain.fabric_menu" parent="famotain.menu_root" action="famotain.fabric_action_window" sequence="2"/>
+    </data>
+</odoo>

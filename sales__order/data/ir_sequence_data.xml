@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="seq_sales_order" model="ir.sequence">
+            <field name="name">Sales Order</field>
+            <field name="code">sales__order.sales__order</field>
+            <field name="prefix">F%(range_year)s%(range_month)s%(range_day)s</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_invoice" model="ir.sequence">
+            <field name="name">Invoice</field>
+            <field name="code">sales__order.invoice</field>
+            <field name="prefix">INV/%(range_year)s%(range_month)s%(range_day)s/</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

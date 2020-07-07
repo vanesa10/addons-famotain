@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="courier_shipment_1" model="famotain.courier_shipment">
+            <field name="name">TAM</field>
+        </record>
+
+        <record id="courier_shipment_2" model="famotain.courier_shipment">
+            <field name="name">Ki8</field>
+        </record>
+
+        <record id="courier_shipment_3" model="famotain.courier_shipment">
+            <field name="name">TIKI</field>
+        </record>
+
+        <record id="courier_shipment_4" model="famotain.courier_shipment">
+            <field name="name">Dakota</field>
+        </record>
+
+        <record id="courier_shipment_5" model="famotain.courier_shipment">
+            <field name="name">JNT</field>
+        </record>
+    </data>
+</openerp>

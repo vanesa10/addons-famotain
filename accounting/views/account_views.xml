@@ -1,0 +1,79 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="accounting.account_tree">
+          <field name="name">Account tree</field>
+          <field name="model">accounting.account</field>
+          <field name="arch" type="xml">
+            <tree>
+                <field name="account_number"/>
+                <field name="name"/>
+                <field name="account_type_id"/>
+                <field name="state"/>
+            </tree>
+          </field>
+        </record>
+
+        <record model="ir.ui.view" id="accounting.account_form">
+          <field name="name">Account Form</field>
+          <field name="model">accounting.account</field>
+          <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button string="Confirm" name="action_confirm" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'in', ['confirm'])]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm" clickable="1"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="account_type_id"/>
+                            <field name="number"/>
+                            <field name="account_number"/>
+                        </group>
+                        <group>
+                            <label for="confirm_uid" string="Confirmed By"/>
+                            <div>
+                                <field name="confirm_uid" class="oe_inline"/> -
+                                <field name="confirm_date" class="oe_inline"/>
+                            </div>
+                        </group>
+                    </group>
+                    <separator string="Journal Accounts"/>
+                    <notebook colspan="4">
+                        <page string="Journal Accounts" name="journal_accounts">
+                            <field name="journal_account_ids">
+                                <tree editable="bottom" delete="1">
+                                    <field name="name"/>
+                                    <field name="journal_id"/>
+                                    <field name="debit" sum="Total Debit"/>
+                                    <field name="credit" sum="Total Credit"/>
+                                    <field name="balance" sum="Total Balance"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    <group string="Notes">
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+          </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="accounting.account_action_window">
+          <field name="name">Account</field>
+          <field name="res_model">accounting.account</field>
+          <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</odoo>

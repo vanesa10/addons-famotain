@@ -1,0 +1,14 @@
+<odoo>
+  <data>
+    <!-- Top menu item -->
+    <menuitem name="Accounting" id="accounting.menu_root" sequence="1" web_icon="accounting,static/img/accounting.png"/>
+    <!-- menu categories -->
+    <menuitem name="Journal" id="accounting.journal_menu_root" parent="accounting.menu_root" sequence="1"/>
+    <menuitem name="Journal" id="accounting.journal_menu" parent="accounting.journal_menu_root" action="accounting.journal_action_window" sequence="1"/>
+    <menuitem name="Journal Account" id="accounting.journal_account_menu" parent="accounting.journal_menu_root" action="accounting.journal_account_action_window" sequence="2"/>
+
+    <menuitem name="Settings" id="accounting.account_settings_menu" parent="accounting.menu_root" sequence="2"/>
+    <menuitem name="Account" id="accounting.account_menu" parent="accounting.account_settings_menu" action="accounting.account_action_window" sequence="1"/>
+    <menuitem name="Account Type" id="accounting.account_type_menu" parent="accounting.account_settings_menu" action="accounting.account_type_action_window" sequence="2"/>
+  </data>
+</odoo>

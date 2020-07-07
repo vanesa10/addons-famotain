@@ -1,0 +1,300 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="sales__order.invoice_search">
+            <field name="name">Invoice Search</field>
+            <field name="model">sales__order.invoice</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="invoice_to"/>
+                    <field name="source_document"/>
+                    <separator/>
+                    <group>
+                        <filter string="All" name="all"/>
+                        <filter string="Down Payment" name="down_payment" domain="[('invoice_type','=','down_payment')]"/>
+                        <filter string="Clearance" name="clearance" domain="[('invoice_type','=','clearance')]"/>
+                    </group>
+                    <separator/>
+                    <group>
+                        <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                        <filter string="Open" name="open" domain="[('state','=','open')]"/>
+                        <filter string="Paid" name="paid" domain="[('state','=','paid')]"/>
+                        <filter string="Cancelled" name="cancel" domain="[('state','=','cancel')]"/>
+                    </group>
+                    <separator/>
+                    <filter name="today" string="Today" domain="[('create_date','&gt;=',time.strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="yesterday" string="Yesterday"
+                            domain="[
+                                    ('create_date', '&lt;', (context_today()).strftime('%Y-%m-%d')),
+                                    ('create_date', '&gt;=', (context_today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
+                            ]"/>
+                    <filter name="week" string="This Week"
+                            domain="[
+                                    '&amp;',
+                                    ('create_date', '>=', (context_today() + relativedelta(weeks=-1,days=1,weekday=0)).strftime('%Y-%m-%d')),
+                                    ('create_date', '&lt;=', (context_today() + relativedelta(weekday=6)).strftime('%Y-%m-%d')),
+                                ]"/>
+                    <filter string="This Month" name="thismonth" domain="[('create_date','&gt;=',time.strftime('%%Y-%%m-01'))]"/>
+                    <filter string="This Year" name="thisyear" domain="[('create_date','&gt;=',time.strftime('%%Y-01-01'))]"/>
+
+                    <group string="Group By">
+                        <filter string="Invoice Type" name="group_invoice_type" domain="[]" context="{'group_by':'invoice_type'}"/>
+                        <filter string="Invoice To" name="group_invoice_to" domain="[]" context="{'group_by':'invoice_to'}"/>
+                        <filter string="Sales Order" name="group_sales_order" domain="[]" context="{'group_by':'sales_order_id'}"/>
+                        <filter string="State" name="group_state" domain="[]" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="sales__order.invoice_tree">
+          <field name="name">Invoice tree</field>
+          <field name="model">sales__order.invoice</field>
+          <field name="arch" type="xml">
+            <tree
+                    decoration-danger="state == 'draft'"
+                    decoration-bf="state == 'open'"
+                    decoration-success="state == 'paid'"
+                    decoration-it="state == 'cancel'"
+            >
+                <field name="invoice_date"/>
+                <field name="name"/>
+                <field name="source_document"/>
+                <field name="invoice_type"/>
+                <field name="invoice_to"/>
+                <field name="amount"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="state"/>
+            </tree>
+          </field>
+        </record>
+
+        <record model="ir.ui.view" id="sales__order.invoice_form">
+          <field name="name">Invoice Form</field>
+          <field name="model">sales__order.invoice</field>
+          <field name="arch" type="xml">
+            <form delete="0" duplicate="0">
+                <header>
+                    <button string="Validate" name="action_validate" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'in', ['cancel', 'paid', 'open'])]}"/>
+                    <button string="Pay" name="action_paid" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'in', ['cancel', 'draft', 'paid'])]}"/>
+                    <button string="Cancel" name="action_cancel" type="object" confirm="Are you sure you want to cancel this record?" attrs="{'invisible': [('state', 'in', ['cancel', 'paid', 'draft'])]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,open,paid,cancel"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+
+                    </div>
+                    <div class="oe_title">
+                        <field name="invoice_type" widget="radio" options="{'horizontal': true}"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="sales_order_id"/>
+                            <field name="invoice_to"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount"/>
+                        </group>
+                        <group>
+                            <field name="invoice_date"/>
+                            <field name="payment_date"/>
+                        </group>
+                    </group>
+                    <notebook colspan="4">
+                        <page string="Invoice Lines">
+                            <field name="invoice_line_ids" mode="tree,kanban">
+                                <tree>
+                                    <field name="qty"/>
+                                    <field name="description"/>
+                                    <field name="amount"/>
+                                    <field name="total"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </tree>
+                                <kanban class="o_kanban_mobile" quick_create="0" archivable="0">
+                                    <field name="id"/>
+                                    <field name="qty"/>
+                                    <field name="description"/>
+                                    <field name="amount"/>
+                                    <field name="total"/>
+                                    <field name="currency_id"/>
+                                    <templates>
+                                        <t t-name="kanban-box">
+                                            <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                                <div class="o_kanban_record_top mb16">
+                                                    <div class="o_kanban_record_headings mt4">
+                                                        <strong class="o_kanban_record_title"><span><t t-esc="record.description.value"/></span></strong>
+                                                    </div>
+                                                    <strong><field name="total" widget="monetary"/></strong>
+                                                </div>
+                                                <div class="o_kanban_record_bottom">
+                                                    <div class="oe_kanban_bottom_left text-muted">
+                                                        <span><t t-esc="record.qty.value"/>pcs @<t t-esc="record.amount.value" widget="monetary"/></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                        <page string="Other Info">
+                            <sheet>
+                                <group>
+                                    <group>
+                                        <field name="source_document"/>
+                                        <field name="order_date"/>
+                                        <field name="due_date"/>
+                                    </group>
+                                    <group>
+                                        <field name="address"/>
+                                        <field name="phone"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <field name="notes"/>
+                                </group>
+                            </sheet>
+                        </page>
+                    </notebook>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </sheet>
+            </form>
+          </field>
+        </record>
+
+        <record model="ir.ui.view" id="sales__order.invoice_kanban">
+          <field name="name">Invoice Kanban</field>
+          <field name="model">sales__order.invoice</field>
+          <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" quick_create="0" archivable="0">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="sales_order_id"/>
+                    <field name="invoice_to"/>
+                    <field name="invoice_type"/>
+                    <field name="amount"/>
+                    <field name="currency_id"/>
+                    <field name="state"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_record_top mb16">
+                                    <div class="o_kanban_record_headings mt4">
+                                        <strong class="o_kanban_record_title"><span><t t-esc="record.sales_order_id.value"/> - <t t-esc="record.invoice_to.value"/></span></strong>
+                                    </div>
+                                    <strong><field name="amount" widget="monetary"/></strong>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left text-muted">
+                                        <span><t t-esc="record.name.value"/> <t t-esc="record.invoice_type.value"/></span>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="state" widget="label_selection" options="{'classes': {'draft': 'warning', 'open': 'info', 'paid': 'success', 'cancel': 'default'}}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+          </field>
+        </record>
+
+        <record model="ir.ui.view" id="sales__order.pay_invoice_wizard_form">
+            <field name="name">Pay Invoice</field>
+            <field name="model">sales__order.pay_invoice_wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="amount" widget="monetary"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="payment_date"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="action_pay" string="Pay" type="object" class="oe_right oe_highlight"/>
+                        <button string="Cancel" special="cancel" class="oe_right"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="sales__order.invoice_action_all">
+          <field name="name">Invoice</field>
+          <field name="res_model">sales__order.invoice</field>
+          <field name="view_mode">tree,kanban,form</field>
+        </record>
+        <record model="ir.actions.act_window" id="sales__order.invoice_action_draft">
+            <field name="name">Invoice</field>
+            <field name="res_model">sales__order.invoice</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="sales__order.invoice_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'sales__order.invoice_form',
+                    'tree_view_ref': 'sales__order.invoice_tree',
+                    'kanban_view_ref': 'sales__order.invoice_kanban',
+                    'search_default_draft': 1
+                }
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="sales__order.invoice_action_open">
+            <field name="name">Invoice</field>
+            <field name="res_model">sales__order.invoice</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="sales__order.invoice_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'sales__order.invoice_form',
+                    'tree_view_ref': 'sales__order.invoice_tree',
+                    'kanban_view_ref': 'sales__order.invoice_kanban',
+                    'search_default_open': 1
+                }
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="sales__order.invoice_action_paid">
+            <field name="name">Invoice</field>
+            <field name="res_model">sales__order.invoice</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="sales__order.invoice_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'sales__order.invoice_form',
+                    'tree_view_ref': 'sales__order.invoice_tree',
+                    'kanban_view_ref': 'sales__order.invoice_kanban',
+                    'search_default_paid': 1
+                }
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="sales__order.invoice_action_cancel">
+            <field name="name">Invoice</field>
+            <field name="res_model">sales__order.invoice</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="sales__order.invoice_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'sales__order.invoice_form',
+                    'tree_view_ref': 'sales__order.invoice_tree',
+                    'kanban_view_ref': 'sales__order.invoice_kanban',
+                    'search_default_cancel': 1
+                }
+            </field>
+        </record>
+
+        <menuitem name="Invoice" id="sales__order.invoice_menu" parent="sales__order.menu_root" sequence="2"/>
+        <menuitem name="All" id="sales__order.invoice_submenu_all" parent="sales__order.invoice_menu" action="sales__order.invoice_action_all" sequence="1"/>
+        <menuitem name="Draft" id="sales__order.invoice_submenu_draft" parent="sales__order.invoice_menu" action="sales__order.invoice_action_draft" sequence="2"/>
+        <menuitem name="Open" id="sales__order.invoice_submenu_open" parent="sales__order.invoice_menu" action="sales__order.invoice_action_open" sequence="3"/>
+        <menuitem name="Paid" id="sales__order.invoice_submenu_paid" parent="sales__order.invoice_menu" action="sales__order.invoice_action_paid" sequence="4"/>
+        <menuitem name="Cancelled" id="sales__order.invoice_submenu_cancel" parent="sales__order.invoice_menu" action="sales__order.invoice_action_cancel" sequence="5"/>
+    </data>
+</odoo>

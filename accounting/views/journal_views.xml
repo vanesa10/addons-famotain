@@ -1,0 +1,83 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="accounting.journal_tree">
+          <field name="name">Journal Tree</field>
+          <field name="model">accounting.journal</field>
+          <field name="arch" type="xml">
+            <tree>
+                <field name="date"/>
+                <field name="name"/>
+                <field name="journal_type"/>
+                <field name="description"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="sum"/>
+                <field name="state"/>
+            </tree>
+          </field>
+        </record>
+
+        <record model="ir.ui.view" id="accounting.journal_form">
+          <field name="name">Journal Form</field>
+          <field name="model">accounting.journal</field>
+          <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button string="Post" name="action_post" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'in', ['post'])]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,post"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="journal_type"/>
+                            <field name="description"/>
+                            <field name="sum"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <label for="post_uid" string="Posted By"/>
+                            <div>
+                                <field name="post_uid" class="oe_inline"/> -
+                                <field name="post_date" class="oe_inline"/>
+                            </div>
+                        </group>
+                    </group>
+                    <separator string="Journal Accounts"/>
+                    <notebook colspan="4">
+                        <page string="Journal Accounts" name="journal_accounts">
+                            <field name="journal_account_ids">
+                                <tree editable="bottom" delete="1">
+                                    <field name="name"/>
+                                    <field name="account_id"/>
+                                    <field name="debit" sum="Total Debit"/>
+                                    <field name="credit" sum="Total Credit"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    <group string="Notes">
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+          </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="accounting.journal_action_window">
+          <field name="name">Journal</field>
+          <field name="res_model">accounting.journal</field>
+          <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</odoo>

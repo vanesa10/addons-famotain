@@ -1,0 +1,717 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_sales__order_quotation_template">
+        <t t-call="web.html_container">
+            <t t-call="famotain.external_layout">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <div class="row mx-0 mt-3" style="border-bottom: 1px solid #A9A9A9;">
+                        <div class="col-6 mb-3">
+                            <h2 t-if="o.state=='draft'">Quotation</h2>
+                            <h2 t-elif="o.state=='cancel'">Cancelled</h2>
+                            <h2 t-else="">Sales Order</h2>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="row text-right">
+                                <div class="col-12">
+                                    <strong><span t-field="o.name"/></strong>
+                                </div>
+                            </div>
+                            <div class="row text-right">
+                                <div class="col-12">
+                                    Order Date : <span t-esc="o.create_date.strftime('%d-%b-%Y')"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt16">
+                        <div class="col-1 text-right"><strong>To</strong></div>
+                        <div class="col-11">
+                            <strong><span t-field="o.customer_id.name"/></strong><br/>
+                            <span t-field="o.address"/><br/>
+                            <span t-field="o.city"/> - <span t-field="o.customer_id.zip_code"/><br/>
+                            <span t-field="o.phone"/>
+                        </div>
+                    </div>
+
+                    <t t-set="design_2" t-value="False"/>
+                    <t t-set="design_3" t-value="False"/>
+                    <t t-foreach="o.product_order_ids" t-as="product_order">
+                        <t t-if="product_order.design_image_2">
+                            <t t-set="design_2" t-value="True"/>
+                        </t>
+                        <t t-if="product_order.design_image_3">
+                            <t t-set="design_3" t-value="True"/>
+                        </t>
+                    </t>
+
+                    <h4 class="mt32">Product Order</h4>
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table table-sm table-striped table-active">
+                                <tr>
+                                    <th class="text-center">Qty</th>
+                                    <th>Product</th>
+                                    <th>Description</th>
+                                    <th class="text-center">Design</th>
+                                    <th t-if="design_2" class="text-center">Design Side 2</th>
+                                    <th t-if="design_3" class="text-center">Design Side 3</th>
+                                </tr>
+
+                                <tr t-foreach="o.product_order_ids" t-as="product_order">
+                                    <td class="text-center"><span t-field="product_order.qty"/>pcs</td>
+                                    <td><span t-field="product_order.product_id.display_name"/></td>
+                                    <td><span t-field="product_order.fabric_color"/></td>
+                                    <td class="text-center"><img t-if="product_order.product_id.product_type=='product'" t-attf-src="data:image/*;base64,{{product_order.design_image}}" style="max-width:200px; max-height: 150px"/></td>
+                                    <td t-if="design_2"  class="text-center"><img t-if="product_order.product_id.product_type=='product'" t-attf-src="data:image/*;base64,{{product_order.design_image_2}}" style="max-width:200px; max-height: 150px"/></td>
+                                    <td t-if="design_3"  class="text-center"><img t-if="product_order.product_id.product_type=='product'" t-attf-src="data:image/*;base64,{{product_order.design_image_3}}" style="max-width:200px; max-height: 150px"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row mt32">
+                        <div class="col-12">
+                            <table class="table" style="width:100%">
+                                <tr>
+                                    <th class="text-center" style="border: 1px solid #dee2e6; width: 130px;">Deadline</th>
+                                    <td style="border: 1px solid #dee2e6; min-width: 200px;"><span t-if="o.deadline" t-esc="o.deadline.strftime('%d-%b-%Y')"/></td>
+                                    <th class="text-center" style="border: 1px solid #dee2e6; width: 130px;">Event Date</th>
+                                    <td style="border: 1px solid #dee2e6; min-width: 200px;"><span t-if="o.event_date" t-esc="o.event_date.strftime('%d-%b-%Y')"/></td>
+                                </tr>
+                                <tr>
+                                    <th class="text-center" style="border: 1px solid #dee2e6;">Theme</th>
+                                    <td style="border: 1px solid #dee2e6;"><span t-field="o.theme"/></td>
+                                    <th class="text-center" style="border: 1px solid #dee2e6;">Custom Name</th>
+                                    <td style="border: 1px solid #dee2e6;">
+                                        <span t-if="o.custom_name=='yes'" t-field="o.custom_name"/>
+                                        <span t-else="">-</span>
+                                    </td>
+                                </tr>
+<!--                                <tr>-->
+<!--                                    <th class="text-center" style="border: 1px solid #dee2e6;">Qty Total</th>-->
+<!--                                    <td style="border: 1px solid #dee2e6;"><span t-field="o.qty_total"/></td>-->
+<!--                                    <th class="text-center" style="border: 1px solid #dee2e6;">Product</th>-->
+<!--                                    <td style="border: 1px solid #dee2e6;"><span t-field="o.product"/></td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <th class="text-center" style="border: 1px solid #dee2e6;">Theme</th>-->
+<!--                                    <td style="border: 1px solid #dee2e6;"><span t-field="o.theme"/></td>-->
+<!--                                    <th class="text-center" style="border: 1px solid #dee2e6;">Packing</th>-->
+<!--                                    <td style="border: 1px solid #dee2e6;">-->
+<!--                                        <span t-if="o.packaging=='-'" t-field="o.packaging"/>-->
+<!--                                        <span t-else=""><span t-field="o.packaging"/> - <span t-field="o.packing"/></span>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <th class="text-center" style="border: 1px solid #dee2e6;">Label</th>-->
+<!--                                    <td style="border: 1px solid #dee2e6;">-->
+<!--                                        <span t-if="o.label=='yes'" t-field="o.label"/>-->
+<!--                                        <span t-else="">-</span>-->
+<!--                                    </td>-->
+<!--                                    <th class="text-center" style="border: 1px solid #dee2e6;">Custom Name</th>-->
+<!--                                    <td style="border: 1px solid #dee2e6;">-->
+<!--                                        <span t-if="o.custom_name=='yes'" t-field="o.custom_name"/>-->
+<!--                                        <span t-else="">-</span>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+                                <tr>
+                                    <th class="text-center" style="border: 1px solid #dee2e6;">Additional Text</th>
+                                    <td style="border: 1px solid #dee2e6;"><span t-field="o.additional_text"/></td>
+                                    <th class="text-center" style="border: 1px solid #dee2e6;">Thanks Card Writing</th>
+                                    <td style="border: 1px solid #dee2e6;"><span t-field="o.thanks_card_writing"/></td>
+                                </tr>
+                                <tr>
+                                    <th class="text-center" style="border: 1px solid #dee2e6;">Custom Request</th>
+                                    <td style="border: 1px solid #dee2e6;"><span t-field="o.custom_request"/></td>
+                                    <th class="text-center" style="border: 1px solid #dee2e6;">Notes</th>
+                                    <td style="border: 1px solid #dee2e6;"><span t-field="o.customer_notes"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <h4 class="mt32">Price Details<span t-if="o.state=='draft' or o.state=='confirm'">*</span></h4>
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table table-sm table-striped table-active">
+                                <tr>
+                                    <th class="text-center">Qty</th>
+                                    <th>Description</th>
+                                    <th class="text-right">Unit Price</th>
+                                    <th class="text-right">Amount</th>
+                                </tr>
+                                <tr t-foreach="o.price_line_ids" t-as="price_line">
+                                    <td class="text-center"><span t-field="price_line.qty"/>pcs</td>
+                                    <td><span t-field="price_line.description"/></td>
+                                    <td class="text-right"><span t-field="price_line.amount" t-options='{"widget": "monetary"}'/></td>
+                                    <td class="text-right"><span t-field="price_line.balance" t-options='{"widget": "monetary"}'/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row mt16">
+                        <div class="col-6">
+                            <span t-if="o.state=='draft' or o.state=='confirm'">*shipping price will be added later</span>
+                        </div>
+                        <div class="col-6 text-right" style="padding: 0 20px; font-size: 16pt;">
+                            <strong><span class="lead">Total: </span></strong><span t-field="o.total_price" t-options='{"widget": "monetary"}'/>
+                        </div>
+                    </div>
+                    <div class="oe_structure"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_sales__order_invoice_template">
+        <t t-call="web.html_container">
+            <t t-call="famotain.external_layout">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <div class="row mx-0 mt-3" style="border-bottom: 1px solid #A9A9A9;">
+                        <div class="col-6 mb-3">
+                            <h2>Invoice</h2>
+                        </div>
+                        <div class="col-6 mb-3 pt-2">
+                            <div class="row text-right">
+                                <div class="col-12">
+                                    <strong><span t-field="o.name"/></strong> - <span t-field="o.state"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt32">
+                        <div class="col-2 text-right"><strong>To</strong></div>
+                        <div class="col-10">
+                            <strong><span t-field="o.invoice_to"/></strong><br/>
+                            <span t-field="o.address"/><br/>
+                            <span t-field="o.sales_order_id.customer_id.city"/> - <span t-field="o.sales_order_id.customer_id.zip_code"/><br/>
+                            <span t-field="o.phone"/>
+                        </div>
+                    </div>
+
+                    <div class="row mt16">
+                        <div class="col-2">
+                            <strong>Invoice Date:</strong><br/>
+                            <span t-esc="o.invoice_date.strftime('%d-%b-%Y')"/>
+                        </div>
+                        <div class="col-2">
+                            <strong>Due Date:</strong><br/>
+                            <span t-esc="o.due_date.strftime('%d-%b-%Y')"/>
+                        </div>
+                        <div class="col-2">
+                            <strong>Source:</strong><br/>
+                            <span t-field="o.source_document"/>
+                        </div>
+                        <div class="col-3">
+                            <strong>Reference:</strong><br/>
+                            <span t-field="o.name"/>
+                        </div>
+                    </div>
+
+                    <h4 class="mt32">Price Details<span t-if="o.invoice_type=='down_payment'">*</span></h4>
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table table-sm table-striped table-active">
+                                <tr>
+                                    <th class="text-center">Qty</th>
+                                    <th>Description</th>
+                                    <th class="text-right">Unit Price</th>
+                                    <th class="text-right">Amount</th>
+                                </tr>
+                                <tr t-foreach="o.invoice_line_ids" t-as="price_line">
+                                    <td class="text-center"><span t-field="price_line.qty"/>pcs</td>
+                                    <td><span t-field="price_line.description"/></td>
+                                    <td class="text-right"><span t-field="price_line.amount" t-options='{"widget": "monetary"}'/></td>
+                                    <td class="text-right"><span t-field="price_line.total" t-options='{"widget": "monetary"}'/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row mt16">
+                        <div class="col-7">
+                            <span t-if="o.invoice_type=='down_payment'">*shipping price will be added later</span><br/>
+                        </div>
+                        <div class="col-5" style="padding: 0 20px;">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>Total</th>
+                                    <td class="text-right"><span t-field="o.sales_order_id.total_price" t-options='{"widget": "monetary"}'/></td>
+                                </tr>
+                                <tr>
+                                    <th>Paid</th>
+                                    <td class="text-right"><span t-field="o.sales_order_id.paid" t-options='{"widget": "monetary"}'/></td>
+                                </tr>
+                                <tr>
+                                    <th>Amount Due</th>
+                                    <td class="text-right"><strong><span t-field="o.amount" t-options='{"widget": "monetary"}'/></strong></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <t t-set="payment_history">
+                        <h4 class="mt32">Payment History</h4>
+                        <div class="row">
+                            <div class="col-6">
+                                <table class="table table-sm table-striped table-active">
+                                    <tr>
+                                        <th class="text-center">Date</th>
+                                        <th>Description</th>
+                                        <th class="text-right">Amount</th>
+                                    </tr>
+                                    <t t-set="has_history" t-value="False"/>
+                                    <t t-foreach="o.sales_order_id.invoice_ids.sorted(key=lambda r: r.id)" t-as="invoice">
+                                        <tr t-if="invoice.id != o.id and invoice.state=='paid'">
+                                            <t t-set="has_history" t-value="True"/>
+                                            <td class="text-center"><span t-esc="invoice.payment_date.strftime('%d-%b-%Y')"/></td>
+                                            <td><span t-field="invoice.name"/></td>
+                                            <td class="text-right"><span t-field="invoice.amount" t-options='{"widget": "monetary"}'/></td>
+                                        </tr>
+                                    </t>
+                                </table>
+                            </div>
+                        </div>
+                    </t>
+
+                    <t t-if="has_history" t-raw="payment_history"/>
+
+                    <h4 class="mt32">Notes</h4>
+                    <div class="row">
+                        <div class="col-12">
+                            <ul>
+                                <li t-if="o.invoice_type=='down_payment'">Design will be made 2-3 days after payment</li>
+                                <li>Please use the following communication for your payment: <strong><span t-field="o.name"/></strong></li>
+                                <li>Make your payment promptly to the following bank account:</li>
+                                <ul>
+                                    <li>Bank Name: <strong>Bank Central Asia (BCA)</strong></li>
+                                    <li>Account Number: <strong>394-033-4976</strong></li>
+                                    <li>Account Name: <strong>Nabilla Yuwono Putri</strong></li>
+                                </ul>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="oe_structure"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_sales__order_invoice_wo_payment_template">
+        <t t-call="web.html_container">
+            <t t-call="famotain.external_layout">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <div class="row mx-0 mt-3" style="border-bottom: 1px solid #A9A9A9;">
+                        <div class="col-6 mb-3">
+                            <h2>Invoice</h2>
+                        </div>
+                        <div class="col-6 mb-3 pt-2">
+                            <div class="row text-right">
+                                <div class="col-12">
+                                    <strong><span t-field="o.name"/></strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt32">
+                        <div class="col-2 text-right"><strong>To</strong></div>
+                        <div class="col-10">
+                            <strong><span t-field="o.customer_id.name"/></strong><br/>
+                            <span t-field="o.address"/><br/>
+                            <span t-field="o.city"/> - <span t-field="o.customer_id.zip_code"/><br/>
+                            <span t-field="o.phone"/>
+                        </div>
+                    </div>
+
+                    <h4 class="mt32">Price Details</h4>
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table table-sm table-striped table-active">
+                                <tr>
+                                    <th class="text-center">Qty</th>
+                                    <th>Description</th>
+                                    <th class="text-right">Unit Price</th>
+                                    <th class="text-right">Amount</th>
+                                </tr>
+                                <tr t-foreach="o.price_line_ids" t-as="price_line">
+                                    <td class="text-center"><span t-field="price_line.qty"/>pcs</td>
+                                    <td><span t-field="price_line.description"/></td>
+                                    <td class="text-right"><span t-field="price_line.amount" t-options='{"widget": "monetary"}'/></td>
+                                    <td class="text-right"><span t-field="price_line.balance" t-options='{"widget": "monetary"}'/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row mt16">
+                        <div class="col-7"/>
+                        <div class="col-5" style="padding: 0 20px;">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>Total</th>
+                                    <td class="text-right"><span t-field="o.total_price" t-options='{"widget": "monetary"}'/></td>
+                                </tr>
+                                <tr>
+                                    <th>Paid</th>
+                                    <td class="text-right"><span t-field="o.paid" t-options='{"widget": "monetary"}'/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <t t-set="payment_history">
+                        <h4 class="mt32">Payment History</h4>
+                        <div class="row">
+                            <div class="col-6">
+                                <table class="table table-sm table-striped table-active">
+                                    <tr>
+                                        <th class="text-center">Date</th>
+                                        <th>Description</th>
+                                        <th class="text-right">Amount</th>
+                                    </tr>
+                                    <t t-set="has_history" t-value="False"/>
+                                    <t t-foreach="o.invoice_ids.sorted(key=lambda r: r.id)" t-as="invoice">
+                                        <tr t-if="invoice.state=='paid'">
+                                            <t t-set="has_history" t-value="True"/>
+                                            <td class="text-center"><span t-esc="invoice.payment_date.strftime('%d-%b-%Y')"/></td>
+                                            <td><span t-field="invoice.name"/></td>
+                                            <td class="text-right"><span t-field="invoice.amount" t-options='{"widget": "monetary"}'/></td>
+                                        </tr>
+                                    </t>
+                                </table>
+                            </div>
+                        </div>
+                    </t>
+
+                    <t t-if="has_history" t-raw="payment_history"/>
+
+                    <div class="oe_structure"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_sales__order_surat_jalan_template">
+        <t t-call="web.html_container">
+            <t t-call="famotain.external_layout">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <div class="row mx-0 mt-3" style="border-bottom: 1px solid #A9A9A9;">
+                        <div class="col-6 mb-3">
+                            <h2>Delivery Order</h2>
+                        </div>
+                        <div class="col-6 mb-3 pt-2">
+                            <div class="row text-right">
+                                <div class="col-12">
+                                    <strong><span t-field="o.name"/></strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt32">
+                        <div class="col-2 text-right"><strong>To</strong></div>
+                        <div class="col-10">
+                            <strong><span t-field="o.customer_id.name"/></strong><br/>
+                            <span t-field="o.address"/><br/>
+                            <span t-field="o.city"/> - <span t-field="o.customer_id.zip_code"/><br/>
+                            <span t-field="o.phone"/>
+                        </div>
+                    </div>
+
+                    <t t-set="design_2" t-value="False"/>
+                    <t t-set="design_3" t-value="False"/>
+                    <t t-foreach="o.product_order_ids" t-as="product_order">
+                        <t t-if="product_order.design_image_2">
+                            <t t-set="design_2" t-value="True"/>
+                        </t>
+                        <t t-if="product_order.design_image_3">
+                            <t t-set="design_3" t-value="True"/>
+                        </t>
+                    </t>
+
+                    <p class="mt32">Bersama ini, kami kirimkan barang pesanan sebagai berikut:</p>
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table table-sm table-striped table-active">
+                                <tr>
+                                    <th class="text-center">Qty</th>
+                                    <th>Product</th>
+                                    <th>Description</th>
+                                    <th class="text-center">Design</th>
+                                    <th t-if="design_2" class="text-center">Design Side 2</th>
+                                    <th t-if="design_3" class="text-center">Design Side 3</th>
+                                </tr>
+
+                                <tr t-foreach="o.product_order_ids" t-as="product_order">
+                                    <td class="text-center"><span t-field="product_order.qty"/>pcs</td>
+                                    <td><span t-field="product_order.product_id.display_name"/></td>
+                                    <td><span t-field="product_order.fabric_color"/></td>
+                                    <td class="text-center"><img t-if="product_order.product_id.product_type=='product'" t-attf-src="data:image/*;base64,{{product_order.design_image}}" style="max-width:200px; max-height: 150px"/></td>
+                                    <td t-if="design_2"  class="text-center"><img t-if="product_order.product_id.product_type=='product'" t-attf-src="data:image/*;base64,{{product_order.design_image_2}}" style="max-width:200px; max-height: 150px"/></td>
+                                    <td t-if="design_3"  class="text-center"><img t-if="product_order.product_id.product_type=='product'" t-attf-src="data:image/*;base64,{{product_order.design_image_3}}" style="max-width:200px; max-height: 150px"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <p class="mt32">Barang sudah diterima dalam keadaan baik dan benar oleh:</p>
+                    <div class="row mt8">
+                        <div class="col-6 text-center"/>
+                        <div class="col-6 text-center">_____________,_____/_____/_______</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 text-center">Pengirim</div>
+                        <div class="col-6 text-center">Penerima</div>
+                    </div>
+                    <div class="row mt96">
+                        <div class="col-6 text-center">(_______________________)</div>
+                        <div class="col-6 text-center">(_______________________)</div>
+                    </div>
+
+                    <div class="oe_structure"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="sales__order.report_sales__order_famotain">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="famotain.internal_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <div class="row" style="border: 1px solid black;">
+                            <div class="col-7 p-2" style="border-right: 1px solid black;">
+                                <div class="row m-2 py-2" style="border-bottom: 1px solid #A9A9A9; border-top: 1px solid #A9A9A9;">
+                                    <div class="col-2">
+                                        <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" style="max-width: 75px;" alt="Logo"/>
+                                    </div>
+                                    <div class="col-6 mt-2">
+                                        <span t-esc="res_company.name" style="font-size: 16pt;"/>
+                                        <span class="text-muted" style="font-size: 11pt;"> <span t-esc="res_company.report_header"/></span><br/>
+                                        <span style="font-size: 11pt;" t-esc="res_company.phone"/>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <span t-field="o.name"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-2 text-right pr-0">
+                                        <strong><span>To</span></strong>
+                                    </div>
+                                    <div class="col-10">
+                                        <strong><span t-field="o.customer_id.name"/></strong>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-2"/>
+                                    <div class="col-10">
+                                        <span t-field="o.address"/><br/>
+                                        <span t-field="o.city"/> - <span t-field="o.customer_id.zip_code"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-2"/>
+                                    <div class="col-10">
+                                        <span t-field="o.phone"/>
+                                    </div>
+                                </div>
+                                <div class="row mt16 py-2 px-4">
+                                    <div class="col-12">
+                                        <table class="table table-sm table-striped table-active">
+                                            <tr>
+                                                <th class="text-center">Qty</th>
+                                                <th>Product</th>
+                                            </tr>
+                                            <tr t-foreach="o.product_order_ids" t-as="product_order">
+                                                <td class="text-center"><span t-field="product_order.qty"/>pcs</td>
+                                                <td><span t-field="product_order.product_id.display_name"/></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 text-center mt16">
+                                         <div name="financial_infos">
+                                            <strong><span t-field="res_company.report_footer"/></strong>
+                                        </div>
+
+                                        <ul class="list-inline mb4">
+                                            <li t-if="res_company.social_instagram" class="list-inline-item"><i class="fa fa-instagram" role="img" aria-label="Instagram" title="Instagram"/> <span t-field="res_company.social_instagram"/></li>
+                                            <li t-if="res_company.phone" class="list-inline-item"><i class="fa fa-whatsapp" role="img" aria-label="Phone" title="Phone"/> <span t-field="res_company.phone"/></li>
+                                            <li t-if="res_company.website" class="list-inline-item"><i class="fa fa-globe" role="img" aria-label="Website" title="Website"/> <span t-field="res_company.website"/></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-5 text-center" >
+                                <div t-foreach="o.product_order_ids" t-as="product_order">
+                                    <div class="p-3" t-if="product_order.product_id.product_type=='product'">
+                                        <img t-attf-src="data:image/*;base64,{{product_order.design_image}}" style="max-width:200px; max-height: 150px"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row"/>
+                        <div class="row mt24" style="border-top: 2px dashed black;">
+                            <div class="col-7 mt24">
+                                <strong><h4><span t-field="o.name"/></h4></strong>
+                            </div>
+                            <div class="col-5 text-right mt24">
+                                <span t-if="o.state=='draft'" class="text-warning" t-field="o.state"/>
+                                <span t-if="o.state=='confirm'" class="text-primary" t-field="o.state"/>
+                                <span t-if="o.state=='send'" class="text-success" t-field="o.state"/>
+                                <span t-if="o.state=='cancel'" class="text-danger" t-field="o.state"/>
+                                 - <span class="text-danger"><strong>Deadline: </strong><span t-esc="o.deadline.strftime('%a, %d-%b-%Y')"/></span>
+                            </div>
+                        </div>
+                        <div class="row mt16 mb16">
+                            <div class="col-2">
+                                <strong>Event Date:</strong><br/>
+                                <span t-if="o.event_date" t-esc="o.event_date.strftime('%d-%b-%Y')"/>
+                            </div>
+                            <div class="col-2">
+                                <strong>Qty Total:</strong><br/>
+                                <span t-field="o.qty_total"/>
+                            </div>
+                            <div class="col-4">
+                                <strong>Product:</strong><br/>
+                                <span t-field="o.product"/><span t-if="o.custom_name=='yes'" class="text-danger"> - Names</span>
+                            </div>
+                            <div class="col-4">
+                                <strong>Theme:</strong><br/>
+                                <span t-field="o.theme"/>
+                            </div>
+<!--                            <div class="col-2">-->
+<!--                                <strong>Qty Boy:</strong><br/>-->
+<!--                                <span t-field="o.qty_boy"/><span t-if="o.custom_name=='yes'" class="text-danger"> - Names</span>-->
+<!--                            </div>-->
+<!--                            <div class="col-2">-->
+<!--                                <strong>Qty Girl:</strong><br/>-->
+<!--                                <span t-field="o.qty_girl"/><span t-if="o.custom_name=='yes'" class="text-danger"> - Names</span>-->
+<!--                            </div>-->
+                        </div>
+                        <div class="row mt16 mb16">
+                            <div class="col-2" t-if="not o.packaging_id">
+                                <strong>Packing:</strong><br/><span>-</span>
+                            </div>
+                            <div class="col-2 text-danger" t-else="">
+                                <strong>Packing:</strong><br/>
+                                <span t-field="o.packaging_id.name"/> - <span t-field="o.packing"/>
+                            </div>
+                            <div class="col-2 text-danger" t-if="o.label=='yes'">
+                                <strong>Label:</strong><br/>
+                                <span t-field="o.label"/>
+                            </div>
+                            <div class="col-2" t-else="">
+                                <strong>Label:</strong><br/>
+                                <span t-field="o.label"/>
+                            </div>
+                            <div class="col-4">
+                                <strong>Additional Text:</strong><br/>
+                                <span t-field="o.additional_text"/>
+                            </div>
+                            <div class="col-4">
+                                <strong>Thanks Card Writing:</strong><br/>
+                                <span t-field="o.thanks_card_writing"/>
+                            </div>
+
+                        </div>
+                        <div class="row mt8 mb8">
+                            <div class="col-6 text-danger" t-if="o.custom_request">
+                                <strong>Custom Request:</strong><br/>
+                                <span t-field="o.custom_request"/>
+                            </div>
+                            <div class="col-6 text-danger" t-if="o.customer_notes">
+                                <strong>Customer Notes:</strong><br/>
+                                <span t-field="o.customer_notes"/>
+                            </div>
+                        </div>
+                        <div class="row mt8 mb8">
+                            <div class="col-12 text-danger" t-if="o.notes">
+                                <strong>Internal Notes:</strong><br/>
+                                <span t-field="o.notes"/>
+                            </div>
+                        </div>
+                        <div t-if="o.product_order_ids" class="row mt16">
+                            <div class="col-12">
+                                <h5>Product Order</h5>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <th>Qty</th>
+                                        <td t-foreach="o.product_order_ids" t-as="product_order">
+                                            <span t-field="product_order.qty"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Product</th>
+                                        <td t-foreach="o.product_order_ids" t-as="product_order">
+                                            <span t-field="product_order.product_id.display_name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Fabric</th>
+                                        <td t-foreach="o.product_order_ids" t-as="product_order">
+                                            <span t-field="product_order.fabric_color"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Ribbon</th>
+                                        <td t-foreach="o.product_order_ids" t-as="product_order">
+                                            <span t-field="product_order.ribbon_color"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Design</th>
+                                        <td t-foreach="o.product_order_ids" t-as="product_order">
+                                            <img t-if="product_order.product_id.product_type=='product'" t-attf-src="data:image/*;base64,{{product_order.design_image}}" style="max-width:200px; max-height: 150px"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Notes</th>
+                                        <td t-foreach="o.product_order_ids" t-as="product_order">
+                                            <span t-field="product_order.notes"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="oe_structure"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="sales__order.report_sales__order_quotation">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="sales__order.report_sales__order_quotation_template"/>
+        </t>
+    </template>
+
+    <template id="sales__order.report_sales__order_invoice">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="sales__order.report_sales__order_invoice_template"/>
+        </t>
+    </template>
+
+    <template id="sales__order.report_sales__order_invoice_wo_payment">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="sales__order.report_sales__order_invoice_wo_payment_template"/>
+        </t>
+    </template>
+
+    <template id="sales__order.report_sales__order_surat_jalan">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="sales__order.report_sales__order_surat_jalan_template"/>
+        </t>
+    </template>
+</odoo>

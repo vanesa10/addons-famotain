@@ -1,0 +1,56 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="accounting.journal_account_tree">
+          <field name="name">Journal Account Tree</field>
+          <field name="model">accounting.journal_account</field>
+          <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="journal_id"/>
+                <field name="account_id"/>
+                <field name="debit" sum="Total Debit"/>
+                <field name="credit" sum="Total Credit"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="state"/>
+            </tree>
+          </field>
+        </record>
+
+        <record model="ir.ui.view" id="accounting.journal_account_form">
+          <field name="name">Journal Account Form</field>
+          <field name="model">accounting.journal_account</field>
+          <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,post" clickable="1"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+
+                    </div>
+                    <group>
+                        <group>
+                            <field name="journal_id"/>
+                            <field name="account_id"/>
+                        </group>
+                        <group>
+                            <field name="debit"/>
+                            <field name="credit"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+          </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="accounting.journal_account_action_window">
+          <field name="name">Journal Account</field>
+          <field name="res_model">accounting.journal_account</field>
+          <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</odoo>
