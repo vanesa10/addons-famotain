@@ -167,6 +167,7 @@
                                         </t>
                                     </t>
                                 </select>
+                                <small class="form-text text-muted">Paket = sudah termasuk pita dan thankscard</small>
                             </div>
                             <div id="form-packing" t-attf-class="{{packing_class}}">
                                 <legend for="input-packing" class="col-form-label pt-0">
@@ -193,7 +194,7 @@
                                 <legend for="input-label" class="col-form-label pt-0 m-0">
                                     Label
                                 </legend>
-                                <img t-if="label" t-attf-src="data:image/*;base64,{{label.image}}" class="rounded mx-auto d-block" style="max-width: 160px;"/>
+                                <img t-if="label" t-attf-src="data:image/*;base64,{{label.image_medium}}" class="rounded mx-auto d-block" style="max-width: 160px;"/>
                                 <small class="form-text text-muted text-center">
                                     contoh penambahan label di dalam tas
                                 </small>
@@ -586,23 +587,16 @@
     </template>
 
     <template id="layout" name="Main layout Famotain">
-        <html t-att="html_data or {}">
+        <html t-att="html_data or {}" lang="id">
             <head>
                 <meta charset="utf-8"/>
                 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
                 <meta name="author" content="famotain"/>
-<!--                <meta name="theme-color" content="#fff8f0"/>-->
                 <meta name="theme-color" content="#fcd1c8"/>
                 <title t-esc="title or 'Famotain'"/>
                 <link type="image/x-icon" rel="shortcut icon" t-att-href="image_data_uri(res_company.logo)"/>
-<!--                <script type="text/javascript">-->
-<!--                    var odoo = {-->
-<!--                        csrf_token: "<t t-esc="request.csrf_token(None)"/>",-->
-<!--                    };-->
-<!--                </script>-->
                 <t t-raw="head or ''"/>
-
             </head>
             <body t-att-class="body_classname">
                 <div id="wrap">
@@ -617,11 +611,9 @@
     </template>
 
     <template id="web_famotain.assets_frontend">
-<!--        <link rel="stylesheet" href="/web_famotain/static/css/bootstrap.css"/>-->
         <link rel="stylesheet" href="/web_famotain/static/css/bootstrap.min.css"/>
         <link rel="stylesheet" href="/web_famotain/static/css/main_style.css"/>
         <script src="/web_famotain/static/js/jquery-3.3.1.min.js"></script>
-<!--        <script src="/web_famotain/static/js/bootstrap.js"></script>-->
         <script src="/web_famotain/static/js/bootstrap.min.js"></script>
     </template>
 
@@ -632,7 +624,6 @@
                     <div class="container">
                         <a class="navbar-brand" href="/order/form">
                           <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" class="d-inline-block align-top logo-img" alt="Famotain"/>
-<!--                          <span class=""><t t-if="res_company.name" t-esc="res_company.name"/></span>-->
                         </a>
                         <div class="ml-auto my-auto">
                             <img src="/web_famotain/static/img/happy_shopping.png" alt="Happy Shopping" class="shopping-img"/>
@@ -647,12 +638,6 @@
         <footer class="page-footer font-small">
             <div class="text-center pb-3 container">
                 <div class="row">
-<!--                    <div class="col-lg-3 mt-3">-->
-<!--                        <a class="footer-logo" t-if="res_company.email"  t-attf-href="mailto:{{res_company.email}}">-->
-<!--                            <img src="/web_famotain/static/img/envelope.png" style="max-height: 17px;"/>-->
-<!--                            <span style="line-height: 23px;"><t t-esc="res_company.email"/></span>-->
-<!--                        </a>-->
-<!--                    </div>-->
                     <div class="col-lg-3 mt-3">
                         <a class="footer-logo" t-if="res_company.phone" t-attf-href="https://api.whatsapp.com/send?phone={{res_company.phone}}&amp;text=Hi sis">
                             <img src="/web_famotain/static/img/WA.png" style="max-height: 23px;"/>
