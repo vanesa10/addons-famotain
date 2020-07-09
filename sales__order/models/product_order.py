@@ -31,8 +31,11 @@ class ProductOrder(models.Model):
     fabric_color = fields.Char('Description', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]}, track_visibility='onchange')
     ribbon_color = fields.Char('Ribbon Color', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
     design_image = fields.Binary('Design Image', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]}, track_visibility='onchange')
+    design_image_small = fields.Binary("Small-sized Design Image", attachment=True, readonly=True)
     design_image_2 = fields.Binary('Design Image 2', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]}, track_visibility='onchange')
+    design_image_2_small = fields.Binary("Small-sized Design Image 2", attachment=True, readonly=True)
     design_image_3 = fields.Binary('Design Image 3', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]}, track_visibility='onchange')
+    design_image_3_small = fields.Binary("Small-sized Design Image 3", attachment=True, readonly=True)
 
     price = fields.Monetary('Price', readonly=True, compute='_compute_price', store=True)
     currency_id = fields.Many2one('res.currency', 'Currency', readonly=True, default=lambda self: self.env.user.company_id.currency_id)
@@ -62,9 +65,20 @@ class ProductOrder(models.Model):
         return new_rec
 
     @api.model
-    def create(self, vals_list):
-        tools.image_resize_images(vals_list)
-        product_order = super(ProductOrder, self).create(vals_list)
+    def create(self, vals):
+        if 'design_image' in vals.keys():
+            vals.update({
+                'design_image_small': tools.image_resize_image_big(vals['design_image'].encode('ascii'))
+            })
+        if 'design_image_2' in vals.keys():
+            vals.update({
+                'design_image_2_small': tools.image_resize_image_big(vals['design_image_2'].encode('ascii'))
+            })
+        if 'design_image_3' in vals.keys():
+            vals.update({
+                'design_image_3_small': tools.image_resize_image_big(vals['design_image_3'].encode('ascii'))
+            })
+        product_order = super(ProductOrder, self).create(vals)
         price_line = product_order.create_price_line()
         product_order.price_line_id = price_line.id
         msg = "{}pcs {} Rp. {:,} product order created".format(product_order.qty, product_order.product_id.display_name, product_order.price)
@@ -73,7 +87,18 @@ class ProductOrder(models.Model):
 
     @api.multi
     def write(self, vals):
-        tools.image_resize_images(vals)
+        if 'design_image' in vals.keys():
+            vals.update({
+                'design_image_small': tools.image_resize_image_big(vals['design_image'].encode('ascii'))
+            })
+        if 'design_image_2' in vals.keys():
+            vals.update({
+                'design_image_2_small': tools.image_resize_image_big(vals['design_image_2'].encode('ascii'))
+            })
+        if 'design_image_3' in vals.keys():
+            vals.update({
+                'design_image_3_small': tools.image_resize_image_big(vals['design_image_3'].encode('ascii'))
+            })
         initial_qty = self.qty
         initial_product_id = self.product_id
         initial_price = self.price
@@ -143,9 +168,9 @@ class ProductOrder(models.Model):
                 rec.state = 'sent'
                 rec.send_date = fields.Datetime.now()
                 rec.send_uid = self.env.user.id
-                rec.design_image = tools.image_resize_image_big(rec.design_image)
-                rec.design_image_2 = tools.image_resize_image_big(rec.design_image_2)
-                rec.design_image_3 = tools.image_resize_image_big(rec.design_image_3)
+                # rec.design_image = tools.image_resize_image_big(rec.design_image)
+                # rec.design_image_2 = tools.image_resize_image_big(rec.design_image_2)
+                # rec.design_image_3 = tools.image_resize_image_big(rec.design_image_3)
             else:
                 raise UserError(_("You can only send a confirmed sales order"))
 
