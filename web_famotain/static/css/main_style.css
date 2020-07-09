@@ -1,4 +1,4 @@
-@font-face {
+/*@font-face {
   font-family: "Poppins-Regular";
   src: url("../fonts/poppins/Poppins-Regular.ttf"); }
 @font-face {
@@ -13,14 +13,14 @@
 @font-face {
 font-family: "Poppins-Light";
 src: url("../fonts/poppins/Poppins-Light.ttf"); }
-/*@import url("https://fonts.googleapis.com/css?family=Barlow:300,400,500,600,700|Hind:400,500,600,700|Quattrocento:400,700");*/
+@import url("https://fonts.googleapis.com/css?family=Barlow:300,400,500,600,700|Hind:400,500,600,700|Quattrocento:400,700");*/
 * {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
 
 body {
-  font-family: "Poppins-Regular";
+  /*font-family: "Poppins-Regular";*/
   font-size: 0.897rem;
   background-color: #fff;
   background-image: url("../img/bg.jpg");
@@ -35,7 +35,7 @@ textarea {
   resize: none; }
 
 input, textarea, select, button {
-  font-family: "Poppins-Regular";
+  /*font-family: "Poppins-Regular";*/
 }
 
 p, h1, h2, h3, h4, h5, h6, ul {
@@ -110,4 +110,39 @@ body {
     .shopping-img{
         max-width: 240px;
     }
+}
+
+.btn-primary{
+    background-color: #fcd1c8;
+    border-color: #fcd1c8;
+    color: #333;
+}
+
+.btn-primary:hover{
+    background-color: #FCC5B3;
+    border-color: #FCC5B3;
+    color: #333;
+}
+
+.btn-primary:focus, .btn-primary.focus {
+    background-color: #FCC5B3;
+    box-shadow: 0 0 0 0.2rem rgba(251, 195, 176, 0.39);
+}
+
+.btn-primary.disabled, .btn-primary:disabled {
+  color: #333;
+  background-color: #fcd1c8;
+  border-color: #fcd1c8;
+}
+
+.btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
+.show > .btn-primary.dropdown-toggle {
+  color: #333;
+  background-color: #FCC5B3;
+  border-color: #FCC5B3;
+}
+
+.btn-primary:not(:disabled):not(.disabled):active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus,
+.show > .btn-primary.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(251, 195, 176, 0.39);
 }

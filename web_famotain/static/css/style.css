@@ -1,12 +1,12 @@
 span.error{
   font-size: 12px;
-  font-family: "Poppins-Light";
+  /*font-family: "Poppins-Light";*/
   color: red;
 }
 
 label.error{
   font-size: 12px;
-  font-family: "Poppins-Light";
+  /*font-family: "Poppins-Light";*/
   color: red;
 }
 
@@ -16,7 +16,7 @@ label.error{
 
 .p-info{
   font-size: 12px;
-  font-family: "Poppins-Light";
+  /*font-family: "Poppins-Light";*/
 }
 
 .wrapper {
@@ -56,7 +56,8 @@ label.error{
     .steps ul:before {
       content: "Customer Details";
       font-size: 22px;
-      font-family: "Poppins-SemiBold";
+      /*font-family: "Poppins-SemiBold";*/
+      font-weight: 600;
       color: #333;
       top: -38px;
       position: absolute; }
@@ -115,7 +116,7 @@ h3 {
     -webkit-transform: translateZ(0);
     transform: translateZ(0); }
   .actions li a:hover {
-    background: #fcd5c8; }
+    background: #FCC5B3; }
     .actions li a:hover:before {
       -webkit-animation-name: hvr-icon-wobble-horizontal;
       animation-name: hvr-icon-wobble-horizontal;
