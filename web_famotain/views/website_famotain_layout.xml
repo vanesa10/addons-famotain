@@ -131,20 +131,6 @@
                                   <label class="form-check-label" for="input-customname-n">No</label>
                                 </div>
                             </div>
-<!--                            <div class="form-row form-group">-->
-<!--                                <div class="form-holder">-->
-<!--                                    <label for="">-->
-<!--                                    Qty Cewe-->
-<!--                                    </label>-->
-<!--                                    <input id="input-qtyce" name="input-qtyce" type="number" class="form-control" min="0"/>-->
-<!--                                </div>-->
-<!--                                <div class="form-holder">-->
-<!--                                    <label for="">-->
-<!--                                    Qty Cowo-->
-<!--                                    </label>-->
-<!--                                    <input id="input-qtyco" name="input-qtyco" type="number" class="form-control" min="0"/>-->
-<!--                                </div>-->
-<!--                            </div>-->
                         </section>
 
                         <!-- SECTION 3 -->
@@ -290,6 +276,37 @@
                                 <a t-attf-href='/order/form/{{sales_order.encryption}}' class="btn btn-primary">Order lagi</a>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="web_famotain.links_layout">
+        <t t-call="web_famotain.layout">
+             <t t-set="title">Links | Famotain</t>
+             <t t-set="head">
+                 <t t-call="web_famotain.assets_frontend"/>
+             </t>
+            <div class="container">
+                <div class="row mt-5">
+                    <div class="col-md-8 mx-auto">
+                        <a type="button" class="btn btn-primary btn-lg btn-block" t-attf-href="https://api.whatsapp.com/send?phone={{res_company.phone}}&amp;text=Hi sis">Whatsapp</a>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-8 mx-auto">
+                        <a type="button" class="btn btn-primary btn-lg btn-block" href="http://bit.ly/linefamotain">Line</a>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-8 mx-auto">
+                        <a type="button" class="btn btn-primary btn-lg btn-block" href="http://bit.ly/Catalog-Famotain">Catalog</a>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-8 mx-auto">
+                        <a type="button" class="btn btn-primary btn-lg btn-block" href="/">Order Form</a>
                     </div>
                 </div>
             </div>
@@ -454,7 +471,7 @@
                                 <div class="table-responsive py-3">
                                     <t t-if="sales_order.product_order_ids">
                                         <table class="table table-striped table-bordered">
-                                            <caption>Cocokan kembali data order dan design (tanggal, penulisan, dan nama)</caption>
+                                            <caption>Cek kembali data order dan design (tanggal, penulisan, dan nama)</caption>
                                             <thead>
                                                 <tr>
                                                     <th scope="col" class="text-center">Qty</th>
@@ -525,13 +542,15 @@
                     <t t-if="sales_order.state == 'draft'">
                         <div class="card-footer text-right">
                             <a class="btn btn-secondary" t-attf-href='/order/{{sales_order.encryption}}/edit'>Edit</a>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmModal">Confirm</button>
+                            <t t-if="design">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmModal">Confirm</button>
+                            </t>
                         </div>
                     </t>
                 </div>
             </div>
             <!-- Modal -->
-            <t t-if="sales_order.state == 'draft'">
+            <t t-if="sales_order.state == 'draft' and design">
                 <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
@@ -544,7 +563,7 @@
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-12">
-                                        Cocokan kembali semua data order dan design (tanggal, penulisan, nama, dll). Setelah order terkonfirmasi, <strong>data order dan design tidak dapat diubah</strong> lagi.
+                                        Cek kembali semua data order dan design (tanggal, penulisan, nama, dll). Setelah order terkonfirmasi, <strong>data order dan design tidak dapat diubah</strong> lagi.
                                     </div>
                                 </div>
                             </div>
@@ -601,11 +620,11 @@
             <body t-att-class="body_classname">
                 <div id="wrap">
                     <t t-call="web_famotain.web_header_template"/>
-                    <main style="min-height: 100%;">
+                    <main>
                         <t t-raw="0"/>
                     </main>
-                    <t t-call="web_famotain.web_footer_template"/>
                 </div>
+                <t t-call="web_famotain.web_footer_template"/>
             </body>
         </html>
     </template>

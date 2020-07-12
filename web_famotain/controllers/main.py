@@ -21,6 +21,21 @@ class WebsiteController(Home):
 
 
 class WebsiteFamotain(http.Controller):
+    @http.route('/links', auth='public')
+    def links_view(self, **kw):
+        try:
+            return request.render('web_famotain.links_layout')
+        except Exception as e:
+            se = _serialize_exception(e)
+            error = {
+                'code': 200,
+                'name': "Server Error",
+                'data': se,
+                'message': 'Contact admin for more info.'
+            }
+            _logger.error(json.dumps(error))
+            return request.render('web_famotain.error_layout', error)
+
     @http.route('/order/form', auth='public')
     def create_order_form_view(self, **kw):
         try:

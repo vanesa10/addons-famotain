@@ -66,17 +66,17 @@ class ProductOrder(models.Model):
 
     @api.model
     def create(self, vals):
-        if 'design_image' in vals.keys():
+        if 'design_image' in vals.keys() and vals['design_image']:
             vals.update({
-                'design_image_small': tools.image_resize_image_big(vals['design_image'].encode('ascii'))
+                'design_image_small': tools.image_resize_image_medium(vals['design_image'].encode('ascii'))
             })
-        if 'design_image_2' in vals.keys():
+        if 'design_image_2' in vals.keys() and vals['design_image_2']:
             vals.update({
-                'design_image_2_small': tools.image_resize_image_big(vals['design_image_2'].encode('ascii'))
+                'design_image_2_small': tools.image_resize_image_medium(vals['design_image_2'].encode('ascii'))
             })
-        if 'design_image_3' in vals.keys():
+        if 'design_image_3' in vals.keys() and vals['design_image_3']:
             vals.update({
-                'design_image_3_small': tools.image_resize_image_big(vals['design_image_3'].encode('ascii'))
+                'design_image_3_small': tools.image_resize_image_medium(vals['design_image_3'].encode('ascii'))
             })
         product_order = super(ProductOrder, self).create(vals)
         price_line = product_order.create_price_line()
@@ -87,17 +87,17 @@ class ProductOrder(models.Model):
 
     @api.multi
     def write(self, vals):
-        if 'design_image' in vals.keys():
+        if 'design_image' in vals.keys() and vals['design_image']:
             vals.update({
-                'design_image_small': tools.image_resize_image_big(vals['design_image'].encode('ascii'))
+                'design_image_small': tools.image_resize_image_medium(vals['design_image'].encode('ascii'))
             })
-        if 'design_image_2' in vals.keys():
+        if 'design_image_2' in vals.keys() and vals['design_image_2']:
             vals.update({
-                'design_image_2_small': tools.image_resize_image_big(vals['design_image_2'].encode('ascii'))
+                'design_image_2_small': tools.image_resize_image_medium(vals['design_image_2'].encode('ascii'))
             })
-        if 'design_image_3' in vals.keys():
+        if 'design_image_3' in vals.keys() and vals['design_image_3']:
             vals.update({
-                'design_image_3_small': tools.image_resize_image_big(vals['design_image_3'].encode('ascii'))
+                'design_image_3_small': tools.image_resize_image_medium(vals['design_image_3'].encode('ascii'))
             })
         initial_qty = self.qty
         initial_product_id = self.product_id

@@ -10,7 +10,7 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirm,on_progress,sent,cancel"/>
                     </header>
                     <sheet>
-                        <field name="design_image" widget="image" class="oe_avatar oe_left"/>
+                        <field name="design_image" widget="image" class="oe_avatar oe_left" options='{"preview_image": "design_image_small"}'/>
                         <div class="oe_title">
                             <field name="product_type" widget='radio' options="{'horizontal': true}"/>
                             <h2>
