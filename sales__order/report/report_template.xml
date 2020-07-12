@@ -5,11 +5,11 @@
             <t t-call="famotain.external_layout">
                 <div class="page">
                     <div class="oe_structure"/>
-                    <div class="row mx-0" style="margin-top: 16px; border-bottom: 1px solid #A9A9A9;">
+                    <div class="row" style="margin-top: 16px; border-bottom: 1px solid #A9A9A9;">
                         <div class="col-6 mb16">
-                            <h2 t-if="o.state=='draft'" class="mt8">Quotation</h2>
-                            <h2 t-elif="o.state=='cancel'" class="mt8">Cancelled</h2>
-                            <h2 t-else="" class="mt8">Sales Order</h2>
+                            <h2 t-if="o.state=='draft'">Quotation</h2>
+                            <h2 t-elif="o.state=='cancel'">Cancelled</h2>
+                            <h2 t-else="">Sales Order</h2>
                         </div>
                         <div class="col-6 mb16">
                             <div class="row text-right">
