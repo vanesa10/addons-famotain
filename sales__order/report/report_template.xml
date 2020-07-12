@@ -5,13 +5,13 @@
             <t t-call="famotain.external_layout">
                 <div class="page">
                     <div class="oe_structure"/>
-                    <div class="row mx-0 mt-3" style="border-bottom: 1px solid #A9A9A9;">
-                        <div class="col-6 mb-3">
-                            <h2 t-if="o.state=='draft'" class="mt-1">Quotation</h2>
-                            <h2 t-elif="o.state=='cancel'" class="mt-1">Cancelled</h2>
-                            <h2 t-else="" class="mt-1">Sales Order</h2>
+                    <div class="row mx-0 mt16" style="border-bottom: 1px solid #A9A9A9;">
+                        <div class="col-6 mb16">
+                            <h2 t-if="o.state=='draft'" class="mt8">Quotation</h2>
+                            <h2 t-elif="o.state=='cancel'" class="mt8">Cancelled</h2>
+                            <h2 t-else="" class="mt8">Sales Order</h2>
                         </div>
-                        <div class="col-6 mb-3">
+                        <div class="col-6 mb16">
                             <div class="row text-right">
                                 <div class="col-12">
                                     <strong><span t-field="o.name"/></strong>
@@ -171,11 +171,11 @@
             <t t-call="famotain.external_layout">
                 <div class="page">
                     <div class="oe_structure"/>
-                    <div class="row mx-0 mt-3" style="border-bottom: 1px solid #A9A9A9;">
-                        <div class="col-6 mb-3">
-                            <h2 class="mt-1">Invoice</h2>
+                    <div class="row mx-0 mt16" style="border-bottom: 1px solid #A9A9A9;">
+                        <div class="col-6 mb16">
+                            <h2 class="mt8">Invoice</h2>
                         </div>
-                        <div class="col-6 mb-3 pt-2">
+                        <div class="col-6 mb16 pt8">
                             <div class="row text-right">
                                 <div class="col-12">
                                     <strong><span t-field="o.name"/></strong> - <span t-field="o.state"/>
@@ -307,11 +307,11 @@
             <t t-call="famotain.external_layout">
                 <div class="page">
                     <div class="oe_structure"/>
-                    <div class="row mx-0 mt-3" style="border-bottom: 1px solid #A9A9A9;">
-                        <div class="col-6 mb-3">
-                            <h2 class="mt-1">Invoice</h2>
+                    <div class="row mx-0 mt16" style="border-bottom: 1px solid #A9A9A9;">
+                        <div class="col-6 mb16">
+                            <h2 class="mt8">Invoice</h2>
                         </div>
-                        <div class="col-6 mb-3 pt-2">
+                        <div class="col-6 mb16 pt8">
                             <div class="row text-right">
                                 <div class="col-12">
                                     <strong><span t-field="o.name"/></strong>
@@ -403,11 +403,11 @@
             <t t-call="famotain.external_layout">
                 <div class="page">
                     <div class="oe_structure"/>
-                    <div class="row mx-0 mt-3" style="border-bottom: 1px solid #A9A9A9;">
-                        <div class="col-6 mb-3">
-                            <h2 class="mt-1">Delivery Order</h2>
+                    <div class="row mx-0 mt16" style="border-bottom: 1px solid #A9A9A9;">
+                        <div class="col-6 mb16">
+                            <h2 class="mt8">Delivery Order</h2>
                         </div>
-                        <div class="col-6 mb-3 pt-2">
+                        <div class="col-6 mb16 pt8">
                             <div class="row text-right">
                                 <div class="col-12">
                                     <strong><span t-field="o.name"/></strong>
@@ -494,7 +494,7 @@
                                     <div class="col-2">
                                         <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" style="max-width: 75px;" alt="Logo"/>
                                     </div>
-                                    <div class="col-6 mt-2">
+                                    <div class="col-6 mt8">
                                         <span t-esc="res_company.name" style="font-size: 20px;"/>
                                         <span class="text-muted" style="font-size: 15px;"> <span t-esc="res_company.report_header"/></span><br/>
                                         <span style="font-size: 15px;" t-esc="res_company.phone"/>
