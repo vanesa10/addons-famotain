@@ -136,8 +136,8 @@
                                     <field name="product_type" invisible="1"/>
                                     <field name="qty"/>
                                     <field name="product_id" default_focus="1"/>
-                                    <field name="design_image" widget="image" class="oe_avatar"/>
-                                    <field name="design_image_2" widget="image" class="oe_avatar"/>
+                                    <field name="design_image" widget="image" class="oe_avatar" options='{"preview_image": "design_image_small"}'/>
+                                    <field name="design_image_2" widget="image" class="oe_avatar" options='{"preview_image": "design_image_2_small"}'/>
                                     <field name="fabric_color"/>
                                     <field name="ribbon_color"/>
                                     <field name="currency_id" invisible="1"/>
