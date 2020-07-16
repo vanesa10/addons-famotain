@@ -52,8 +52,10 @@
                     <filter string="This Year" name="thisyear" domain="[('create_date','&gt;=',time.strftime('%%Y-01-01'))]"/>
 
                     <group string="Group By">
+                        <filter string="Created On" name="group_created" domain="[]" context="{'group_by':'create_date'}"/>
                         <filter string="Customer" name="group_customer" domain="[]" context="{'group_by':'customer_id'}"/>
                         <filter string="Deadline" name="group_deadline" domain="[]" context="{'group_by':'deadline'}"/>
+                        <filter string="Confirmed On" name="group_confirmed" domain="[]" context="{'group_by':'confirm_date'}"/>
                         <filter string="State" name="group_state" domain="[]" context="{'group_by':'state'}"/>
                     </group>
                 </search>
@@ -77,6 +79,7 @@
                 <field name="theme"/>
                 <field name="customer_id"/>
                 <field name="city"/>
+                <field name="total_price" sum="Total"/>
                 <field name="state"/>
             </tree>
           </field>
