@@ -307,9 +307,9 @@
             <t t-call="famotain.external_layout">
                 <div class="page">
                     <div class="oe_structure"/>
-                    <div class="row mx-0 pt16" style="border-bottom: 1px solid #A9A9A9;">
-                        <div class="col-6 mb16">
-                            <h2 class="pt8">Invoice</h2>
+                    <div class="row mx-0 pt8" style="border-bottom: 1px solid #A9A9A9;">
+                        <div class="col-6 mb16 pt8">
+                            <h2>Invoice</h2>
                         </div>
                         <div class="col-6 mb16 pt8">
                             <div class="row text-right">
@@ -495,12 +495,12 @@
                                         <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" style="max-width: 75px;" alt="Logo"/>
                                     </div>
                                     <div class="col-7 mt8">
-                                        <span t-esc="res_company.name" style="font-size: 19px;"/>
-                                        <span class="text-muted" style="font-size: 14px;"> <span t-esc="res_company.report_header"/></span><br/>
-                                        <span style="font-size: 14px;" t-esc="res_company.phone"/>
+                                        <span t-esc="res_company.name" style="font-size: 20px;"/>
+                                        <span class="text-muted" style="font-size: 15px;"> <span t-esc="res_company.report_header"/></span><br/>
+                                        <span style="font-size: 15px;" t-esc="res_company.phone"/>
                                     </div>
                                     <div class="col-3 text-right">
-                                        <span t-field="o.name" style="font-size: 11px;"/>
+                                        <span t-field="o.name" style="font-size: 12px;"/>
                                     </div>
                                 </div>
                                 <div class="row">
