@@ -38,7 +38,7 @@
                     <filter string="This Year" name="thisyear" domain="[('create_date','&gt;=',time.strftime('%%Y-01-01'))]"/>
 
                     <group string="Group By">
-                        <filter string="Paid On" name="group_paid" domain="[]" context="{'group_by':'paid_date'}"/>
+                        <filter string="Paid On" name="group_paid" domain="[]" context="{'group_by':'payment_date'}"/>
                         <filter string="Created On" name="group_created" domain="[]" context="{'group_by':'create_date'}"/>
                         <filter string="Invoice Type" name="group_invoice_type" domain="[]" context="{'group_by':'invoice_type'}"/>
                         <filter string="Invoice To" name="group_invoice_to" domain="[]" context="{'group_by':'invoice_to'}"/>
