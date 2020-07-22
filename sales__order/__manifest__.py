@@ -11,6 +11,7 @@
     'data': [
         'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
+        'data/ir_cron.xml',
         'views/sales__order_views.xml',
         'views/invoice_views.xml',
         'views/customer_views.xml',

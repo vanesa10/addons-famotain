@@ -49,6 +49,8 @@ $(function(){
             return form.valid();
         },
         onFinished: function (event, currentIndex){
+            $("body").addClass("load");
+            $('.loading').addClass('loading-visible');
             form.submit();
         }
     });

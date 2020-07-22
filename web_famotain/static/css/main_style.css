@@ -151,3 +151,31 @@ img {
 footer{
     margin-top: -200px;
 }
+
+.loading{
+    background: #fff8f0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    margin: auto;
+    display: none;
+}
+
+.loading-visible{
+    display: block;
+}
+
+body.load{
+    overflow: hidden;
+}
+
+.loading-gif{
+    margin: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}

@@ -84,6 +84,12 @@ class SalesOrder(models.Model):
     send_uid = fields.Many2one('res.users', 'Sent By', readonly=True)
     send_date = fields.Datetime('Sent On', readonly=True)
 
+    def reset_sequence(self):
+        sequences = self.env['ir.sequence'].search([('prefix', '=', 'F%(range_year)s%(range_month)s%(range_day)s')], limit=1)
+        sequences.write({'number_next_actual': 1})
+        sequences = self.env['ir.sequence'].search([('prefix', '=', 'INV/%(range_year)s%(range_month)s%(range_day)s/')], limit=1)
+        sequences.write({'number_next_actual': 1})
+
     @api.model
     def create(self, vals_list):
         if vals_list.get('name') != 'New':
@@ -136,33 +142,26 @@ class SalesOrder(models.Model):
             'name': sales_order.name,
             'customer_name': sales_order.customer_id.name,
             'customer_phone': sales_order.phone,
+            'city': sales_order.customer_id.city,
             'deadline': sales_order.deadline.strftime('%d-%b-%Y'),
             'qty_total': sales_order.qty_total,
             'product': sales_order.product,
             'theme': sales_order.theme,
-            'packaging': sales_order.packaging_id.name,
-            'packing': sales_order.packing,
+            # 'packaging': sales_order.packaging_id.name if sales_order.packaging_id else '',
+            # 'packing': sales_order.packing,
             'url': sales_order.url,
-            'custom_request': sales_order.custom_request if sales_order.custom_request else '-',
-            'notes': sales_order.customer_notes if sales_order.customer_notes else '-'
+            # 'custom_request': sales_order.custom_request if sales_order.custom_request else '-',
+            # 'notes': sales_order.customer_notes if sales_order.customer_notes else '-'
         }
         msg = """
-<b>{name} CREATED</b>
-=========================
+<a href="{url}"><b>{name} CREATED</b></a>
+========================
 Name : {customer_name}
 Phone : {customer_phone}
-
+City: {city}
+========================
 Deadline : {deadline}
-Qty : {qty_total}
-Product : {product}
-Theme : {theme}
-Packaging : {packaging}
-Packing : {packing}
-
-Request: {custom_request}
-Notes : {notes}
-=========================
-URL : {url}""".format(**msg_data)
+{qty_total}pcs - {product} - {theme}""".format(**msg_data)
         send_telegram_message(msg)
         return sales_order
 
@@ -266,35 +265,24 @@ URL : {url}""".format(**msg_data)
 
             msg_data = {
                 'name': rec.name,
-                'customer_name': rec.customer_id.name,
-                'customer_phone': rec.phone,
-                'deadline': rec.deadline.strftime('%d-%b-%Y'),
+                # 'customer_name': rec.customer_id.name,
+                # 'customer_phone': rec.phone,
+                # 'city': rec.customer_id.city,
+                # 'deadline': rec.deadline.strftime('%d-%b-%Y'),
                 'qty_total': rec.qty_total,
                 'product': rec.product,
                 'theme': rec.theme,
-                'packaging': rec.packaging_id.name,
-                'packing': rec.packing,
+                # 'packaging': rec.packaging_id.name,
+                # 'packing': rec.packing,
                 'url': rec.url,
-                'custom_request': rec.custom_request if rec.custom_request else '-',
-                'notes': rec.customer_notes if rec.customer_notes else '-'
+                # 'custom_request': rec.custom_request if rec.custom_request else '-',
+                # 'notes': rec.customer_notes if rec.customer_notes else '-'
             }
             msg = """
-<b>{name} EDITED</b>
-=========================
-Name : {customer_name}
-Phone : {customer_phone}
-
-Deadline : {deadline}
-Qty : {qty_total}
-Product : {product}
-Theme : {theme}
-Packaging : {packaging}
-Packing : {packing}
-
-Request: {custom_request}
-Notes : {notes}
-=========================
-URL : {url}""".format(**msg_data)
+<a href="{url}"><b>{name} EDITED</b></a>
+========================
+{qty_total}pcs - {product} - {theme}
+""".format(**msg_data)
         send_telegram_message(msg)
         return True
 
@@ -396,23 +384,18 @@ URL : {url}""".format(**msg_data)
                 rec.confirm_uid = self.env.user.id
                 msg_data = {
                     'name': rec.name,
-                    'customer_name': rec.customer_id.name,
-                    'deadline': rec.deadline.strftime('%d-%b-%Y'),
+                    # 'customer_name': rec.customer_id.name,
+                    # 'deadline': rec.deadline.strftime('%d-%b-%Y'),
                     'qty_total': rec.qty_total,
                     'product': rec.product,
                     'theme': rec.theme,
                     'url': rec.url
                 }
                 msg = """
-<b>{name} CONFIRMED</b>
-=========================
-Name : {customer_name}
-Deadline : {deadline}
-Qty : {qty_total}
-Product : {product}
-Theme : {theme}
-=========================
-URL : {url}""".format(**msg_data)
+<a href="{url}"><b>{name} CONFIRMED</b></a>
+========================
+{qty_total}pcs - {product} - {theme}
+""".format(**msg_data)
                 send_telegram_message(msg)
             else:
                 raise UserError(_('You can only confirm a draft sales order'))

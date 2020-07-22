@@ -499,7 +499,7 @@
                                         <span class="text-muted" style="font-size: 15px;"> <span t-esc="res_company.report_header"/></span><br/>
                                         <span style="font-size: 15px;" t-esc="res_company.phone"/>
                                     </div>
-                                    <div class="col-3 text-right">
+                                    <div class="col-3 text-right pl-0">
                                         <span t-field="o.name" style="font-size: 12px;"/>
                                     </div>
                                 </div>

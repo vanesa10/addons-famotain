@@ -11,6 +11,9 @@
                  <link rel="stylesheet" href="/web_famotain/static/fonts/material-design-iconic-font/css/material-design-iconic-font.min.css"/>
                  <link rel="stylesheet" href="/web_famotain/static/css/style.css"/>
             </t>
+             <div class="loading">
+                 <img src="/web_famotain/static/img/loading.svg" alt="loading" class="loading-gif"/>
+             </div>
              <div class="wrapper">
                  <form id="order-form" name="order-form" method="POST" t-attf-action="{{action}}">
                     <div id="wizard">
@@ -92,6 +95,7 @@
                                 </label>
                                 <input t-if="sales_order" id="input-eventdate" name="input-eventdate" type="date" class="form-control" required="" t-attf-value="{{sales_order.event_date}}"/>
                                 <input t-else="" id="input-eventdate" name="input-eventdate" type="date" class="form-control" required="" />
+                                <small class="form-text text-muted">Jika memungkinkan, kami akan menggunakan jasa pengiriman termurah</small>
                             </div>
                             <div class="form-group">
                                 <label for="input-theme">
@@ -271,7 +275,7 @@
                                 <p class="card-text mb-3">Kirim nomor order diatas ke <a t-attf-href='https://api.whatsapp.com/send?phone={{res_company.phone}}&amp;text={{sales_order.name}}'>Whatsapp</a> kami untuk respons yang lebih cepat</p>
                             </div>
                             <div class="card-footer text-right">
-                                <a t-attf-href='https://api.whatsapp.com/send?phone={{res_company.phone}}&amp;text={{sales_order.name}}' class="btn btn-link">Kirim Whatsapp</a>
+<!--                                <a t-attf-href='https://api.whatsapp.com/send?phone={{res_company.phone}}&amp;text={{sales_order.name}}' class="btn btn-link">Kirim Whatsapp</a>-->
                                 <a t-attf-href='/order/{{sales_order.encryption}}' class="btn btn-secondary">View Order</a>
                                 <a t-attf-href='/order/form/{{sales_order.encryption}}' class="btn btn-primary">Order lagi</a>
                             </div>

@@ -199,6 +199,31 @@ class WebsiteFamotain(http.Controller):
     @http.route('/order/action/create', type='http', methods=['POST'], auth="public", csrf=False)
     def create_order_form(self, **kw):
         try:
+            if kw.get('input-packaging') in "-":
+                kw['input-packing'] = "-"
+                kw['input-packaging'] = ""
+
+            packaging_id = None
+            if kw['input-packaging']:
+                packaging = request.env['famotain.product'].sudo().search(
+                    [('code', '=', kw['input-packaging']), ('product_type', '=', 'package')], limit=1)
+                packaging_id = packaging.id
+
+            # search if order exist
+            sales_order = request.env['sales__order.sales__order'].sudo().search(
+                [('phone', '=', kw.get('input-hp')), ('address', '=', kw.get('input-address')),
+                 ('city', '=', kw.get('input-city')), ('qty_total', '=', kw.get('input-qty')),
+                 ('deadline', '=', kw.get('input-deadline')), ('event_date', '=', kw.get('input-eventdate')),
+                 ('product', '=', kw.get('input-product')), ('theme', '=', kw.get('input-theme')),
+                 ('packaging_id', '=', packaging_id), ('packing', '=', kw.get('input-packing')),
+                 ('label', '=', kw.get('input-label')), ('custom_name', '=', kw.get('input-customname')),
+                 ('additional_text', '=', kw.get('input-additionalwriting')),
+                 ('thanks_card_writing', '=', kw.get('input-thankcardwriting')),
+                 ('custom_request', '=', kw.get('input-customrequest')), ('customer_notes', '=', kw.get('input-note')),
+                 ('add_ons', '=', kw.get('input-addons'))], limit=1)
+            if sales_order:
+                return werkzeug.utils.redirect('/order/form/created/%s' % sales_order.encryption)
+
             # create customer
             data_customer = request.env['sales__order.customer'].sudo().prepare_vals(
                 name=kw.get('input-name'), phone=kw.get('input-hp'), email=kw.get('input-email'),
@@ -210,16 +235,6 @@ class WebsiteFamotain(http.Controller):
                 customer.sudo().write(data_customer)
             else:
                 customer = request.env['sales__order.customer'].sudo().create(data_customer)
-
-            if kw.get('input-packaging') in "-":
-                kw['input-packing'] = "-"
-                kw['input-packaging'] = ""
-
-            packaging_id = None
-            if kw['input-packaging']:
-                packaging = request.env['famotain.product'].sudo().search(
-                    [('code', '=', kw['input-packaging']), ('product_type', '=', 'package')], limit=1)
-                packaging_id = packaging.id
 
             # create sales order
             data_order = request.env['sales__order.sales__order'].sudo().prepare_vals_list(
