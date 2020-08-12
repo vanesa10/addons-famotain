@@ -101,10 +101,10 @@ class SalesOrder(models.Model):
         # 2. Deadline minggu ini blm dikirim
         # 3. URGENT: deadline minggu ini blm di proses
         sales_order = self.env['sales__order.sales__order'].search([
-            ('deadline', '>=', fields.Date.today()), ('deadline', '<', fields.Date.today() + relativedelta(days=7)),
+            ('deadline', '>=', fields.Date.today()), ('deadline', '<', fields.Date.today() + relativedelta(days=10)),
             ('state', '!=', 'cancel')
         ], order="deadline")
-        msg = {'today': "", 'urgent': "", 'this_week': ""}
+        msg = {'today': "", 'urgent': "", 'this_week': "", 'late': ""}
         for rec in sales_order:
             msg_data = {'url': rec.url, 'deadline': rec.deadline.strftime('%d-%b-%Y'), 'name': rec.name}
             if rec.deadline == fields.Date.today():
@@ -113,16 +113,25 @@ class SalesOrder(models.Model):
                 msg['urgent'] += """<a href="{url}">{deadline} - {name}</a>\n""".format(**msg_data)
             else:
                 msg['this_week'] += """<a href="{url}">{deadline} - {name}</a>\n""".format(**msg_data)
+        # 4. TERLAMBAT
+        sales_order = self.env['sales__order.sales__order'].search([
+            ('deadline', '<', fields.Date.today()), ('state', '!=', 'cancel')], order="deadline")
+        for rec in sales_order:
+            msg_data = {'url': rec.url, 'deadline': rec.deadline.strftime('%d-%b-%Y'), 'name': rec.name}
+            msg['late'] += """<a href="{url}">{deadline} - {name}</a>\n""".format(**msg_data)
         notif = """
-<b>DEADLINE TODAY:</b>
+<b>Deadline Today:</b>
 ========================
 {today}
-<b>URGENT:</b>
-========================
-{urgent}
 <b>This Week:</b>
 ========================
 {this_week}
+<b>!URGENT!:</b>
+========================
+{urgent}
+<b>!LATE!:</b>
+========================
+{late}
 """.format(**msg)
         send_telegram_message(notif)
 

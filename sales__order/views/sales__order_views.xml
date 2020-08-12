@@ -101,7 +101,7 @@
           <field name="arch" type="xml">
             <form delete="0" duplicate="0">
                 <header>
-                    <button string="Notif" name="deadline_notification" type="object"/>
+<!--                    <button string="Notif" name="deadline_notification" type="object"/>-->
                     <button string="Preview" name="action_url" type="object"/>
                     <button string="Confirm" name="action_confirm" confirm="Are you sure you want to confirm this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['draft'])]}"/>
                     <button string="Approve" name="action_approve" confirm="Are you sure you want to approve this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['confirm'])]}"/>
