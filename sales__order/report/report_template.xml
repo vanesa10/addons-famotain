@@ -7,7 +7,7 @@
                     <div class="oe_structure"/>
                     <div class="row mx-0 pt16" style="border-bottom: 1px solid #A9A9A9;">
                         <div class="col-6 mb16">
-                            <h2 t-if="o.state=='draft'" class="pt8">Quotation</h2>
+                            <h2 t-if="o.state=='draft' or o.state=='confirm'" class="pt8">Quotation</h2>
                             <h2 t-elif="o.state=='cancel'" class="pt8">Cancelled</h2>
                             <h2 t-else="" class="pt8">Sales Order</h2>
                         </div>
@@ -132,7 +132,7 @@
                         </div>
                     </div>
 
-                    <h4 class="mt32">Price Details<span t-if="o.state=='draft' or o.state=='confirm'">*</span></h4>
+                    <h4 class="mt32">Price Details<span t-if="o.state!='cancel' or o.state!='send'">*</span></h4>
                     <div class="row">
                         <div class="col-12">
                             <table class="table table-sm table-striped table-active">
@@ -154,7 +154,7 @@
 
                     <div class="row mt16">
                         <div class="col-6">
-                            <span t-if="o.state=='draft' or o.state=='confirm'">*shipping price will be added later</span>
+                            <span t-if="o.state!='cancel' or o.state!='send'">*shipping price will be added later</span>
                         </div>
                         <div class="col-6 text-right" style="padding: 0 20px; font-size: 20px;">
                             <strong><span class="lead">Total: </span></strong><span t-field="o.total_price" t-options='{"widget": "monetary"}'/>
@@ -566,9 +566,9 @@
                                 <strong><h4><span t-field="o.name"/></h4></strong>
                             </div>
                             <div class="col-5 text-right mt24">
-                                <span t-if="o.state=='draft'" class="text-warning" t-field="o.state"/>
-                                <span t-if="o.state=='confirm'" class="text-primary" t-field="o.state"/>
-                                <span t-if="o.state=='send'" class="text-success" t-field="o.state"/>
+                                <span t-if="o.state=='draft' or o.state=='confirm'" class="text-warning" t-field="o.state"/>
+                                <span t-if="o.state=='approve'" class="text-primary" t-field="o.state"/>
+                                <span t-if="o.state=='send' or o.state=='on_progress' or o.state=='done'" class="text-success" t-field="o.state"/>
                                 <span t-if="o.state=='cancel'" class="text-danger" t-field="o.state"/>
                                  - <span class="text-danger"><strong>Deadline: </strong><span t-esc="o.deadline.strftime('%a, %d-%b-%Y')"/></span>
                             </div>

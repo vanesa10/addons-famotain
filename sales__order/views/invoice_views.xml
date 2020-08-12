@@ -8,6 +8,7 @@
                     <field name="name"/>
                     <field name="invoice_to"/>
                     <field name="source_document"/>
+                    <field name="amount"/>
                     <separator/>
                     <group>
                         <filter string="All" name="all"/>

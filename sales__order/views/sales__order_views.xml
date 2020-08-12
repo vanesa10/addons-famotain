@@ -7,11 +7,21 @@
                 <search string="Search Sales Order">
                     <field name="name"/>
                     <field name="customer_id"/>
+                    <field name="product"/>
+                    <field name="theme"/>
+                    <field name="add_ons"/>
+                    <field name="additional_text"/>
+                    <field name="thanks_card_writing"/>
+                    <field name="custom_request"/>
+                    <field name="customer_notes"/>
                     <separator/>
                     <group>
                         <filter string="All" name="all"/>
                         <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
                         <filter string="Confirmed" name="confirm" domain="[('state','=','confirm')]"/>
+                        <filter string="Approved" name="approve" domain="[('state','=','approve')]"/>
+                        <filter string="On Progress" name="on_progress" domain="[('state','=','on_progress')]"/>
+                        <filter string="Done" name="done" domain="[('state','=','done')]"/>
                         <filter string="Sent" name="send" domain="[('state','=','send')]"/>
                         <filter string="Cancelled" name="cancel" domain="[('state','=','cancel')]"/>
                     </group>
@@ -67,9 +77,9 @@
           <field name="model">sales__order.sales__order</field>
           <field name="arch" type="xml">
             <tree
-                    decoration-danger="state == 'draft'"
-                    decoration-bf="state == 'confirm'"
-                    decoration-success="state == 'send'"
+                    decoration-danger="state == 'confirm'"
+                    decoration-bf="state == 'approve'"
+                    decoration-success="state == 'send' or state=='on_progress' or state=='done'"
                     decoration-it="state == 'cancel'"
             >
                 <field name="deadline"/>
@@ -91,11 +101,15 @@
           <field name="arch" type="xml">
             <form delete="0" duplicate="0">
                 <header>
+                    <button string="Notif" name="deadline_notification" type="object"/>
                     <button string="Preview" name="action_url" type="object"/>
-                    <button string="Confirm" name="action_confirm" confirm="Are you sure you want to confirm this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'in', ['cancel', 'send', 'confirm'])]}"/>
-                    <button string="Send" name="action_send" confirm="Are you sure you want to close this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'in', ['cancel', 'draft', 'send'])]}"/>
-                    <button string="Cancel" name="action_cancel" type="object" confirm="Are you sure you want to cancel this record?" attrs="{'invisible': [('state', 'in', ['cancel', 'send', 'confirm'])]}"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,send,cancel"/>
+                    <button string="Confirm" name="action_confirm" confirm="Are you sure you want to confirm this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['draft'])]}"/>
+                    <button string="Approve" name="action_approve" confirm="Are you sure you want to approve this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['confirm'])]}"/>
+                    <button string="Process" name="action_on_progress" confirm="Are you sure you want to process this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['approve'])]}"/>
+                    <button string="Done" name="action_done" confirm="Are you sure you want to process this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['on_progress'])]}"/>
+                    <button string="Send" name="action_send" confirm="Are you sure you want to close this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'in', ['cancel', 'draft', 'send', 'confirm'])]}"/>
+                    <button string="Cancel" name="action_cancel" type="object" confirm="Are you sure you want to cancel this record?" attrs="{'invisible': [('state', 'not in', ['draft'])]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,approve,send,cancel"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -135,15 +149,16 @@
                             <field name="product_order_ids"
                                    mode="tree,kanban"
                                    context="{'default_qty': qty_total, 'default_sales_order_id': id}">
-                                <tree editable="bottom" delete="1">
+                                <tree default_order="product_type desc" editable="bottom" delete="1">
                                     <field name="product_type" invisible="1"/>
                                     <field name="qty"/>
                                     <field name="product_id" default_focus="1"/>
-                                    <field name="design_image" widget="image" class="oe_avatar" options='{"preview_image": "design_image_small"}'/>
-                                    <field name="design_image_2" widget="image" class="oe_avatar" options='{"preview_image": "design_image_2_small"}'/>
+<!--                                    <field name="design_image" widget="image" class="oe_avatar" options='{"preview_image": "design_image_small"}'/>-->
+<!--                                    <field name="design_image_2" widget="image" class="oe_avatar" options='{"preview_image": "design_image_2_small"}'/>-->
                                     <field name="fabric_color"/>
                                     <field name="ribbon_color"/>
                                     <field name="currency_id" invisible="1"/>
+                                    <field name="product_price"/>
                                     <field name="price" sum="Price"/>
                                     <field name="state"/>
                                     <button name="open_record" type="object" class="oe_highlight" icon="fa-asterisk text-success"/>
@@ -173,7 +188,7 @@
                         </page>
                         <page string="Prices" name="prices">
                             <field name="price_line_ids" context="{'default_sales_order_id': id}" mode="tree,kanban">
-                                <tree editable="bottom" delete="1">
+                                <tree default_order="prices_type desc" editable="bottom" delete="1">
                                     <field name="prices_type" invisible="1"/>
                                     <field name="qty" attrs="{'readonly': [('prices_type', '=', 'product')]}"/>
                                     <field name="description"/>
@@ -356,7 +371,7 @@
                                                 <span><t t-esc="record.name.value"/> <t t-esc="record.deadline.value"/></span>
                                             </div>
                                             <div class="oe_kanban_bottom_right">
-                                                <field name="state" widget="label_selection" options="{'classes': {'draft': 'warning', 'confirm': 'info', 'send': 'success', 'cancel': 'default'}}"/>
+                                                <field name="state" widget="label_selection" options="{'classes': {'draft': 'warning', 'confirm': 'warning', 'approve': 'info', 'on_progress': 'success', 'done':'done', 'send': 'success', 'cancel': 'default'}}"/>
                                             </div>
                                         </div>
                                     </div>
@@ -401,6 +416,48 @@
                 }
             </field>
         </record>
+        <record model="ir.actions.act_window" id="sales__order.sales__order_action_approve">
+            <field name="name">Sales Order</field>
+            <field name="res_model">sales__order.sales__order</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="sales__order.sales__order_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'sales__order.sales__order_form',
+                    'tree_view_ref': 'sales__order.sales__order_tree',
+                    'kanban_view_ref': 'sales__order.sales__order_kanban',
+                    'search_default_approve': 1
+                }
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="sales__order.sales__order_action_on_progress">
+            <field name="name">Sales Order</field>
+            <field name="res_model">sales__order.sales__order</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="sales__order.sales__order_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'sales__order.sales__order_form',
+                    'tree_view_ref': 'sales__order.sales__order_tree',
+                    'kanban_view_ref': 'sales__order.sales__order_kanban',
+                    'search_default_on_progress': 1
+                }
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="sales__order.sales__order_action_done">
+            <field name="name">Sales Order</field>
+            <field name="res_model">sales__order.sales__order</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="sales__order.sales__order_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'sales__order.sales__order_form',
+                    'tree_view_ref': 'sales__order.sales__order_tree',
+                    'kanban_view_ref': 'sales__order.sales__order_kanban',
+                    'search_default_done': 1
+                }
+            </field>
+        </record>
         <record model="ir.actions.act_window" id="sales__order.sales__order_action_send">
             <field name="name">Sales Order</field>
             <field name="res_model">sales__order.sales__order</field>
@@ -437,7 +494,10 @@
         <menuitem name="All" id="sales__order.sales__order_submenu_all" parent="sales__order.sales__order_menu" action="sales__order.sales__order_action_all" sequence="1"/>
         <menuitem name="Draft" id="sales__order.sales__order_submenu_draft" parent="sales__order.sales__order_menu" action="sales__order.sales__order_action_draft" sequence="2"/>
         <menuitem name="Confirmed" id="sales__order.sales__order_submenu_confirm" parent="sales__order.sales__order_menu" action="sales__order.sales__order_action_confirm" sequence="3"/>
-        <menuitem name="Sent" id="sales__order.sales__order_submenu_send" parent="sales__order.sales__order_menu" action="sales__order.sales__order_action_send" sequence="4"/>
-        <menuitem name="Cancelled" id="sales__order.sales__order_submenu_cancel" parent="sales__order.sales__order_menu" action="sales__order.sales__order_action_cancel" sequence="5"/>
+        <menuitem name="Approved" id="sales__order.sales__order_submenu_approve" parent="sales__order.sales__order_menu" action="sales__order.sales__order_action_approve" sequence="4"/>
+        <menuitem name="On Progress" id="sales__order.sales__order_submenu_on_progress" parent="sales__order.sales__order_menu" action="sales__order.sales__order_action_on_progress" sequence="5"/>
+        <menuitem name="Done" id="sales__order.sales__order_submenu_done" parent="sales__order.sales__order_menu" action="sales__order.sales__order_action_done" sequence="6"/>
+        <menuitem name="Sent" id="sales__order.sales__order_submenu_send" parent="sales__order.sales__order_menu" action="sales__order.sales__order_action_send" sequence="7"/>
+        <menuitem name="Cancelled" id="sales__order.sales__order_submenu_cancel" parent="sales__order.sales__order_menu" action="sales__order.sales__order_action_cancel" sequence="8"/>
     </data>
 </odoo>

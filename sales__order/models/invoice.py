@@ -119,6 +119,10 @@ class Invoice(models.Model):
                 self.sales_order_id.compute_invoice()
                 msg = "{} ({}) - Rp. {:,} paid".format(self.name, self.invoice_type, self.amount)
                 self.sales_order_id.message_post(body=msg)
+                # buat auto confirm kalau dp di draft sales order
+                if self.invoice_type == 'down_payment':
+                    if self.sales_order_id.state == 'draft':
+                        self.sales_order_id.action_confirm()
         else:
             raise UserError(_("You can only pay an open invoice"))
 

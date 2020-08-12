@@ -10,7 +10,7 @@ PRODUCT_TYPE_LIST = [('product', 'Product'), ('package', 'Package'), ('label', '
 
 class Product(models.Model):
     _name = 'famotain.product'
-    _order = 'name asc'
+    _order = 'product_type, name asc'
     _description = 'Famotain Products'
     _rec_name = 'display_name'
 
@@ -23,6 +23,8 @@ class Product(models.Model):
     display_name = fields.Char('Name', readonly=True, compute='_compute_name', store=True, index=True)
     code = fields.Char('Code', required=True, index=True)
     description = fields.Char('Description')
+
+    design_Size_ids = fields.One2many('famotain.design_size', 'product_id', 'Design Sizes')
 
     image = fields.Binary("Photo", default=_default_image, attachment=True)
     image_medium = fields.Binary("Medium-sized photo", attachment=True)

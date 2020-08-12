@@ -328,8 +328,9 @@
             <div class="container pb-5">
                 <div class="row my-5">
                     <div class="col-12 text-center">
-                        <span t-if="sales_order.state == 'draft'" class="badge badge-pill badge-info">Draft</span>
-                        <span t-if="sales_order.state == 'confirm'" class="badge badge-pill badge-primary">Confirmed</span>
+                        <span t-if="sales_order.state == 'draft' or sales_order.state == 'confirm'" class="badge badge-pill badge-info">Draft</span>
+                        <span t-if="sales_order.state == 'approve'" class="badge badge-pill badge-primary">Confirmed</span>
+                        <span t-if="sales_order.state == 'on_progress' or sales_order.state == 'done'" class="badge badge-pill badge-primary">On Progress</span>
                         <span t-if="sales_order.state == 'send'" class="badge badge-pill badge-success">Sent</span>
                         <span t-if="sales_order.state == 'cancel'" class="badge badge-pill badge-light">Cancelled</span>
                         <h1 class="font-weight-bold"><t t-esc="sales_order.name"/></h1>
@@ -543,18 +544,23 @@
                             </div>
                         </t>
                     </div>
-                    <t t-if="sales_order.state == 'draft'">
+                    <t t-if="sales_order.state == 'draft' or sales_order.state == 'confirm'">
                         <div class="card-footer text-right">
                             <a class="btn btn-secondary" t-attf-href='/order/{{sales_order.encryption}}/edit'>Edit</a>
-                            <t t-if="design">
+                            <t t-if="sales_order.state == 'confirm' and design">
                                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmModal">Confirm</button>
                             </t>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="card-footer text-right">
+                            <a t-attf-href='/order/form/{{sales_order.encryption}}' class="btn btn-primary">Order lagi</a>
                         </div>
                     </t>
                 </div>
             </div>
             <!-- Modal -->
-            <t t-if="sales_order.state == 'draft' and design">
+            <t t-if="sales_order.state == 'confirm' and design">
                 <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">

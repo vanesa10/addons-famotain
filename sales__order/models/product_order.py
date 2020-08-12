@@ -12,7 +12,7 @@ _logger = logging.getLogger(__name__)
 class ProductOrder(models.Model):
     _name = 'sales__order.product_order'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'id asc'
+    _order = 'product_type desc'
 
     @api.model
     def _default_image(self):
@@ -27,6 +27,8 @@ class ProductOrder(models.Model):
                                  domain=[('active', '=', True)],
                                  states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]},
                                  track_visibility='onchange')
+    product_price = fields.Monetary('Price', related="product_id.price")
+
     qty = fields.Integer('Qty', default=1, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]}, track_visibility='onchange')
     fabric_color = fields.Char('Description', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]}, track_visibility='onchange')
     ribbon_color = fields.Char('Ribbon Color', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
@@ -37,7 +39,7 @@ class ProductOrder(models.Model):
     design_image_3 = fields.Binary('Design Image 3', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]}, track_visibility='onchange')
     design_image_3_small = fields.Binary("Small-sized Design Image 3", attachment=True, readonly=True)
 
-    price = fields.Monetary('Price', readonly=True, compute='_compute_price', store=True)
+    price = fields.Monetary('Total', readonly=True, compute='_compute_price', store=True)
     currency_id = fields.Many2one('res.currency', 'Currency', readonly=True, default=lambda self: self.env.user.company_id.currency_id)
 
     state = fields.Selection([('draft', 'Draft'), ('confirm', 'Confirmed'), ('on_progress', 'On Progress'), ('sent', 'Sent'), ('cancel', 'Cancelled')], 'State', required=True, default='draft', readonly=True, track_visibility='onchange')
@@ -66,10 +68,12 @@ class ProductOrder(models.Model):
 
     @api.model
     def create(self, vals):
+        image = False
         if 'design_image' in vals.keys() and vals['design_image']:
             vals.update({
                 'design_image_small': tools.image_resize_image_medium(vals['design_image'].encode('ascii'))
             })
+            image = True
         if 'design_image_2' in vals.keys() and vals['design_image_2']:
             vals.update({
                 'design_image_2_small': tools.image_resize_image_medium(vals['design_image_2'].encode('ascii'))
@@ -81,6 +85,8 @@ class ProductOrder(models.Model):
         product_order = super(ProductOrder, self).create(vals)
         price_line = product_order.create_price_line()
         product_order.price_line_id = price_line.id
+        if image and product_order.product_id.product_type in ['product'] and not product_order.sales_order_id.image:
+            product_order.sales_order_id.image = vals['design_image']
         msg = "{}pcs {} Rp. {:,} product order created".format(product_order.qty, product_order.product_id.display_name, product_order.price)
         product_order.sales_order_id.message_post(body=msg)
         return product_order
@@ -91,6 +97,8 @@ class ProductOrder(models.Model):
             vals.update({
                 'design_image_small': tools.image_resize_image_medium(vals['design_image'].encode('ascii'))
             })
+            if self.product_id.product_type in ['product'] and not self.sales_order_id.image:
+                self.sales_order_id.image = vals['design_image']
         if 'design_image_2' in vals.keys() and vals['design_image_2']:
             vals.update({
                 'design_image_2_small': tools.image_resize_image_medium(vals['design_image_2'].encode('ascii'))
@@ -158,21 +166,17 @@ class ProductOrder(models.Model):
                 rec.state = 'cancel'
                 rec.cancel_date = fields.Datetime.now()
                 rec.cancel_uid = self.env.user.id
-            else:
-                raise UserError(_("You can't cancel this sales order"))
 
     @api.multi
     def action_send(self):
         for rec in self:
-            if rec.state in ['confirm', 'on_progress']:
+            if rec.state in ['draft', 'confirm', 'on_progress']:
                 rec.state = 'sent'
                 rec.send_date = fields.Datetime.now()
                 rec.send_uid = self.env.user.id
                 # rec.design_image = tools.image_resize_image_big(rec.design_image)
                 # rec.design_image_2 = tools.image_resize_image_big(rec.design_image_2)
                 # rec.design_image_3 = tools.image_resize_image_big(rec.design_image_3)
-            else:
-                raise UserError(_("You can only send a confirmed sales order"))
 
     def open_record(self):
         rec_id = self.id

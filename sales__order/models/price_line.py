@@ -11,7 +11,7 @@ PRICES_LIST = [('product', 'Product'), ('charge', 'Charge'), ('discount', 'Disco
 
 class PriceLine(models.Model):
     _name = 'sales__order.price_line'
-    _order = 'id asc'
+    _order = 'prices_type desc'
 
     prices_type = fields.Selection(PRICES_LIST, 'Prices Type', required=True, readonly=True, states={'draft': [('readonly', False)]})
     description = fields.Char('Name', store=True, compute="_compute_description", readonly=True)

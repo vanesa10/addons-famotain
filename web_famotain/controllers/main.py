@@ -160,7 +160,7 @@ class WebsiteFamotain(http.Controller):
                 }
                 _logger.error(json.dumps(error))
                 return request.render('web_famotain.error_layout', error)
-            if sales_order.state != 'draft':
+            if sales_order.state != 'draft' and sales_order.state != 'confirm':
                 error = {
                     'name': "Your order can't be edited",
                     'message': 'Contact our admin to edit this order.'
@@ -271,7 +271,7 @@ class WebsiteFamotain(http.Controller):
                 return request.render('web_famotain.error_layout', error)
 
             # check if sales order editable (draft)
-            if sales_order.state != 'draft':
+            if sales_order.state != 'draft' and sales_order.state != 'confirm':
                 error = {
                     'name': "Your order can't be edited",
                     'message': 'Contact our admin to edit this order.'
@@ -331,14 +331,14 @@ class WebsiteFamotain(http.Controller):
                 return request.render('web_famotain.error_layout', error)
 
             # check if sales order editable (draft)
-            if sales_order.state != 'draft':
+            if sales_order.state != 'confirm':
                 error = {
                     'name': "Your order can't be confirmed",
                     'message': 'Contact our admin to confirm this order.'
                 }
                 _logger.error(json.dumps(error))
                 return request.render('web_famotain.error_layout', error)
-            sales_order.action_confirm()
+            sales_order.action_approve()
             return werkzeug.utils.redirect('/order/form/confirmed/%s' % sales_order.encryption)
         except Exception as e:
             se = _serialize_exception(e)

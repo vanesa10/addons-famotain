@@ -5,6 +5,7 @@ from odoo.exceptions import UserError
 from odoo import tools
 from ...famotain.models.telegram_bot import send_telegram_message
 from ...famotain.models.encryption import encrypt
+from dateutil.relativedelta import relativedelta
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -25,43 +26,43 @@ class SalesOrder(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'id desc'
 
-    image = fields.Binary("Image", attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]})
+    image = fields.Binary("Image", attachment=True, readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]})
     image_medium = fields.Binary("Medium-sized Image", attachment=True, readonly=True)
     image_small = fields.Binary("Small-sized Image", attachment=True, readonly=True)
 
     name = fields.Char('Sales Order', default='New', readonly=True, index=True, tracking=True)
-    deadline = fields.Date('Deadline', default=lambda self: fields.Date.today(), readonly=True, states={'draft': [('readonly', False)]}, track_visibility='onchange')
-    event_date = fields.Date('Event Date', readonly=True, states={'draft': [('readonly', False)]}, track_visibility='onchange')
+    deadline = fields.Date('Deadline', default=lambda self: fields.Date.today(), readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]}, track_visibility='onchange')
+    event_date = fields.Date('Event Date', readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]}, track_visibility='onchange')
 
     customer_id = fields.Many2one('sales__order.customer', 'Customer', required=True, domain=[('active', '=', True)], readonly=True, states={'draft': [('readonly', False)]}, track_visibility='onchange')
     city = fields.Char('City', related="customer_id.city")
     phone = fields.Char('Phone', related="customer_id.phone")
     address = fields.Text('Address', related="customer_id.address")
 
-    product_order_ids = fields.One2many('sales__order.product_order', 'sales_order_id', 'Product Orders', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]})
-    price_line_ids = fields.One2many('sales__order.price_line', 'sales_order_id', 'Prices', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]})
-    invoice_ids = fields.One2many('sales__order.invoice', 'sales_order_id', 'Invoices', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]})
+    product_order_ids = fields.One2many('sales__order.product_order', 'sales_order_id', 'Product Orders', readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]})
+    price_line_ids = fields.One2many('sales__order.price_line', 'sales_order_id', 'Prices', readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]})
+    invoice_ids = fields.One2many('sales__order.invoice', 'sales_order_id', 'Invoices', readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]})
 
-    qty_total = fields.Integer('Qty Total', readonly=True, required=True, states={'draft': [('readonly', False)]}, track_visibility='onchange')
-    product = fields.Char('Product', readonly=True, states={'draft': [('readonly', False)]}, track_visibility='onchange')
-    add_ons = fields.Char('Add Ons', readonly=True, states={'draft': [('readonly', False)]}, track_visibility='onchange')
-    theme = fields.Char('Theme', readonly=True, states={'draft': [('readonly', False)]}, track_visibility='onchange')
-    additional_text = fields.Char('Additional Text', help="Penulisan pada design tas", readonly=True, states={'draft': [('readonly', False)]}, track_visibility='onchange')
-    thanks_card_writing = fields.Char('Thanks Card Writing', help="Penulisan pada thank you card", readonly=True, states={'draft': [('readonly', False)]}, track_visibility='onchange')
-    custom_name = fields.Selection([('yes', 'Yes'), ('no', 'No')], 'Custom Name', default='no', readonly=True, states={'draft': [('readonly', False)]}, track_visibility='onchange')
-    label = fields.Selection([('yes', 'Yes'), ('no', 'No')], 'Label', default='no', readonly=True, states={'draft': [('readonly', False)]}, track_visibility='onchange')
+    qty_total = fields.Integer('Qty Total', readonly=False, required=True, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]}, track_visibility='onchange')
+    product = fields.Char('Product', readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]}, track_visibility='onchange')
+    add_ons = fields.Char('Add Ons', readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]}, track_visibility='onchange')
+    theme = fields.Char('Theme', readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]}, track_visibility='onchange')
+    additional_text = fields.Char('Additional Text', help="Penulisan pada design tas", readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]}, track_visibility='onchange')
+    thanks_card_writing = fields.Char('Thanks Card Writing', help="Penulisan pada thank you card", readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]}, track_visibility='onchange')
+    custom_name = fields.Selection([('yes', 'Yes'), ('no', 'No')], 'Custom Name', default='no', readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]}, track_visibility='onchange')
+    label = fields.Selection([('yes', 'Yes'), ('no', 'No')], 'Label', default='no', readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]}, track_visibility='onchange')
 
-    packaging_id = fields.Many2one('famotain.product', 'Packaging', domain=[('active', '=', True), ('product_type', '=', 'package')], readonly=True, states={'draft': [('readonly', False)]}, track_visibility='onchange')
-    packing = fields.Selection(PACKING_LIST, 'Packing', readonly=True, states={'draft': [('readonly', False)]}, track_visibility='onchange', default='-')
+    packaging_id = fields.Many2one('famotain.product', 'Packaging', domain=[('active', '=', True), ('product_type', '=', 'package')], readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]}, track_visibility='onchange')
+    packing = fields.Selection(PACKING_LIST, 'Packing', readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]}, track_visibility='onchange', default='-')
 
-    custom_request = fields.Text('Custom Request', readonly=True, states={'draft': [('readonly', False)]}, track_visibility='onchange')
-    customer_notes = fields.Text('Customer Notes', readonly=True, states={'draft': [('readonly', False)]}, track_visibility='onchange')
+    custom_request = fields.Text('Custom Request', readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]}, track_visibility='onchange')
+    customer_notes = fields.Text('Customer Notes', readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]}, track_visibility='onchange')
 
-    courier_id = fields.Many2one('famotain.courier_shipment', 'Courier', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]})
-    qty_packaging = fields.Integer('Qty Packaging', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]})
-    packaging_type = fields.Selection([('kardus', 'Kardus'), ('karung', 'Karung'), ('plastik', 'Plastik')], 'Packaging Type', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]})
-    date_of_shipment = fields.Date('Date of Shipment', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]})
-    shipment_receipt_number = fields.Char('Shipment Receipt Number', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]})
+    courier_id = fields.Many2one('famotain.courier_shipment', 'Courier', readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]})
+    qty_packaging = fields.Integer('Qty Packaging', readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]})
+    packaging_type = fields.Selection([('kardus', 'Kardus'), ('karung', 'Karung'), ('plastik', 'Plastik')], 'Packaging Type', readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]})
+    date_of_shipment = fields.Date('Date of Shipment', readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]})
+    shipment_receipt_number = fields.Char('Shipment Receipt Number', readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]})
 
     total_price = fields.Monetary('Total Amount', compute='_compute_total_price', readonly=True, store=True, track_visibility='onchange')
     paid = fields.Monetary('Paid', readonly=True, track_visibility='onchange')
@@ -72,6 +73,9 @@ class SalesOrder(models.Model):
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirm', 'Confirmed'),
+        ('approve', 'Approved'),
+        ('on_progress', 'On Progress'),
+        ('done', 'Done'),
         ('send', 'Sent'),
         ('cancel', 'Cancelled')], 'State', required=True, default='draft', readonly=True, track_visibility='onchange')
     currency_id = fields.Many2one('res.currency', 'Currency', readonly=True, default=lambda self: self.env.user.company_id.currency_id)
@@ -79,6 +83,8 @@ class SalesOrder(models.Model):
 
     confirm_uid = fields.Many2one('res.users', 'Confirmed By', readonly=True)
     confirm_date = fields.Datetime('Confirmed On', readonly=True)
+    approve_uid = fields.Many2one('res.users', 'Approved By', readonly=True)
+    approve_date = fields.Datetime('Approved On', readonly=True)
     cancel_uid = fields.Many2one('res.users', 'Cancelled By', readonly=True)
     cancel_date = fields.Datetime('Cancelled On', readonly=True)
     send_uid = fields.Many2one('res.users', 'Sent By', readonly=True)
@@ -89,6 +95,36 @@ class SalesOrder(models.Model):
         sequences.write({'number_next_actual': 1})
         sequences = self.env['ir.sequence'].search([('prefix', '=', 'INV/%(range_year)s%(range_month)s%(range_day)s/')], limit=1)
         sequences.write({'number_next_actual': 1})
+
+    def deadline_notification(self):
+        # 1. Deadline hari ini blm dikirim
+        # 2. Deadline minggu ini blm dikirim
+        # 3. URGENT: deadline minggu ini blm di proses
+        sales_order = self.env['sales__order.sales__order'].search([
+            ('deadline', '>=', fields.Date.today()), ('deadline', '<', fields.Date.today() + relativedelta(days=7)),
+            ('state', '!=', 'cancel')
+        ], order="deadline")
+        msg = {'today': "", 'urgent': "", 'this_week': ""}
+        for rec in sales_order:
+            msg_data = {'url': rec.url, 'deadline': rec.deadline.strftime('%d-%b-%Y'), 'name': rec.name}
+            if rec.deadline == fields.Date.today():
+                msg['today'] += """<a href="{url}">{deadline} - {name}</a>\n""".format(**msg_data)
+            elif rec.state not in ['send', 'on_progress', 'done']:
+                msg['urgent'] += """<a href="{url}">{deadline} - {name}</a>\n""".format(**msg_data)
+            else:
+                msg['this_week'] += """<a href="{url}">{deadline} - {name}</a>\n""".format(**msg_data)
+        notif = """
+<b>DEADLINE TODAY:</b>
+========================
+{today}
+<b>URGENT:</b>
+========================
+{urgent}
+<b>This Week:</b>
+========================
+{this_week}
+""".format(**msg)
+        send_telegram_message(notif)
 
     @api.model
     def create(self, vals_list):
@@ -374,11 +410,6 @@ Deadline : {deadline}
     def action_confirm(self):
         for rec in self:
             if rec.state in ['draft']:
-                # DONE: confirm all product order and package order
-                for product_order in rec.product_order_ids:
-                    product_order.action_confirm()
-                for price_line in rec.price_line_ids:
-                    price_line.action_confirm()
                 rec.state = 'confirm'
                 rec.confirm_date = fields.Datetime.now()
                 rec.confirm_uid = self.env.user.id
@@ -401,9 +432,39 @@ Deadline : {deadline}
                 raise UserError(_('You can only confirm a draft sales order'))
 
     @api.multi
+    def action_approve(self):
+        for rec in self:
+            if rec.state in ['confirm']:
+                # DONE: confirm all product order and package order
+                for product_order in rec.product_order_ids:
+                    product_order.action_confirm()
+                for price_line in rec.price_line_ids:
+                    price_line.action_confirm()
+                rec.state = 'approve'
+                rec.approve_date = fields.Datetime.now()
+                rec.approve_uid = self.env.user.id
+                msg_data = {
+                    'name': rec.name,
+                    # 'customer_name': rec.customer_id.name,
+                    # 'deadline': rec.deadline.strftime('%d-%b-%Y'),
+                    'qty_total': rec.qty_total,
+                    'product': rec.product,
+                    'theme': rec.theme,
+                    'url': rec.url
+                }
+                msg = """
+<a href="{url}"><b>{name} APPROVED</b></a>
+========================
+{qty_total}pcs - {product} - {theme}
+""".format(**msg_data)
+                send_telegram_message(msg)
+            else:
+                raise UserError(_('You can only approve a confirmed sales order'))
+
+    @api.multi
     def action_cancel(self):
         for rec in self:
-            if rec.state in ['draft', 'confirm']:
+            if rec.state in ['draft']:
                 # DONE: cancel all product order and package order
                 for product_order in rec.product_order_ids:
                     product_order.action_cancel()
@@ -418,8 +479,8 @@ Deadline : {deadline}
     @api.multi
     def action_send(self):
         for rec in self:
-            if rec.state not in 'confirm':
-                raise UserError(_("You can only send a confirmed sales order"))
+            if rec.state not in ['approve', 'on_progress', 'done']:
+                raise UserError(_("You can only send an approved sales order"))
             #DONE: ga bisa di send sebelum paid
             if rec.remaining != 0:
                 raise UserError(_("This sales order isn't fully paid"))
@@ -429,6 +490,20 @@ Deadline : {deadline}
             rec.state = 'send'
             rec.send_date = fields.Datetime.now()
             rec.send_uid = self.env.user.id
+
+    @api.multi
+    def action_on_progress(self):
+        for rec in self:
+            if rec.state not in 'approve':
+                raise UserError(_("You can only process an approved sales order"))
+            rec.state = 'on_progress'
+
+    @api.multi
+    def action_done(self):
+        for rec in self:
+            if rec.state not in ['approve', 'on_progress']:
+                raise UserError(_("You can only process an approved sales order"))
+            rec.state = 'done'
 
     def action_url(self):
         return {
