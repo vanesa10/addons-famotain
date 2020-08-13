@@ -9,6 +9,26 @@
             <field name="context">{'search_default_customer_id': active_id}</field>
         </record>
 
+        <record model="ir.ui.view" id="sales__order.customer_search">
+            <field name="name">Customer Search</field>
+            <field name="model">sales__order.customer</field>
+            <field name="arch" type="xml">
+                <search string="Search Customer">
+                    <field name="name"/>
+                    <field name="phone"/>
+                    <field name="city"/>
+                    <field name="address"/>
+                    <field name="email"/>
+
+                    <group string="Group By">
+                        <filter string="Contact By" name="group_contact_by" domain="[]" context="{'group_by':'contact_by'}"/>
+                        <filter string="City" name="group_city" domain="[]" context="{'group_by':'city'}"/>
+                        <filter string="Zip Code" name="group_zip_code" domain="[]" context="{'group_by':'zip_code'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
         <record id="sales__order.customer_tree" model="ir.ui.view">
             <field name="name">Customer tree</field>
             <field name="model">sales__order.customer</field>

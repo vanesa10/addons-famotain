@@ -1,6 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <record model="ir.ui.view" id="sales__order.product_order_search">
+            <field name="name">Product Order Search</field>
+            <field name="model">sales__order.product_order</field>
+            <field name="arch" type="xml">
+                <search string="Search Product Order">
+                    <field name="sales_order_id"/>
+                    <field name="product_id"/>
+                    <field name="product_type"/>
+
+                    <group string="Group By">
+                        <filter string="Sales Order" name="group_sales_order" domain="[]" context="{'group_by':'sales_order_id'}"/>
+                        <filter string="Product" name="group_product" domain="[]" context="{'group_by':'product_id'}"/>
+                        <filter string="Product Type" name="group_product_type" domain="[]" context="{'group_by':'product_type'}"/>
+                        <filter string="State" name="group_state" domain="[]" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="sales__order.product_order__tree" model="ir.ui.view">
+            <field name="name">Product Order tree</field>
+            <field name="model">sales__order.product_order</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="sales_order_id"/>
+<!--                    <field name="product_type"/>-->
+                    <field name="product_id"/>
+                    <field name="qty"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="product_price"/>
+                    <field name="price"/>
+                    <field name="state"/>
+<!--                    <button name="open_record" type="object" class="oe_highlight" icon="fa-asterisk text-success"/>-->
+                </tree>
+            </field>
+        </record>
+
         <record id="sales__order.product_order_form" model="ir.ui.view">
             <field name="name">Product Order Form</field>
             <field name="model">sales__order.product_order</field>
@@ -116,5 +153,34 @@
                 </kanban>
           </field>
         </record>
+
+        <record id="act_product_product_order" model="ir.actions.act_window">
+            <field name="name">Product Order</field>
+            <field name="res_model">sales__order.product_order</field>
+<!--            <field name="view_type">form</field>-->
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="context">{'search_default_product_id': active_id}</field>
+        </record>
+
+        <record model="ir.ui.view" id="sales__order.product_order_product_inherit_views">
+            <field name="name">Product Order Product Inherit</field>
+            <field name="model">famotain.product</field>
+            <field name="inherit_id" ref="famotain.product_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@class='oe_button_box']"  position="inside">
+                    <button class="oe_stat_button" type="action" name="%(sales__order.act_product_product_order)d" icon="fa-usd">
+                        <field string="Orders" name="product_order_count" widget="statinfo"/>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="sales__order.product_order_action_window">
+          <field name="name">Product Order</field>
+          <field name="res_model">sales__order.product_order</field>
+          <field name="view_mode">tree,kanban,form</field>
+        </record>
+
+        <menuitem name="Product Order" id="sales__order.product_order_menu" parent="sales__order.menu_root" action="sales__order.product_order_action_window" sequence="4"/>
     </data>
 </odoo>

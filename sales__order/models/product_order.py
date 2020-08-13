@@ -193,3 +193,17 @@ class ProductOrder(models.Model):
             'context': {},
             'target': 'current',
         }
+
+
+class Product(models.Model):
+    _inherit = 'famotain.product'
+
+    product_order_ids = fields.One2many('sales__order.product_order', 'product_id', string='Product Orders')
+    product_order_count = fields.Integer(compute='_compute_product_order_count', string='Product Order Count')
+
+    def _compute_product_order_count(self):
+        if self.product_order_ids:
+            product_order_count = 0
+            for r in self.product_order_ids:
+                product_order_count += 1
+            self.product_order_count = product_order_count

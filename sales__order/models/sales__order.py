@@ -115,7 +115,7 @@ class SalesOrder(models.Model):
                 msg['this_week'] += """<a href="{url}">{deadline} - {name}</a>\n""".format(**msg_data)
         # 4. TERLAMBAT
         sales_order = self.env['sales__order.sales__order'].search([
-            ('deadline', '<', fields.Date.today()), ('state', '!=', 'cancel')], order="deadline")
+            ('deadline', '<', fields.Date.today()), ('state', '!=', 'cancel'), ('state', '!=', 'send')], order="deadline")
         for rec in sales_order:
             msg_data = {'url': rec.url, 'deadline': rec.deadline.strftime('%d-%b-%Y'), 'name': rec.name}
             msg['late'] += """<a href="{url}">{deadline} - {name}</a>\n""".format(**msg_data)
