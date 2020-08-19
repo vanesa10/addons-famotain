@@ -102,14 +102,14 @@ class SalesOrder(models.Model):
         # 3. URGENT: deadline minggu ini blm di proses
         sales_order = self.env['sales__order.sales__order'].search([
             ('deadline', '>=', fields.Date.today()), ('deadline', '<', fields.Date.today() + relativedelta(days=10)),
-            ('state', '!=', 'cancel')
+            ('state', '!=', 'cancel'), ('state', '!=', 'send')
         ], order="deadline")
         msg = {'today': "", 'urgent': "", 'this_week': "", 'late': ""}
         for rec in sales_order:
             msg_data = {'url': rec.url, 'deadline': rec.deadline.strftime('%d-%b-%Y'), 'name': rec.name}
             if rec.deadline == fields.Date.today():
                 msg['today'] += """<a href="{url}">{deadline} - {name}</a>\n""".format(**msg_data)
-            elif rec.state not in ['send', 'on_progress', 'done']:
+            elif rec.state not in ['on_progress', 'done']:
                 msg['urgent'] += """<a href="{url}">{deadline} - {name}</a>\n""".format(**msg_data)
             else:
                 msg['this_week'] += """<a href="{url}">{deadline} - {name}</a>\n""".format(**msg_data)

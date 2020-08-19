@@ -493,17 +493,17 @@
                                                     <td><span t-field="product_order.product_id.display_name"/></td>
                                                     <td><span t-field="product_order.fabric_color"/></td>
                                                     <td class="text-center">
-                                                        <a class="chocolat-image" t-attf-href="data:image/*;base64,{{product_order.design_image}}" title="Design" t-if="(product_order.product_id.product_type=='product') and (product_order.design_image)">
+                                                        <a class="chocolat-image" t-attf-href="data:image/*;base64,{{product_order.design_image}}" title="Design" t-if="product_order.design_image">
                                                             <img t-attf-src="data:image/*;base64,{{product_order.design_image_small}}" style="max-width:200px; max-height: 150px"/>
                                                         </a>
                                                     </td>
                                                     <td t-if="design_2"  class="text-center">
-                                                        <a class="chocolat-image" t-attf-href="data:image/*;base64,{{product_order.design_image_2}}" title="Design Side A" t-if="(product_order.product_id.product_type=='product') and (product_order.design_image_2)">
+                                                        <a class="chocolat-image" t-attf-href="data:image/*;base64,{{product_order.design_image_2}}" title="Design Side A" t-if="product_order.design_image_2">
                                                             <img t-attf-src="data:image/*;base64,{{product_order.design_image_2_small}}" style="max-width:200px; max-height: 150px"/>
                                                         </a>
                                                     </td>
                                                     <td t-if="design_3"  class="text-center">
-                                                        <a class="chocolat-image" t-attf-href="data:image/*;base64,{{product_order.design_image_3}}" title="Design Side B" t-if="(product_order.product_id.product_type=='product') and (product_order.design_image_3)">
+                                                        <a class="chocolat-image" t-attf-href="data:image/*;base64,{{product_order.design_image_3}}" title="Design Side B" t-if="product_order.design_image_3">
                                                             <img t-attf-src="data:image/*;base64,{{product_order.design_image_3_small}}" style="max-width:200px; max-height: 150px"/>
                                                         </a>
                                                     </td>

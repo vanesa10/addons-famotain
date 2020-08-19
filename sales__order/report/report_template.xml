@@ -248,7 +248,8 @@
                                     <td class="text-right"><span t-field="o.sales_order_id.paid" t-options='{"widget": "monetary"}'/></td>
                                 </tr>
                                 <tr>
-                                    <th>Amount Due</th>
+                                    <th t-if="o.invoice_type == 'down_payment'">Down Payment (DP)</th>
+                                    <th t-else="">Amount Due</th>
                                     <td class="text-right"><strong><span t-field="o.amount" t-options='{"widget": "monetary"}'/></strong></td>
                                 </tr>
                             </table>
@@ -672,7 +673,7 @@
                                     <tr>
                                         <th>Design</th>
                                         <td t-foreach="o.product_order_ids" t-as="product_order">
-                                            <img t-if="product_order.product_id.product_type=='product'" t-attf-src="data:image/*;base64,{{product_order.design_image}}" style="max-width:200px; max-height: 150px"/>
+                                            <img t-if="product_order.design_image_small" t-attf-src="data:image/*;base64,{{product_order.design_image}}" style="max-width:200px; max-height: 150px"/>
                                         </td>
                                     </tr>
                                     <tr>
