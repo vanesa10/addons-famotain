@@ -65,7 +65,8 @@ class Product(models.Model):
             vals['code'] = category_id.get_last_code()
             category_id.set_last_number()
         else:
-            vals['category_id'] = ''
+            if ('product_type' in vals.keys() and vals['product_type'] not in 'product') or self.product_type != 'product':
+                vals['category_id'] = ''
         product = super(Product, self).write(vals)
         return product
 
