@@ -106,19 +106,22 @@ class SalesOrder(models.Model):
         ], order="deadline")
         msg = {'today': "", 'urgent': "", 'this_week': "", 'late': ""}
         for rec in sales_order:
-            msg_data = {'url': rec.url, 'deadline': rec.deadline.strftime('%d-%b'), 'name': rec.name, 'state': rec.state}
+            msg_data = {'url': rec.url, 'deadline': rec.deadline.strftime('%d-%b'), 'name': rec.name}
+            message = """<a href="{url}"><b>{deadline} - {name}</b></a>\n""".format(**msg_data) if rec.state == 'draft' \
+                else """<a href="{url}">{deadline} - {name}</a>\n""".format(**msg_data)
             if rec.deadline == fields.Date.today():
-                msg['today'] += """<a href="{url}">{deadline} - {name} - {state}</a>\n""".format(**msg_data)
+                msg['today'] += message
             elif rec.state not in ['on_progress', 'done']:
-                msg['urgent'] += """<a href="{url}">{deadline} - {name} - {state}</a>\n""".format(**msg_data)
+                msg['urgent'] += message
             else:
-                msg['this_week'] += """<a href="{url}">{deadline} - {name} - {state}</a>\n""".format(**msg_data)
+                msg['this_week'] += message
         # 4. TERLAMBAT
         sales_order = self.env['sales__order.sales__order'].search([
             ('deadline', '<', fields.Date.today()), ('state', '!=', 'cancel'), ('state', '!=', 'send')], order="deadline")
         for rec in sales_order:
             msg_data = {'url': rec.url, 'deadline': rec.deadline.strftime('%d-%b-%Y'), 'name': rec.name}
-            msg['late'] += """<a href="{url}">{deadline} - {name}</a>\n""".format(**msg_data)
+            msg['late'] += """<a href="{url}">{deadline} - {name}</a>\n""".format(**msg_data) if rec.state == 'draft' \
+                else """<a href="{url}"><b>{deadline} - {name}</b></a>\n""".format(**msg_data)
         notif = """
 <b>Deadline Today:</b>
 ========================
