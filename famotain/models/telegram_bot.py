@@ -5,7 +5,7 @@ from telegram.ext import Updater
 def send_telegram_message(msg, send_to='admin'):
     chat_id = {
         'admin': '-421477783',
-        # 'admin': '998193541',
+        # 'admin': '1100286010',
         'bella': '998193541',
         'vane': '1100286010',
     }

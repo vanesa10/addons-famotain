@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="product_category_1" model="famotain.product_category">
+            <field name="name">Multi-purpose</field>
+            <field name="code">MP</field>
+        </record>
+
+        <record id="product_category_2" model="famotain.product_category">
+            <field name="name">Tote Bag</field>
+            <field name="code">TB</field>
+        </record>
+
+        <record id="product_category_3" model="famotain.product_category">
+            <field name="name">Lunch Bag</field>
+            <field name="code">LB</field>
+        </record>
+
+        <record id="product_category_4" model="famotain.product_category">
+            <field name="name">Sling Bag</field>
+            <field name="code">SB</field>
+        </record>
+
+        <record id="product_category_5" model="famotain.product_category">
+            <field name="name">Waist Bag</field>
+            <field name="code">WB</field>
+        </record>
+
+        <record id="product_category_6" model="famotain.product_category">
+            <field name="name">Pencil Case</field>
+            <field name="code">PC</field>
+        </record>
+
+        <record id="product_category_7" model="famotain.product_category">
+            <field name="name">Transparent</field>
+            <field name="code">TP</field>
+        </record>
+
+        <record id="product_category_8" model="famotain.product_category">
+            <field name="name">Back Pack</field>
+            <field name="code">BP</field>
+        </record>
+
+        <record id="product_category_9" model="famotain.product_category">
+            <field name="name">Folder Bag</field>
+            <field name="code">FB</field>
+        </record>
+
+        <record id="product_category_10" model="famotain.product_category">
+            <field name="name">Wallet</field>
+            <field name="code">WA</field>
+        </record>
+
+        <record id="product_category_11" model="famotain.product_category">
+            <field name="name">Tissue Pouch</field>
+            <field name="code">TS</field>
+        </record>
+
+        <record id="product_category_12" model="famotain.product_category">
+            <field name="name">Toiletries</field>
+            <field name="code">TL</field>
+        </record>
+
+        <record id="product_category_13" model="famotain.product_category">
+            <field name="name">Home</field>
+            <field name="code">HM</field>
+        </record>
+
+        <record id="product_category_14" model="famotain.product_category">
+            <field name="name">Marhen J</field>
+            <field name="code">MJ</field>
+        </record>
+
+        <record id="product_category_15D" model="famotain.product_category">
+            <field name="name">Misc</field>
+            <field name="code">MC</field>
+        </record>
+    </data>
+</openerp>

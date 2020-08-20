@@ -90,13 +90,12 @@
                         <h2>
                             <field name="name" default_focus="1" placeholder="Name"/>
                         </h2>
-                        <h3>
-                            <field name="code" placeholder="Code"/>
-                        </h3>
+                        <h3><field name="price" placeholder="Price"/></h3>
                     </div>
                     <group string="General Information">
                         <group>
-                            <field name="price" />
+                            <field name="category_id" attrs="{'required': [('product_type', '=', 'product')], 'invisible': [('product_type', '!=', 'product')]}"/>
+                            <field name="code" attrs="{'readonly': [('product_type', '=', 'product')]}"/>
                             <field name="description"/>
                             <field name="currency_id" invisible="1"/>
                         </group>

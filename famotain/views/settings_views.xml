@@ -50,6 +50,6 @@
           </field>
         </record>
 
-        <menuitem name="Settings" id="famotain.settings_menu" parent="famotain.menu_root" action="famotain.settings_action_window" sequence="4"/>
+        <menuitem name="Settings" id="famotain.settings_menu" parent="famotain.menu_root" action="famotain.settings_action_window" sequence="5"/>
     </data>
 </odoo>

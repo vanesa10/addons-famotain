@@ -68,10 +68,16 @@ $(function(){
     })
 
     $('#input-packaging').on('change', function(){
-        if ($(this).val() === '-' || $(this).val() === 'TC'){
+        if ($(this).val() === '-'){
             $('#form-packing').addClass('form-hide');
-        } else {
+            $('#form-thankcard').addClass('form-hide');
+        }
+        else if($(this).val() === 'TC'){
+            $('#form-packing').addClass('form-hide');
+        }
+        else {
             $('#form-packing').removeClass('form-hide');
+            $('#form-thankcard').removeClass('form-hide');
         }
     })
 })

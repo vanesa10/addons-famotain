@@ -40,6 +40,6 @@
           </field>
         </record>
 
-        <menuitem name="Courier Shipment" id="famotain.courier_shipment_menu" parent="famotain.menu_root" action="famotain.courier_shipment_action_window" sequence="3"/>
+        <menuitem name="Courier Shipment" id="famotain.courier_shipment_menu" parent="famotain.menu_root" action="famotain.courier_shipment_action_window" sequence="4"/>
     </data>
 </odoo>

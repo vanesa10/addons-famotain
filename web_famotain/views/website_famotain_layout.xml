@@ -145,11 +145,13 @@
                                 Packaging <span style="color:red;">*</span>
                                 </label>
                                 <t t-set="packing_class" t-value="'form-group form-hide'"/>
+                                <t t-set="thankcard_class" t-value="'form-group form-hide'"/>
                                 <select id="input-packaging" name="input-packaging" class="form-control" required="">
                                     <option value="-">No Packaging</option>
                                     <t t-foreach="packaging_list" t-as="packaging">
                                         <t t-if="sales_order and edit and sales_order.packaging_id.id == packaging.id">
-                                            <t t-set="packing_class" t-value="'form-group'"/>
+                                            <t t-if="packaging.code != 'TC'" t-set="packing_class" t-value="'form-group'"/>
+                                            <t t-set="thankcard_class" t-value="'form-group'"/>
                                             <option t-attf-value="{{packaging.code}}" selected=""><t t-esc="packaging.name"/> (+<span t-field="packaging.price" t-options='{"widget": "monetary"}'/>)</option>
                                         </t>
                                         <t t-else="">
@@ -223,7 +225,7 @@
                                     untuk dituliskan pada design tas/label dalam tas. Bisa menyusul (tulis menyusul).
                                 </small>
                             </div>
-                            <div class="form-group">
+                            <div t-attf-class="{{thankcard_class}}" id="form-thankcard">
                                 <label for="input-thankcardwriting">
                                     Tulisan pada thanks card
                                 </label>
