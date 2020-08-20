@@ -120,8 +120,8 @@ class SalesOrder(models.Model):
             ('deadline', '<', fields.Date.today()), ('state', '!=', 'cancel'), ('state', '!=', 'send')], order="deadline")
         for rec in sales_order:
             msg_data = {'url': rec.url, 'deadline': rec.deadline.strftime('%d-%b-%Y'), 'name': rec.name}
-            msg['late'] += """<a href="{url}">{deadline} - {name}</a>\n""".format(**msg_data) if rec.state == 'draft' \
-                else """<a href="{url}"><b>{deadline} - {name}</b></a>\n""".format(**msg_data)
+            msg['late'] += """<a href="{url}"><b>{deadline} - {name}</b></a>\n""".format(**msg_data) if rec.state == 'draft' \
+                else """<a href="{url}">{deadline} - {name}</a>\n""".format(**msg_data)
         notif = """
 <b>Deadline Today:</b>
 ========================
