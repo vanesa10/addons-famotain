@@ -103,9 +103,9 @@
                 <header>
 <!--                    <button string="Admin" name="deadline_notification" type="object"/>-->
 <!--                    <button string="Design" name="design_notification" type="object"/>-->
-                    <button string="Monthly" name="monthly_report_notification" type="object"/>
-                    <button string="Weekly" name="weekly_report_notification" type="object"/>
-                    <button string="Daily" name="daily_report_notification" type="object"/>
+<!--                    <button string="Monthly" name="monthly_report_notification" type="object"/>-->
+<!--                    <button string="Weekly" name="weekly_report_notification" type="object"/>-->
+<!--                    <button string="Daily" name="daily_report_notification" type="object"/>-->
                     <button string="Preview" name="action_url" type="object"/>
                     <button string="Confirm" name="action_confirm" confirm="Are you sure you want to confirm this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['draft'])]}"/>
                     <button string="Approve" name="action_approve" confirm="Are you sure you want to approve this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['confirm'])]}"/>
@@ -155,6 +155,7 @@
                                    context="{'default_qty': qty_total, 'default_sales_order_id': id}">
                                 <tree default_order="product_type desc" editable="bottom" delete="1">
                                     <field name="product_type" invisible="1"/>
+<!--                                    <field name="product_type" />-->
                                     <field name="qty"/>
                                     <field name="product_id" default_focus="1"/>
 <!--                                    <field name="design_image" widget="image" class="oe_avatar" options='{"preview_image": "design_image_small"}'/>-->

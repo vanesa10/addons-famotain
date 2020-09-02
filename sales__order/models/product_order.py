@@ -22,7 +22,7 @@ class ProductOrder(models.Model):
     sales_order_id = fields.Many2one('sales__order.sales__order', 'Sales Order', readonly=True, required=True)
     price_line_id = fields.Many2one('sales__order.price_line', 'Price Line', readonly=True)
 
-    product_type = fields.Selection(PRODUCT_TYPE_LIST, 'Product Type', readonly=True)
+    product_type = fields.Selection(PRODUCT_TYPE_LIST, 'Product Type', readonly=True, required=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]})
     product_id = fields.Many2one('famotain.product', 'Product', required=True, readonly=True,
                                  domain=[('active', '=', True)],
                                  states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]},
