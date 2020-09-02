@@ -28,6 +28,7 @@ class ProductOrder(models.Model):
                                  states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]},
                                  track_visibility='onchange')
     product_price = fields.Monetary('Price', related="product_id.price")
+    # product_description = fields.Char('Description', related="product_id.description")
 
     qty = fields.Integer('Qty', default=1, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]}, track_visibility='onchange')
     fabric_color = fields.Char('Description', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]}, track_visibility='onchange')
@@ -43,7 +44,7 @@ class ProductOrder(models.Model):
     currency_id = fields.Many2one('res.currency', 'Currency', readonly=True, default=lambda self: self.env.user.company_id.currency_id)
 
     state = fields.Selection([('draft', 'Draft'), ('confirm', 'Confirmed'), ('on_progress', 'On Progress'), ('sent', 'Sent'), ('cancel', 'Cancelled')], 'State', required=True, default='draft', readonly=True, track_visibility='onchange')
-    notes = fields.Text('Notes')
+    notes = fields.Text('Notes', compute='_compute_notes', store=True)
 
     confirm_uid = fields.Many2one('res.users', 'Confirmed By', readonly=True)
     confirm_date = fields.Datetime('Confirmed On', readonly=True)
@@ -149,6 +150,13 @@ class ProductOrder(models.Model):
     def _compute_price(self):
         for rec in self:
             rec.price = rec.product_id.price * rec.qty
+
+    @api.multi
+    @api.onchange('product_id')
+    @api.depends('product_id')
+    def _compute_notes(self):
+        for rec in self:
+            rec.notes = rec.product_id.description
 
     @api.multi
     def action_confirm(self):

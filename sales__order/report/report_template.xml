@@ -63,9 +63,9 @@
                                     <td class="text-center"><span t-field="product_order.qty"/>pcs</td>
                                     <td><span t-field="product_order.product_id.display_name"/></td>
                                     <td><span t-field="product_order.fabric_color"/></td>
-                                    <td class="text-center"><img t-if="product_order.product_id.product_type=='product'" t-attf-src="data:image/*;base64,{{product_order.design_image}}" style="max-width:200px; max-height: 150px"/></td>
-                                    <td t-if="design_2"  class="text-center"><img t-if="product_order.product_id.product_type=='product'" t-attf-src="data:image/*;base64,{{product_order.design_image_2}}" style="max-width:200px; max-height: 150px"/></td>
-                                    <td t-if="design_3"  class="text-center"><img t-if="product_order.product_id.product_type=='product'" t-attf-src="data:image/*;base64,{{product_order.design_image_3}}" style="max-width:200px; max-height: 150px"/></td>
+                                    <td class="text-center"><img t-if="product_order.design_image_small" t-attf-src="data:image/*;base64,{{product_order.design_image}}" style="max-width:200px; max-height: 150px"/></td>
+                                    <td t-if="design_2"  class="text-center"><img t-if="product_order.design_image_2_small" t-attf-src="data:image/*;base64,{{product_order.design_image_2}}" style="max-width:200px; max-height: 150px"/></td>
+                                    <td t-if="design_3"  class="text-center"><img t-if="product_order.design_image_3_small" t-attf-src="data:image/*;base64,{{product_order.design_image_3}}" style="max-width:200px; max-height: 150px"/></td>
                                 </tr>
                             </table>
                         </div>
@@ -455,9 +455,9 @@
                                     <td class="text-center"><span t-field="product_order.qty"/>pcs</td>
                                     <td><span t-field="product_order.product_id.display_name"/></td>
                                     <td><span t-field="product_order.fabric_color"/></td>
-                                    <td class="text-center"><img t-if="product_order.product_id.product_type=='product'" t-attf-src="data:image/*;base64,{{product_order.design_image}}" style="max-width:200px; max-height: 150px"/></td>
-                                    <td t-if="design_2"  class="text-center"><img t-if="product_order.product_id.product_type=='product'" t-attf-src="data:image/*;base64,{{product_order.design_image_2}}" style="max-width:200px; max-height: 150px"/></td>
-                                    <td t-if="design_3"  class="text-center"><img t-if="product_order.product_id.product_type=='product'" t-attf-src="data:image/*;base64,{{product_order.design_image_3}}" style="max-width:200px; max-height: 150px"/></td>
+                                    <td class="text-center"><img t-if="product_order.design_image_small" t-attf-src="data:image/*;base64,{{product_order.design_image}}" style="max-width:200px; max-height: 150px"/></td>
+                                    <td t-if="design_2"  class="text-center"><img t-if="product_order.design_image_2_small" t-attf-src="data:image/*;base64,{{product_order.design_image_2}}" style="max-width:200px; max-height: 150px"/></td>
+                                    <td t-if="design_3"  class="text-center"><img t-if="product_order.design_image_3_small" t-attf-src="data:image/*;base64,{{product_order.design_image_3}}" style="max-width:200px; max-height: 150px"/></td>
                                 </tr>
                             </table>
                         </div>

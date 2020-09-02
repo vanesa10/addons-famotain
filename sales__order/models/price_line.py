@@ -6,7 +6,8 @@ from odoo.exceptions import UserError
 import logging
 _logger = logging.getLogger(__name__)
 
-PRICES_LIST = [('product', 'Product'), ('charge', 'Charge'), ('discount', 'Discount'), ('shipment', 'Shipment')]
+PRICES_LIST = [('product', 'Product'), ('package', 'Package'), ('label', 'Label'), ('addons', 'Add-ons'),
+               ('charge', 'Charge'), ('discount', 'Discount'), ('shipment', 'Shipment')]
 
 
 class PriceLine(models.Model):
@@ -41,7 +42,7 @@ class PriceLine(models.Model):
                 'qty': product_order_id.qty,
                 'amount': product_order_id.product_id.price,
                 'debit': product_order_id.qty * product_order_id.product_id.price,
-                'prices_type': 'product'
+                'prices_type': product_order_id.product_id.product_type
             }
         if sales_order_id:
             return {
@@ -56,7 +57,7 @@ class PriceLine(models.Model):
     @api.model
     def create(self, vals_list):
         price_line = super(PriceLine, self).create(vals_list)
-        if price_line.prices_type not in 'product':
+        if price_line.prices_type not in ['product', 'package', 'label', 'addons']:
             msg = "{} price Rp. {:,} created".format(price_line.description, price_line.debit - price_line.credit)
             price_line.sales_order_id.message_post(body=msg)
         return price_line
@@ -85,7 +86,7 @@ class PriceLine(models.Model):
     @api.depends('prices_type')
     def _compute_description(self):
         for rec in self:
-            rec.description = str(rec.prices_type).title() if rec.prices_type not in ['product'] else rec.product_order_id.product_id.display_name
+            rec.description = str(rec.prices_type).title() if rec.prices_type not in ['product', 'package', 'label', 'addons'] else rec.product_order_id.product_id.display_name
 
     @api.multi
     @api.onchange('qty', 'amount', 'prices_type')

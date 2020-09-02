@@ -18,7 +18,7 @@
 
         <record id="product_category_4" model="famotain.product_category">
             <field name="name">Sling Bag</field>
-            <field name="code">SB</field>
+            <field name="code">SL</field>
         </record>
 
         <record id="product_category_5" model="famotain.product_category">

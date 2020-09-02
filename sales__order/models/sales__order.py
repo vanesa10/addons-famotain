@@ -3,6 +3,7 @@ import base64
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 from odoo import tools
+from datetime import datetime, timedelta
 from ...famotain.models.telegram_bot import send_telegram_message
 from ...famotain.models.encryption import encrypt
 from dateutil.relativedelta import relativedelta
@@ -96,6 +97,126 @@ class SalesOrder(models.Model):
         sequences = self.env['ir.sequence'].search([('prefix', '=', 'INV/%(range_year)s%(range_month)s%(range_day)s/')], limit=1)
         sequences.write({'number_next_actual': 1})
 
+    def monthly_report_notification(self):
+        # Report bulan kemaren dpt order total brp pcs sama amount brp
+        sales_order = self.env['sales__order.sales__order'].search([
+            ('state', '!=', 'draft'), ('state', '!=', 'cancel'),
+            ('create_date', '<', fields.Datetime.to_string(datetime.today())),
+            ('create_date', '>=', fields.Datetime.to_string(datetime.today() - relativedelta(months=1)))
+        ])
+        data = {'count': 0, 'qty_total': 0, 'qty_product': 0, 'qty_label': 0, 'qty_package': 0, 'qty_addons': 0,
+                'amount_total': 0, 'amount_product': 0, 'amount_label': 0, 'amount_package': 0, 'amount_addons': 0,
+                'amount_shipment': 0, 'amount_discount': 0, 'amount_charge': 0, 'remaining': 0, 'paid': 0}
+        for rec in sales_order:
+            data['count'] += 1
+            data['qty_total'] += rec.qty_total
+            data['amount_total'] += rec.total_price
+            data['remaining'] += rec.remaining
+            data['paid'] += rec.paid
+            for product in rec.product_order_ids:
+                if product.product_type:
+                    data['qty_{}'.format(product.product_type)] += product.qty
+            for price in rec.price_line_ids:
+                if price.prices_type:
+                    data['amount_{}'.format(price.prices_type)] += price.balance
+        msg = """
+<b>Monthly Report</b>
+========================
+<b>{count} Orders</b>
+Total: {qty_total}pcs
+Product: {qty_product}pcs
+Package: {qty_package}pcs
+Label: {qty_label}pcs
+Addons: {qty_addons}pcs
+========================
+Product: Rp. {amount_product:,.0f}
+Package: Rp. {amount_package:,.0f}
+Label: Rp. {amount_label:,.0f} 
+Addons: Rp. {amount_addons:,.0f} 
+========================
+Shipment: Rp. {amount_shipment:,.0f}
+Discount: Rp. {amount_discount:,.0f}
+Charge: Rp. {amount_charge:,.0f}
+========================
+<b>TOTAL: Rp. {amount_total:,.0f}</b>
+<b>PAID: Rp. {paid:,.0f}</b>
+<b>REMAIN: Rp. {remaining:,.0f}</b>
+""".format(**data)
+        send_telegram_message(msg, 'famotain')
+
+    def weekly_report_notification(self):
+        # Report minggu ini dpt brp order
+        sales_order = self.env['sales__order.sales__order'].search([
+            ('state', '!=', 'draft'), ('state', '!=', 'cancel'),
+            ('create_date', '<', fields.Datetime.to_string(datetime.today())),
+            ('create_date', '>=', fields.Datetime.to_string(datetime.today() - relativedelta(days=7)))
+        ])
+        data = {'new_qty_total': 0, 'count': 0, 'new_amount_total': 0}
+        for rec in sales_order:
+            data['new_qty_total'] += rec.qty_total
+            data['count'] += 1
+            data['new_amount_total'] += rec.total_price
+        msg = """
+<b>Weekly Report</b>
+========================
+<b>{count} New Order</b>
+Qty : {new_qty_total}pcs
+Total : Rp. {new_amount_total:,.0f}
+""".format(**data)
+        send_telegram_message(msg, 'famotain')
+
+    def daily_report_notification(self):
+        # Report order yang belum terkirim total brp pcs sama amount brp
+        sales_order = self.env['sales__order.sales__order'].search([
+            ('state', '!=', 'draft'), ('state', '!=', 'cancel'), ('state', '!=', 'send')
+        ])
+        data = {'qty_total': 0, 'total': 0, 'remaining': 0, 'paid': 0, 'count_open': 0}
+        for rec in sales_order:
+            data['count_open'] += 1
+            data['qty_total'] += rec.qty_total
+            data['total'] += rec.total_price
+            data['remaining'] += rec.remaining
+            data['paid'] += rec.paid
+        sales_order = self.env['sales__order.sales__order'].search([
+            ('state', '!=', 'draft'), ('state', '!=', 'cancel'),
+            ('create_date', '<', fields.Datetime.to_string(datetime.today())),
+            ('create_date', '>=', fields.Datetime.to_string(datetime.today() - relativedelta(days=1)))
+        ])
+        data.update({'new_qty_total': 0, 'count': 0, 'new_amount_total': 0})
+        for rec in sales_order:
+            data['new_qty_total'] += rec.qty_total
+            data['count'] += 1
+            data['new_amount_total'] += rec.total_price
+        msg = """
+<b>Daily Report</b>
+========================
+<b>{count_open} Open Order</b>
+Qty : {qty_total}pcs
+Total : Rp. {total:,.0f}
+Paid : Rp. {paid:,.0f}
+Remain : Rp. {remaining:,.0f}
+========================
+<b>{count} New Order</b>
+Qty : {new_qty_total}pcs
+Total : Rp. {new_amount_total:,.0f}
+""".format(**data)
+        send_telegram_message(msg, 'famotain')
+
+    def design_notification(self):
+        # buat design
+        sales_order = self.env['sales__order.sales__order'].search([
+            ('state', '=', 'confirm'), ('image', '=', False)
+        ], order="deadline")
+        notif = "<b>Need tobe designed:</b>\n========================\n"
+        for rec in sales_order:
+            msg_data = {'url': rec.url, 'deadline': rec.deadline.strftime('%d-%b'), 'name': rec.name,
+                        'theme': rec.theme, 'qty': rec.qty_total, 'product': rec.product}
+            if rec.deadline < fields.Date.today() + relativedelta(days=10):
+                notif += """<a href="{url}"><b>{deadline} - {name}</b></a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data)
+            else:
+                notif += """<a href="{url}">{deadline} - {name}</a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data)
+        send_telegram_message(notif, 'design')
+
     def deadline_notification(self):
         # 1. Deadline hari ini blm dikirim
         # 2. Deadline minggu ini blm dikirim
@@ -106,9 +227,10 @@ class SalesOrder(models.Model):
         ], order="deadline")
         msg = {'today': "", 'urgent': "", 'this_week': "", 'late': ""}
         for rec in sales_order:
-            msg_data = {'url': rec.url, 'deadline': rec.deadline.strftime('%d-%b'), 'name': rec.name}
-            message = """<a href="{url}"><b>{deadline} - {name}</b></a>\n""".format(**msg_data) if rec.state == 'draft' \
-                else """<a href="{url}">{deadline} - {name}</a>\n""".format(**msg_data)
+            msg_data = {'url': rec.url, 'deadline': rec.deadline.strftime('%d-%b'), 'name': rec.name,
+                        'theme': rec.theme, 'qty': rec.qty_total, 'product': rec.product}
+            message = """<a href="{url}"><b>{deadline} - {name}</b></a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data) if rec.state == 'draft' \
+                else """<a href="{url}">{deadline} - {name}</a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data)
             if rec.deadline == fields.Date.today():
                 msg['today'] += message
             elif rec.state not in ['on_progress', 'done']:
@@ -119,9 +241,10 @@ class SalesOrder(models.Model):
         sales_order = self.env['sales__order.sales__order'].search([
             ('deadline', '<', fields.Date.today()), ('state', '!=', 'cancel'), ('state', '!=', 'send')], order="deadline")
         for rec in sales_order:
-            msg_data = {'url': rec.url, 'deadline': rec.deadline.strftime('%d-%b-%Y'), 'name': rec.name}
-            msg['late'] += """<a href="{url}"><b>{deadline} - {name}</b></a>\n""".format(**msg_data) if rec.state == 'draft' \
-                else """<a href="{url}">{deadline} - {name}</a>\n""".format(**msg_data)
+            msg_data = {'url': rec.url, 'deadline': rec.deadline.strftime('%d-%b'), 'name': rec.name,
+                        'theme': rec.theme, 'qty': rec.qty_total, 'product': rec.product}
+            msg['late'] += """<a href="{url}"><b>{deadline} - {name}</b></a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data) if rec.state == 'draft' \
+                else """<a href="{url}">{deadline} - {name}</a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data)
         notif = """
 <b>Deadline Today:</b>
 ========================
@@ -439,7 +562,7 @@ Deadline : {deadline}
 ========================
 {qty_total}pcs - {product} - {theme}
 """.format(**msg_data)
-                send_telegram_message(msg)
+                send_telegram_message(msg, 'design')
             else:
                 raise UserError(_('You can only confirm a draft sales order'))
 
@@ -469,7 +592,7 @@ Deadline : {deadline}
 ========================
 {qty_total}pcs - {product} - {theme}
 """.format(**msg_data)
-                send_telegram_message(msg)
+                send_telegram_message(msg, 'famotain')
             else:
                 raise UserError(_('You can only approve a confirmed sales order'))
 
