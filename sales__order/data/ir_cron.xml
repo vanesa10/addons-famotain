@@ -1,5 +1,5 @@
 <odoo>
-    <data>
+    <data noupdate="1">
         <record id="cron_reset_sequence" model="ir.cron">
             <field name="name" >Sales Order Reset Sequence</field>
             <field name="active" eval="True" />

@@ -101,8 +101,8 @@ class SalesOrder(models.Model):
         # Report bulan kemaren dpt order total brp pcs sama amount brp
         sales_order = self.env['sales__order.sales__order'].search([
             ('state', '!=', 'draft'), ('state', '!=', 'cancel'),
-            ('create_date', '<', fields.Datetime.to_string(datetime.today())),
-            ('create_date', '>=', fields.Datetime.to_string(datetime.today() - relativedelta(months=1)))
+            ('create_date', '<=', fields.Datetime.to_string(datetime.today())),
+            ('create_date', '>', fields.Datetime.to_string(datetime.today() - relativedelta(months=1)))
         ])
         data = {'count': 0, 'qty_total': 0, 'qty_product': 0, 'qty_label': 0, 'qty_package': 0, 'qty_addons': 0,
                 'amount_total': 0, 'amount_product': 0, 'amount_label': 0, 'amount_package': 0, 'amount_addons': 0,
@@ -148,8 +148,8 @@ Charge: Rp. {amount_charge:,.0f}
         # Report minggu ini dpt brp order
         sales_order = self.env['sales__order.sales__order'].search([
             ('state', '!=', 'draft'), ('state', '!=', 'cancel'),
-            ('create_date', '<', fields.Datetime.to_string(datetime.today())),
-            ('create_date', '>=', fields.Datetime.to_string(datetime.today() - relativedelta(days=7)))
+            ('create_date', '<=', fields.Datetime.to_string(datetime.today())),
+            ('create_date', '>', fields.Datetime.to_string(datetime.today() - relativedelta(days=7)))
         ])
         data = {'new_qty_total': 0, 'count': 0, 'new_amount_total': 0}
         for rec in sales_order:
@@ -179,8 +179,8 @@ Total : Rp. {new_amount_total:,.0f}
             data['paid'] += rec.paid
         sales_order = self.env['sales__order.sales__order'].search([
             ('state', '!=', 'draft'), ('state', '!=', 'cancel'),
-            ('create_date', '<', fields.Datetime.to_string(datetime.today())),
-            ('create_date', '>=', fields.Datetime.to_string(datetime.today() - relativedelta(days=1)))
+            ('create_date', '<=', fields.Datetime.to_string(datetime.today())),
+            ('create_date', '>', fields.Datetime.to_string(datetime.today() - relativedelta(days=1)))
         ])
         data.update({'new_qty_total': 0, 'count': 0, 'new_amount_total': 0})
         for rec in sales_order:
