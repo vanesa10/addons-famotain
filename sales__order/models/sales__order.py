@@ -99,15 +99,17 @@ class SalesOrder(models.Model):
 
     def monthly_report_notification(self):
         # Report bulan kemaren dpt order total brp pcs sama amount brp
+        # cron every month on date 01 next month time 00:00:00
+        yesterday = datetime.today() - relativedelta(days=1)
         sales_order = self.env['sales__order.sales__order'].search([
             ('state', '!=', 'draft'), ('state', '!=', 'cancel'),
-            ('confirm_date', '<=', fields.Datetime.to_string(datetime.today())),
-            ('confirm_date', '>', fields.Datetime.to_string(datetime.today() - relativedelta(months=1)))
+            ('confirm_date', '<=', '{} 23:59:59'.format(yesterday.strftime("%Y-%m-%d"))),
+            ('confirm_date', '>=', '{}-01 00:00:00'.format(yesterday.strftime('%Y-%m')))
         ])
         data = {'count': 0, 'qty_total': 0, 'qty_product': 0, 'qty_label': 0, 'qty_package': 0, 'qty_addons': 0,
                 'amount_total': 0, 'amount_product': 0, 'amount_label': 0, 'amount_package': 0, 'amount_addons': 0,
                 'amount_shipment': 0, 'amount_discount': 0, 'amount_charge': 0, 'remaining': 0, 'paid': 0,
-                'date': fields.Date.today().strftime('%b-%Y')}
+                'date': yesterday.strftime('%b-%Y')}
         for rec in sales_order:
             data['count'] += 1
             data['qty_total'] += rec.qty_total
