@@ -101,12 +101,13 @@ class SalesOrder(models.Model):
         # Report bulan kemaren dpt order total brp pcs sama amount brp
         sales_order = self.env['sales__order.sales__order'].search([
             ('state', '!=', 'draft'), ('state', '!=', 'cancel'),
-            ('create_date', '<=', fields.Datetime.to_string(datetime.today())),
-            ('create_date', '>', fields.Datetime.to_string(datetime.today() - relativedelta(months=1)))
+            ('confirm_date', '<=', fields.Datetime.to_string(datetime.today())),
+            ('confirm_date', '>', fields.Datetime.to_string(datetime.today() - relativedelta(months=1)))
         ])
         data = {'count': 0, 'qty_total': 0, 'qty_product': 0, 'qty_label': 0, 'qty_package': 0, 'qty_addons': 0,
                 'amount_total': 0, 'amount_product': 0, 'amount_label': 0, 'amount_package': 0, 'amount_addons': 0,
-                'amount_shipment': 0, 'amount_discount': 0, 'amount_charge': 0, 'remaining': 0, 'paid': 0}
+                'amount_shipment': 0, 'amount_discount': 0, 'amount_charge': 0, 'remaining': 0, 'paid': 0,
+                'date': fields.Date.today().strftime('%b-%Y')}
         for rec in sales_order:
             data['count'] += 1
             data['qty_total'] += rec.qty_total
@@ -120,7 +121,7 @@ class SalesOrder(models.Model):
                 if price.prices_type:
                     data['amount_{}'.format(price.prices_type)] += price.balance
         msg = """
-<b>Monthly Report</b>
+<b>Monthly Report ({date})</b>
 ========================
 <b>{count} Orders</b>
 Total: {qty_total}pcs
@@ -148,16 +149,16 @@ Charge: Rp. {amount_charge:,.0f}
         # Report minggu ini dpt brp order
         sales_order = self.env['sales__order.sales__order'].search([
             ('state', '!=', 'draft'), ('state', '!=', 'cancel'),
-            ('create_date', '<=', fields.Datetime.to_string(datetime.today())),
-            ('create_date', '>', fields.Datetime.to_string(datetime.today() - relativedelta(days=7)))
+            ('confirm_date', '<=', fields.Datetime.to_string(datetime.today())),
+            ('confirm_date', '>', fields.Datetime.to_string(datetime.today() - relativedelta(days=7)))
         ])
-        data = {'new_qty_total': 0, 'count': 0, 'new_amount_total': 0}
+        data = {'new_qty_total': 0, 'count': 0, 'new_amount_total': 0, 'date': fields.Date.today().strftime('%d-%b-%Y')}
         for rec in sales_order:
             data['new_qty_total'] += rec.qty_total
             data['count'] += 1
             data['new_amount_total'] += rec.total_price
         msg = """
-<b>Weekly Report</b>
+<b>Weekly Report ({date})</b>
 ========================
 <b>{count} New Order</b>
 Qty : {new_qty_total}pcs
@@ -170,7 +171,7 @@ Total : Rp. {new_amount_total:,.0f}
         sales_order = self.env['sales__order.sales__order'].search([
             ('state', '!=', 'draft'), ('state', '!=', 'cancel'), ('state', '!=', 'send')
         ])
-        data = {'qty_total': 0, 'total': 0, 'remaining': 0, 'paid': 0, 'count_open': 0}
+        data = {'qty_total': 0, 'total': 0, 'remaining': 0, 'paid': 0, 'count_open': 0, 'date': fields.Date.today().strftime('%d-%b-%Y')}
         for rec in sales_order:
             data['count_open'] += 1
             data['qty_total'] += rec.qty_total
@@ -179,8 +180,8 @@ Total : Rp. {new_amount_total:,.0f}
             data['paid'] += rec.paid
         sales_order = self.env['sales__order.sales__order'].search([
             ('state', '!=', 'draft'), ('state', '!=', 'cancel'),
-            ('create_date', '<=', fields.Datetime.to_string(datetime.today())),
-            ('create_date', '>', fields.Datetime.to_string(datetime.today() - relativedelta(days=1)))
+            ('confirm_date', '<=', fields.Datetime.to_string(datetime.today())),
+            ('confirm_date', '>', fields.Datetime.to_string(datetime.today() - relativedelta(days=1)))
         ])
         data.update({'new_qty_total': 0, 'count': 0, 'new_amount_total': 0})
         for rec in sales_order:
@@ -188,7 +189,7 @@ Total : Rp. {new_amount_total:,.0f}
             data['count'] += 1
             data['new_amount_total'] += rec.total_price
         msg = """
-<b>Daily Report</b>
+<b>Daily Report ({date})</b>
 ========================
 <b>{count_open} Open Order</b>
 Qty : {qty_total}pcs
@@ -225,7 +226,7 @@ Total : Rp. {new_amount_total:,.0f}
             ('deadline', '>=', fields.Date.today()), ('deadline', '<', fields.Date.today() + relativedelta(days=10)),
             ('state', '!=', 'cancel'), ('state', '!=', 'send')
         ], order="deadline")
-        msg = {'today': "", 'urgent': "", 'this_week': "", 'late': ""}
+        msg = {'today': "", 'urgent': "", 'this_week': "", 'late': "", 'need_clearance': ""}
         for rec in sales_order:
             msg_data = {'url': rec.url, 'deadline': rec.deadline.strftime('%d-%b'), 'name': rec.name,
                         'theme': rec.theme, 'qty': rec.qty_total, 'product': rec.product}
@@ -237,29 +238,44 @@ Total : Rp. {new_amount_total:,.0f}
                 msg['urgent'] += message
             else:
                 msg['this_week'] += message
-        # 4. TERLAMBAT
+        # 4. TERLAMBAT & blm pelunasan
         sales_order = self.env['sales__order.sales__order'].search([
             ('deadline', '<', fields.Date.today()), ('state', '!=', 'cancel'), ('state', '!=', 'send')], order="deadline")
         for rec in sales_order:
             msg_data = {'url': rec.url, 'deadline': rec.deadline.strftime('%d-%b'), 'name': rec.name,
                         'theme': rec.theme, 'qty': rec.qty_total, 'product': rec.product}
-            msg['late'] += """<a href="{url}"><b>{deadline} - {name}</b></a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data) if rec.state == 'draft' \
-                else """<a href="{url}">{deadline} - {name}</a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data)
+            if rec.state == 'done':
+                msg['need_clearance'] += """<a href="{url}"><b>{deadline} - {name}</b></a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data) if rec.state == 'draft' \
+                    else """<a href="{url}">{deadline} - {name}</a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data)
+            else:
+                msg['late'] += """<a href="{url}"><b>{deadline} - {name}</b></a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data) if rec.state == 'draft' \
+                    else """<a href="{url}">{deadline} - {name}</a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data)
         notif = """
-<b>Deadline Today:</b>
+<b>Deadline Today</b>
 ========================
 {today}
-<b>This Week:</b>
+<b>This Week</b>
 ========================
 {this_week}
-<b>!URGENT!:</b>
-========================
-{urgent}
-<b>!LATE!:</b>
-========================
-{late}
 """.format(**msg)
         send_telegram_message(notif)
+        if msg['late'] or msg['need_clearance']:
+            notif = """
+<b>Late</b>
+========================
+{late}
+<b>Need Clearance</b>
+========================
+{need_clearance}
+""".format(**msg)
+            send_telegram_message(notif)
+        if msg['urgent']:
+            notif = """
+<b>Urgent</b>
+========================
+{urgent}
+""".format(**msg)
+            send_telegram_message(notif, 'famotain')
 
     @api.model
     def create(self, vals_list):
@@ -604,7 +620,8 @@ Deadline : {deadline}
                 for product_order in rec.product_order_ids:
                     product_order.action_cancel()
                 for invoice in rec.invoice_ids:
-                    invoice.action_cancel()
+                    if invoice.state != 'cancel':
+                        invoice.action_cancel()
                 rec.state = 'cancel'
                 rec.cancel_date = fields.Datetime.now()
                 rec.cancel_uid = self.env.user.id
