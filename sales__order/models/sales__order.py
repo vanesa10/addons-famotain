@@ -103,7 +103,7 @@ class SalesOrder(models.Model):
         yesterday = datetime.today() - relativedelta(days=1)
         sales_order = self.env['sales__order.sales__order'].search([
             ('state', '!=', 'draft'), ('state', '!=', 'cancel'),
-            ('confirm_date', '<=', '{} 23:59:59'.format(yesterday.strftime("%Y-%m-%d"))),
+            ('confirm_date', '<', '{}-01 00:00:00'.format(datetime.today().strftime("%Y-%m"))),
             ('confirm_date', '>=', '{}-01 00:00:00'.format(yesterday.strftime('%Y-%m')))
         ])
         data = {'count': 0, 'qty_total': 0, 'qty_product': 0, 'qty_label': 0, 'qty_package': 0, 'qty_addons': 0,
