@@ -631,6 +631,18 @@ Deadline : {deadline}
                 raise UserError(_("You can't cancel this sales order"))
 
     @api.multi
+    def action_force_cancel(self):
+        for rec in self:
+            for product_order in rec.product_order_ids:
+                product_order.action_force_cancel()
+            for invoice in rec.invoice_ids:
+                if invoice.state != 'cancel':
+                    invoice.action_force_cancel()
+            rec.state = 'cancel'
+            rec.cancel_date = fields.Datetime.now()
+            rec.cancel_uid = self.env.user.id
+
+    @api.multi
     def action_send(self):
         for rec in self:
             if rec.state not in ['approve', 'on_progress', 'done']:

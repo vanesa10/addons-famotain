@@ -286,6 +286,7 @@
                     <div class="row">
                         <div class="col-12">
                             <ul>
+                                <li t-if="o.invoice_type=='down_payment'">DP = No Cancel</li>
                                 <li t-if="o.invoice_type=='down_payment'">Design will be made 2-3 days after payment</li>
                                 <li>Please use the following communication for your payment: <strong><span t-field="o.name"/></strong></li>
                                 <li>Make your payment promptly to the following bank account:</li>

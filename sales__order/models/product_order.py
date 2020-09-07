@@ -176,6 +176,14 @@ class ProductOrder(models.Model):
                 rec.cancel_uid = self.env.user.id
 
     @api.multi
+    def action_force_cancel(self):
+        for rec in self:
+            if rec.state not in ['cancel', 'sent']:
+                rec.state = 'cancel'
+                rec.cancel_date = fields.Datetime.now()
+                rec.cancel_uid = self.env.user.id
+
+    @api.multi
     def action_send(self):
         for rec in self:
             if rec.state in ['draft', 'confirm', 'on_progress']:

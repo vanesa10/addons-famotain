@@ -168,6 +168,14 @@ class Invoice(models.Model):
             else:
                 raise UserError(_("You can only cancel an open/draft invoice"))
 
+    @api.multi
+    def action_force_cancel(self):
+        for rec in self:
+            if rec.state in ['open', 'draft']:
+                rec.state = 'cancel'
+                msg = "{} ({}) - Rp. {:,} cancelled (forced)".format(self.name, self.invoice_type, self.amount)
+                self.sales_order_id.message_post(body=msg)
+
     def open_record(self):
         rec_id = self.id
         form_id = self.env.ref('sales__order.invoice_form')
