@@ -16,11 +16,9 @@
                     <field name="customer_notes"/>
                     <separator/>
                     <group>
-                        <filter string="Need Progress" name="need_progress" domain="[('state','=','draft'), ('state','=','confirm'), ('state','=','approve')]"/>
-                        <filter string="Open Order" name="open_order" domain="[('state','=','confirm'), ('state','=','approve'),
-                        ('state','=','on_progress'),('state','=','done')]"/>
-                        <filter string="Fix Order" name="fix_order" domain="[('state','=','confirm'), ('state','=','approve'),
-                        ('state','=','on_progress'),('state','=','done'), ('state','=','send')]"/>
+                        <filter string="Need Progress" name="need_progress"  domain="[('state', 'in', ['draft', 'confirm', 'approve'])]" />
+                        <filter string="Open Order" name="open_order" domain="[('state', 'in', ['confirm', 'approve', 'on_progress', 'done'])]"/>
+                        <filter string="Fix Order" name="fix_order" domain="[('state', 'in', ['confirm', 'approve', 'on_progress', 'done', 'send'])]"/>
                     </group>
                     <separator/>
                     <group>
