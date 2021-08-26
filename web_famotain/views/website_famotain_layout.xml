@@ -101,7 +101,7 @@
                                 <label for="input-theme">
                                     Tema <span style="color:red;">*</span>
                                 </label>
-                                <input t-if="sales_order and edit" id="input-theme" name="input-theme" type="text" class="form-control" required="" t-attf-value="{{sales_order.theme}}"/>
+                                <input t-if="sales_order" id="input-theme" name="input-theme" type="text" class="form-control" required="" t-attf-value="{{sales_order.theme}}"/>
                                 <input t-else="" id="input-theme" name="input-theme" type="text" class="form-control" required=""/>
                             </div>
                             <div class="form-row">
@@ -109,14 +109,14 @@
                                     <label for="input-qty">
                                     Qty <span style="color:red;">*</span>
                                     </label>
-                                    <input t-if="sales_order and edit" id="input-qty" name="input-qty" type="number" class="form-control" min="1" required="" t-attf-value="{{sales_order.qty_total}}"/>
+                                    <input t-if="sales_order" id="input-qty" name="input-qty" type="number" class="form-control" min="1" required="" t-attf-value="{{sales_order.qty_total}}"/>
                                     <input t-else="" id="input-qty" name="input-qty" type="number" class="form-control" min="1" required="" />
                                 </div>
                                 <div class="form-group col-md-9">
                                     <label for="input-product">
                                     Product yang dipesan <span style="color:red;">*</span>
                                     </label>
-                                    <input t-if="sales_order and edit" id="input-product" name="input-product" type="text" class="form-control" required="" t-attf-value="{{sales_order.product}}"/>
+                                    <input t-if="sales_order" id="input-product" name="input-product" type="text" class="form-control" required="" t-attf-value="{{sales_order.product}}"/>
                                     <input t-else="" id="input-product" name="input-product" type="text" class="form-control" required="" />
                                 </div>
                             </div>
@@ -125,12 +125,12 @@
                                     Custom Nama
                                 </legend>
                                 <div class="form-check form-check-inline">
-                                  <input t-if="sales_order and edit and sales_order.custom_name == 'yes'" class="form-check-input" type="radio" name="input-customname" id="input-customname-y" value="yes" checked=""/>
+                                  <input t-if="sales_order and sales_order.custom_name == 'yes'" class="form-check-input" type="radio" name="input-customname" id="input-customname-y" value="yes" checked=""/>
                                   <input t-else="" class="form-check-input" type="radio" name="input-customname" id="input-customname-y" value="yes"/>
                                   <label class="form-check-label" for="input-customname-y">Yes</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                  <input t-if="not sales_order or not edit or sales_order.custom_name == 'no'" class="form-check-input" type="radio" name="input-customname" id="input-customname-n" value="no" checked=""/>
+                                  <input t-if="not sales_order or sales_order.custom_name == 'no'" class="form-check-input" type="radio" name="input-customname" id="input-customname-n" value="no" checked=""/>
                                   <input t-else="" class="form-check-input" type="radio" name="input-customname" id="input-customname-n" value="no"/>
                                   <label class="form-check-label" for="input-customname-n">No</label>
                                 </div>
@@ -149,7 +149,7 @@
                                 <select id="input-packaging" name="input-packaging" class="form-control" required="">
                                     <option value="-">No Packaging</option>
                                     <t t-foreach="packaging_list" t-as="packaging">
-                                        <t t-if="sales_order and edit and sales_order.packaging_id.id == packaging.id">
+                                        <t t-if="sales_order and sales_order.packaging_id.id == packaging.id">
                                             <t t-if="packaging.code != 'TC'" t-set="packing_class" t-value="'form-group'"/>
                                             <t t-set="thankcard_class" t-value="'form-group'"/>
                                             <option t-attf-value="{{packaging.code}}" selected=""><t t-esc="packaging.name"/> (+<span t-field="packaging.price" t-options='{"widget": "monetary"}'/>)</option>
@@ -166,7 +166,7 @@
                                     Packing <span style="color:red;">*</span>
                                 </legend>
                                 <div class="form-check">
-                                  <input t-if="sales_order and edit and sales_order.packing == 'pack'" class="form-check-input" type="radio" name="input-packing" id="input-packing-ps" value="sendiri" required=""/>
+                                  <input t-if="sales_order and sales_order.packing == 'pack'" class="form-check-input" type="radio" name="input-packing" id="input-packing-ps" value="sendiri" required=""/>
                                   <input t-else="" class="form-check-input" type="radio" name="input-packing" id="input-packing-ps" value="sendiri" checked="" required=""/>
                                   <label class="form-check-label" for="input-packing-ps">Packing sendiri</label>
                                 </div>
@@ -174,7 +174,7 @@
                                     plastik, pita, thankyou card, dll terpisah
                                 </small>
                                 <div class="form-check">
-                                  <input t-if="sales_order and edit and sales_order.packing == 'pack'" class="form-check-input" type="radio" name="input-packing" id="input-packing-pack" value="pack" required="" checked=""/>
+                                  <input t-if="sales_order and sales_order.packing == 'pack'" class="form-check-input" type="radio" name="input-packing" id="input-packing-pack" value="pack" required="" checked=""/>
                                   <input t-else="" class="form-check-input" type="radio" name="input-packing" id="input-packing-pack" value="pack" required=""/>
                                   <label class="form-check-label" for="input-packing-pack">Sudah packing</label>
                                 </div>
@@ -191,12 +191,12 @@
                                     contoh penambahan label di dalam tas
                                 </small>
                                 <div class="form-check">
-                                  <input t-if="sales_order and edit and sales_order.label == 'yes'" class="form-check-input" type="radio" name="input-label" id="input-label-y" value="yes" checked="" required=""/>
+                                  <input t-if="sales_order and sales_order.label == 'yes'" class="form-check-input" type="radio" name="input-label" id="input-label-y" value="yes" checked="" required=""/>
                                   <input t-else="" class="form-check-input" type="radio" name="input-label" id="input-label-y" value="yes" required=""/>
                                   <label class="form-check-label" for="input-label-y">Yes (+<span t-field="label.price" t-options='{"widget": "monetary"}'/>)</label>
                                 </div>
                                 <div class="form-check">
-                                  <input t-if="not sales_order or not edit or sales_order.label == 'no'" class="form-check-input" type="radio" name="input-label" id="input-label-n" value="no" checked="" required=""/>
+                                  <input t-if="not sales_order or sales_order.label == 'no'" class="form-check-input" type="radio" name="input-label" id="input-label-n" value="no" checked="" required=""/>
                                   <input t-else="" class="form-check-input" type="radio" name="input-label" id="input-label-n" value="no" required=""/>
                                   <label class="form-check-label" for="input-label-n">No</label>
                                 </div>
@@ -205,7 +205,7 @@
                                 <label for="input-addons">
                                     Add Ons
                                 </label>
-                                <input t-if="sales_order and edit" id="input-addons" name="input-addons" type="text" class="form-control" t-attf-value="{{sales_order.add_ons}}"/>
+                                <input t-if="sales_order" id="input-addons" name="input-addons" type="text" class="form-control" t-attf-value="{{sales_order.add_ons}}"/>
                                 <input t-else="" id="input-addons" name="input-addons" type="text" class="form-control" />
                                 <small class="form-text text-muted">
                                     Cek katalog kami untuk memilih add ons
@@ -238,7 +238,7 @@
                                 <label for="input-customrequest">
                                     Custom Request
                                 </label>
-                                <textarea name="input-customrequest" id="input-customrequest" class="form-control" style="height: 80px"><t t-if="sales_order and edit" t-esc="sales_order.custom_request"/></textarea>
+                                <textarea name="input-customrequest" id="input-customrequest" class="form-control" style="height: 80px"><t t-if="sales_order" t-esc="sales_order.custom_request"/></textarea>
                                 <small class="form-text text-muted">
                                     request khusus terkait model tas/ukuran tas/bahan tas harap dituliskan dengan jelas di kolom ini
                                 </small>
@@ -247,7 +247,7 @@
                                 <label for="input-note">
                                     Notes
                                 </label>
-                                <textarea name="input-note" id="input-note" class="form-control" style="height: 149px"><t t-if="sales_order and edit" t-esc="sales_order.customer_notes"/></textarea>
+                                <textarea name="input-note" id="input-note" class="form-control" style="height: 149px"><t t-if="sales_order" t-esc="sales_order.customer_notes"/></textarea>
                             </div>
                         </section>
                     </div>
@@ -343,9 +343,11 @@
                         <ul class="nav nav-tabs card-header-tabs" style="font-size: 11pt">
                             <li class="nav-item"><a id="order-tab" class="nav-link active" href="#order" data-toggle="tab" role="tab" aria-controls="data" aria-selected="true">Order</a></li>
                             <li class="nav-item"><a id="add_ons-tab" class="nav-link" href="#add_ons" data-toggle="tab" role="tab" aria-controls="add_ons" aria-selected="false">Addons</a></li>
+                            <t t-if="sales_order.state != 'draft' and sales_order.state != 'cancel'">
+                                <li class="nav-item"><a id="price-tab" class="nav-link" href="#price" data-toggle="tab" role="tab" aria-controls="price" aria-selected="false">Price</a></li>
+                            </t>
                             <t t-if="design">
                                 <li class="nav-item"><a id="design-tab" class="nav-link" href="#design" data-toggle="tab" role="tab" aria-controls="design" aria-selected="false">Design</a></li>
-                                <li class="nav-item"><a id="price-tab" class="nav-link" href="#price" data-toggle="tab" role="tab" aria-controls="price" aria-selected="false">Price</a></li>
                             </t>
                         </ul>
                     </div>
@@ -473,6 +475,37 @@
                                 </div>
                             </div>
                         </div>
+                        <t t-if="sales_order.state != 'draft' and sales_order.state != 'cancel'">
+                            <div id="price" class="card-body tab-pane fade" role="tabpanel" aria-labelledby="price-tab">
+                                <div class="table-responsive py-3">
+                                    <t t-if="sales_order.product_order_ids">
+                                        <table class="table table-striped table-bordered">
+                                            <caption>Harga ongkir akan ditambahkan sebelum barang dikirim</caption>
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col" class="text-center">Qty</th>
+                                                    <th scope="col">Description</th>
+                                                    <th scope="col" class="text-right">Unit Price</th>
+                                                    <th scope="col" class="text-right">Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr t-foreach="sales_order.price_line_ids" t-as="price_line">
+                                                    <td scope="row" class="text-center"><span t-field="price_line.qty"/> pcs</td>
+                                                    <td><span t-field="price_line.description"/></td>
+                                                    <td class="text-right"><span t-field="price_line.amount" t-options='{"widget": "monetary"}'/></td>
+                                                    <td class="text-right"><span t-field="price_line.balance" t-options='{"widget": "monetary"}'/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td scope="row" colspan="3" class="text-right">Total:</td>
+                                                    <td class="text-right"><span t-field="sales_order.total_price" t-options='{"widget": "monetary"}'/></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
                         <t t-if="design">
                             <div id="design" class="card-body tab-pane fade" role="tabpanel" aria-labelledby="design-tab">
                                 <div class="table-responsive py-3">
@@ -515,50 +548,17 @@
                                     </t>
                                 </div>
                             </div>
-                            <div id="price" class="card-body tab-pane fade" role="tabpanel" aria-labelledby="price-tab">
-                                <div class="table-responsive py-3">
-                                    <t t-if="sales_order.product_order_ids">
-                                        <table class="table table-striped table-bordered">
-                                            <caption>Harga ongkir akan ditambahkan sebelum barang dikirim</caption>
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col" class="text-center">Qty</th>
-                                                    <th scope="col">Description</th>
-                                                    <th scope="col" class="text-right">Unit Price</th>
-                                                    <th scope="col" class="text-right">Amount</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr t-foreach="sales_order.price_line_ids" t-as="price_line">
-                                                    <td scope="row" class="text-center"><span t-field="price_line.qty"/> pcs</td>
-                                                    <td><span t-field="price_line.description"/></td>
-                                                    <td class="text-right"><span t-field="price_line.amount" t-options='{"widget": "monetary"}'/></td>
-                                                    <td class="text-right"><span t-field="price_line.balance" t-options='{"widget": "monetary"}'/></td>
-                                                </tr>
-                                                <tr>
-                                                    <td scope="row" colspan="3" class="text-right">Total:</td>
-                                                    <td class="text-right"><span t-field="sales_order.total_price" t-options='{"widget": "monetary"}'/></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </t>
-                                </div>
-                            </div>
                         </t>
                     </div>
-                    <t t-if="sales_order.state == 'draft' or sales_order.state == 'confirm'">
-                        <div class="card-footer text-right">
+                    <div class="card-footer text-right">
+                        <t t-if="sales_order.state == 'draft' or sales_order.state == 'confirm'">
                             <a class="btn btn-secondary" t-attf-href='/order/{{sales_order.encryption}}/edit'>Edit</a>
                             <t t-if="sales_order.state == 'confirm' and design">
                                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmModal">Confirm</button>
                             </t>
-                        </div>
-                    </t>
-                    <t t-else="">
-                        <div class="card-footer text-right">
-                            <a t-attf-href='/order/form/{{sales_order.encryption}}' class="btn btn-primary">Order lagi</a>
-                        </div>
-                    </t>
+                        </t>
+                        <a t-attf-href='/order/form/{{sales_order.encryption}}' class="btn btn-primary">Order lagi</a>
+                    </div>
                 </div>
             </div>
             <!-- Modal -->

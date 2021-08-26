@@ -122,6 +122,7 @@
                     <button string="Send" name="action_send" confirm="Are you sure you want to close this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'in', ['cancel', 'draft', 'send', 'confirm'])]}"/>
                     <button string="Cancel" name="action_cancel" type="object" confirm="Are you sure you want to cancel this record?" attrs="{'invisible': [('state', 'not in', ['draft'])]}"/>
                     <button string="Force Cancel" name="action_force_cancel" type="object" confirm="Are you sure you want to cancel this record?" invisible="1"/>
+                    <button string="Order Again" name="action_order_again_web" type="object"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirm,approve,send,cancel"/>
                 </header>
                 <sheet>

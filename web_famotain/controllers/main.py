@@ -231,7 +231,6 @@ class WebsiteFamotain(http.Controller):
                 contact_by=kw.get('input-orderby'))
             # search if customer is exist
             customer = request.env['sales__order.customer'].sudo().search([
-                ('name', '=ilike', data_customer.get('name')),('email', '=ilike', data_customer.get('email')),
                 ('phone', '=ilike', data_customer.get('phone')),
             ], limit=1)
             if customer:

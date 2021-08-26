@@ -680,6 +680,15 @@ Deadline : {deadline}
             'url': self.url
         }
 
+    def action_order_again_web(self):
+        return {
+            'name': 'Go to website',
+            'res_model': 'ir.actions.act_url',
+            'type': 'ir.actions.act_url',
+            'target': 'self',
+            'url': '%s/order/form/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), self.encryption)
+        }
+
     def print_sales_order_quotation(self):
         self.ensure_one()
         return self.env['report'].get_action(self, 'sales__order.sales_order_quotation_action_report')
