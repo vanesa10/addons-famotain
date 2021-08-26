@@ -209,6 +209,12 @@ class ProductOrder(models.Model):
                 rec.state = 'on_progress'
 
     @api.multi
+    def action_done(self):
+        for rec in self:
+            if rec.state in ['on_progress']:
+                rec.state = 'done'
+
+    @api.multi
     def action_send(self):
         for rec in self:
             if rec.state in ['confirm', 'approve', 'on_progress', 'done']:
