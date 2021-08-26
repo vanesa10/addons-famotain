@@ -72,11 +72,11 @@ class PriceLine(models.Model):
     @api.model
     def unlink(self):
         for rec in self:
-            if rec.state in ['draft']:
+            if rec.state in ['draft', 'confirm']:
                 if rec.product_order_id:
                     rec.product_order_id.price_line_id = None
                     rec.product_order_id.unlink()
-                msg = "{} Price Rp. {:,} deleted".format(rec.description, rec.debit - rec.credit)
+                msg = "{} Price Rp. {:,} price line deleted".format(rec.description, rec.debit - rec.credit)
                 rec.sales_order_id.message_post(body=msg)
                 return super(PriceLine, self).unlink()
             raise UserError(_("You can only delete a draft record"))
