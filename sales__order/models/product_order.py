@@ -169,13 +169,13 @@ class ProductOrder(models.Model):
         for rec in self:
             rec.deadline = rec.sales_order_id.deadline
 
-    @api.multi
-    def action_set_deadline_temp(self):
-        for rec in self:
-            record = rec.env['sales__order.product_order'].search([])
-            for r in record:
-                r.deadline = r.sales_order_id.deadline
-                r.name = """{}/{}""".format(r.qty, r.product_id.code)
+    # @api.multi
+    # def action_set_deadline_temp(self):
+    #     for rec in self:
+    #         record = rec.env['sales__order.product_order'].search([])
+    #         for r in record:
+    #             r.deadline = r.sales_order_id.deadline
+    #             r.name = """{}/{}""".format(r.qty, r.product_id.code)
 
     @api.multi
     def action_approve(self):
@@ -201,6 +201,12 @@ class ProductOrder(models.Model):
                 rec.state = 'cancel'
                 rec.cancel_date = fields.Datetime.now()
                 rec.cancel_uid = self.env.user.id
+
+    @api.multi
+    def action_on_progress(self):
+        for rec in self:
+            if rec.state in ['confirm', 'approve']:
+                rec.state = 'on_progress'
 
     @api.multi
     def action_send(self):
