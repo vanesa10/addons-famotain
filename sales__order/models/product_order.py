@@ -212,7 +212,7 @@ class ProductOrder(models.Model):
     def action_done(self):
         for rec in self:
             if rec.state in ['on_progress']:
-                rec.state = 'done'
+                rec.state = ''
 
     @api.multi
     def action_send(self):
