@@ -12,16 +12,18 @@ _logger = logging.getLogger(__name__)
 class ProductOrder(models.Model):
     _name = 'sales__order.product_order'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'product_type desc'
+    _order = 'deadline'
 
     @api.model
     def _default_image(self):
         image_path = get_module_resource('web', 'static/src/img', 'placeholder.png')
         return tools.image_resize_image_big(base64.b64encode(open(image_path, 'rb').read()))
 
+    name = fields.Char('Product Order', default='New', readonly=True)
     sales_order_id = fields.Many2one('sales__order.sales__order', 'Sales Order', readonly=True, required=True)
     price_line_id = fields.Many2one('sales__order.price_line', 'Price Line', readonly=True)
 
+    deadline = fields.Date('Deadline', readonly=True, compute='_compute_deadline', store=True)
     product_type = fields.Selection(PRODUCT_TYPE_LIST, 'Product Type', readonly=True, required=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]})
     product_id = fields.Many2one('famotain.product', 'Product', required=True, readonly=True,
                                  domain=[('active', '=', True)],
@@ -43,11 +45,11 @@ class ProductOrder(models.Model):
     price = fields.Monetary('Total', readonly=True, compute='_compute_price', store=True)
     currency_id = fields.Many2one('res.currency', 'Currency', readonly=True, default=lambda self: self.env.user.company_id.currency_id)
 
-    state = fields.Selection([('draft', 'Draft'), ('confirm', 'Confirmed'), ('on_progress', 'On Progress'), ('sent', 'Sent'), ('cancel', 'Cancelled')], 'State', required=True, default='draft', readonly=True, track_visibility='onchange')
+    state = fields.Selection([('draft', 'Draft'), ('confirm', 'Confirmed'), ('approve','Approved'), ('on_progress', 'On Progress'), ('done', 'Done'), ('sent', 'Sent'), ('cancel', 'Cancelled')], 'State', required=True, default='draft', readonly=True, track_visibility='onchange')
     notes = fields.Text('Notes', compute='_compute_notes', store=True)
 
-    confirm_uid = fields.Many2one('res.users', 'Confirmed By', readonly=True)
-    confirm_date = fields.Datetime('Confirmed On', readonly=True)
+    approve_uid = fields.Many2one('res.users', 'Approved By', readonly=True)
+    approve_date = fields.Datetime('Approved On', readonly=True)
     cancel_uid = fields.Many2one('res.users', 'Cancelled By', readonly=True)
     cancel_date = fields.Datetime('Cancelled On', readonly=True)
     send_uid = fields.Many2one('res.users', 'Send By', readonly=True)
@@ -59,7 +61,8 @@ class ProductOrder(models.Model):
             'sales_order_id': sales_order_id,
             'qty': qty,
             'product_id': product_id,
-            'fabric_color': fabric_color
+            'fabric_color': fabric_color,
+            'deadline': sales_order_id.deadline if sales_order_id else None
         }
 
     def create_price_line(self):
@@ -84,6 +87,7 @@ class ProductOrder(models.Model):
                 'design_image_3_small': tools.image_resize_image_medium(vals['design_image_3'].encode('ascii'))
             })
         product_order = super(ProductOrder, self).create(vals)
+        product_order.name = """{}/{}""".format(product_order.qty, product_order.product_id.code)
         price_line = product_order.create_price_line()
         product_order.price_line_id = price_line.id
         if image and product_order.product_id.product_type in ['product'] and not product_order.sales_order_id.image:
@@ -130,7 +134,7 @@ class ProductOrder(models.Model):
     @api.model
     def unlink(self):
         for rec in self:
-            if rec.state in ['draft']:
+            if rec.state in ['draft', 'confirm']:
                 if rec.price_line_id:
                     rec.price_line_id.product_order_id = None
                     rec.price_line_id.unlink()
@@ -159,18 +163,33 @@ class ProductOrder(models.Model):
             rec.notes = rec.product_id.description
 
     @api.multi
-    def action_confirm(self):
+    @api.onchange('sales_order_id')
+    @api.depends('sales_order_id')
+    def _compute_deadline(self):
         for rec in self:
-            if rec.state in ['draft']:
+            rec.deadline = rec.sales_order_id.deadline
+
+    @api.multi
+    def action_set_deadline_temp(self):
+        for rec in self:
+            record = rec.env['sales__order.product_order'].search([])
+            for r in record:
+                r.deadline = r.sales_order_id.deadline
+                r.name = """{}/{}""".format(r.qty, r.product_id.code)
+
+    @api.multi
+    def action_approve(self):
+        for rec in self:
+            if rec.state in ['confirm']:
                 rec.price_line_id.action_confirm()
-                rec.state = 'confirm'
-                rec.confirm_date = fields.Datetime.now()
-                rec.confirm_uid = self.env.user.id
+                rec.state = 'approve'
+                rec.approve_date = fields.Datetime.now()
+                rec.approve_uid = self.env.user.id
 
     @api.multi
     def action_cancel(self):
         for rec in self:
-            if rec.state in ['draft', 'confirm']:
+            if rec.state in ['draft']:
                 rec.state = 'cancel'
                 rec.cancel_date = fields.Datetime.now()
                 rec.cancel_uid = self.env.user.id
@@ -186,7 +205,7 @@ class ProductOrder(models.Model):
     @api.multi
     def action_send(self):
         for rec in self:
-            if rec.state in ['draft', 'confirm', 'on_progress']:
+            if rec.state in ['confirm', 'approve', 'on_progress', 'done']:
                 rec.state = 'sent'
                 rec.send_date = fields.Datetime.now()
                 rec.send_uid = self.env.user.id

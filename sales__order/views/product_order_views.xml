@@ -6,11 +6,48 @@
             <field name="model">sales__order.product_order</field>
             <field name="arch" type="xml">
                 <search string="Search Product Order">
-                    <field name="sales_order_id"/>
                     <field name="product_id"/>
+                    <field name="sales_order_id"/>
                     <field name="product_type"/>
-
+                    <separator/>
+                    <group>
+                        <filter string="Need Progress" name="need_progress"  domain="[('state', 'in', ['draft', 'confirm', 'approve'])]" />
+                        <filter string="Open Order" name="open_order" domain="[('state', 'in', ['confirm', 'approve', 'on_progress', 'done'])]"/>
+                        <filter string="Fix Order" name="fix_order" domain="[('state', 'in', ['confirm', 'approve', 'on_progress', 'done', 'send'])]"/>
+                    </group>
+                    <separator/>
+                    <group>
+                        <filter string="All" name="all"/>
+                        <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                        <filter string="Confirmed" name="confirm" domain="[('state','=','confirm')]"/>
+                        <filter string="Approved" name="approve" domain="[('state','=','approve')]"/>
+                        <filter string="On Progress" name="on_progress" domain="[('state','=','on_progress')]"/>
+                        <filter string="Done" name="done" domain="[('state','=','done')]"/>
+                        <filter string="Sent" name="send" domain="[('state','=','send')]"/>
+                        <filter string="Cancelled" name="cancel" domain="[('state','=','cancel')]"/>
+                    </group>
+                    <separator/>
+                    <filter name="today" string="Deadline Today" domain="[('deadline','=',time.strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="yesterday" string="Deadline Yesterday"
+                            domain="[
+                                    ('deadline', '&lt;', (context_today()).strftime('%Y-%m-%d')),
+                                    ('deadline', '&gt;=', (context_today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
+                            ]"/>
+                    <filter name="this_week" string="Deadline This Week"
+                            domain="[
+                                    '&amp;',
+                                    ('deadline', '>=', (context_today() + relativedelta(weeks=-1,days=1,weekday=0)).strftime('%Y-%m-%d')),
+                                    ('deadline', '&lt;=', (context_today() + relativedelta(weekday=6)).strftime('%Y-%m-%d')),
+                                ]"/>
+                    <filter string="Deadline This Month" name="thismonth" domain="[('deadline','&gt;=',time.strftime('%%Y-%%m-01'))]"/>
+                    <filter string="Deadline This Year" name="thisyear" domain="[('deadline','&gt;=',time.strftime('%%Y-01-01'))]"/>
+                    <filter name="next_day" string="Deadline Next Days" domain="[('deadline','&gt;=',time.strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="before_today" string="Deadline Before Today"
+                            domain="[
+                                    ('deadline', '&lt;', (context_today()).strftime('%Y-%m-%d')),
+                            ]"/>
                     <group string="Group By">
+                        <filter string="Deadline" name="group_deadline" domain="[]" context="{'group_by':'deadline'}"/>
                         <filter string="Sales Order" name="group_sales_order" domain="[]" context="{'group_by':'sales_order_id'}"/>
                         <filter string="Product" name="group_product" domain="[]" context="{'group_by':'product_id'}"/>
                         <filter string="Product Type" name="group_product_type" domain="[]" context="{'group_by':'product_type'}"/>
@@ -24,11 +61,15 @@
             <field name="name">Product Order tree</field>
             <field name="model">sales__order.product_order</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree decoration-danger="state == 'confirm'"
+                    decoration-bf="state == 'approve'"
+                    decoration-success="state == 'send' or state=='on_progress' or state=='done'"
+                    decoration-it="state == 'cancel'">
+                    <field name="deadline"/>
                     <field name="sales_order_id"/>
 <!--                    <field name="product_type"/>-->
-                    <field name="product_id"/>
                     <field name="qty"/>
+                    <field name="product_id"/>
                     <field name="currency_id" invisible="1"/>
                     <field name="product_price"/>
                     <field name="price"/>
@@ -44,53 +85,72 @@
             <field name="arch" type="xml">
                 <form delete="0" create="0" duplicate="0">
                     <header>
+                        <button string="Set Deadline Temp" name="action_set_deadline_temp" type="object"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirm,on_progress,sent,cancel"/>
                     </header>
                     <sheet>
                         <field name="design_image" widget="image" class="oe_avatar oe_left" options='{"preview_image": "design_image_small"}'/>
                         <div class="oe_title">
-                            <field name="product_type" widget='radio' options="{'horizontal': true}"/>
+                            <field name="product_type" widget='radio' options="{'horizontal': true}" class="oe_edit_only"/>
                             <h2>
                                 <field name="product_id"/>
                             </h2>
+                            <h3>
+                                <field name="sales_order_id"/>
+                            </h3>
                         </div>
-                        <group string="General Information">
-                            <group>
-                                <field name="sales_order_id" />
-                                <field name="currency_id" invisible="1"/>
-                                <field name="qty"/>
-                                <field name="fabric_color"/>
-                                <field name="ribbon_color"/>
-                                <field name="price"/>
-                                <field name="price_line_id"/>
-                            </group>
-                            <group>
-                                <label for="create_uid" string="Created By" attrs="{'invisible': [('create_date', '=', False)]}"/>
-                                <div attrs="{'invisible': [('create_date', '=', False)]}">
-                                    <field name="create_uid" class="oe_inline"/> -
-                                    <field name="create_date" class="oe_inline"/>
-                                </div>
-                                <label for="confirm_uid" string="Confirmed By" attrs="{'invisible': [('confirm_date', '=', False)]}"/>
-                                <div attrs="{'invisible': [('confirm_date', '=', False)]}">
-                                    <field name="confirm_uid" class="oe_inline"/> -
-                                    <field name="confirm_date" class="oe_inline"/>
-                                </div>
-                                <label for="send_uid" string="Sent By" attrs="{'invisible': [('send_date', '=', False)]}"/>
-                                <div attrs="{'invisible': [('send_date', '=', False)]}">
-                                    <field name="send_uid" class="oe_inline"/> -
-                                    <field name="send_date" class="oe_inline"/>
-                                </div>
-                                <label for="cancel_uid" string="Cancelled By" attrs="{'invisible': [('cancel_date', '=', False)]}"/>
-                                <div attrs="{'invisible': [('cancel_date', '=', False)]}">
-                                    <field name="cancel_uid" class="oe_inline"/> -
-                                    <field name="cancel_date" class="oe_inline"/>
-                                </div>
-                            </group>
-                        </group>
-                        <group string="Design">
-                            <group><field name="design_image_2" widget="image" class="oe_avatar"/></group>
-                            <group><field name="design_image_3" widget="image" class="oe_avatar"/></group>
-                        </group>
+                        <notebook colspan="3">
+                            <page string="General Information" name="general_information">
+                                <group>
+                                    <group>
+                                        <field name="deadline" />
+                                        <field name="fabric_color"/>
+                                        <field name="ribbon_color"/>
+                                    </group>
+                                    <group>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="qty"/>
+                                        <field name="product_price"/>
+                                        <field name="price"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Design" name="design">
+                                <group>
+                                    <group>
+                                        <field name="design_image_2" widget="image" class="oe_avatar"/>
+                                    </group>
+                                    <group>
+                                        <field name="design_image_3" widget="image" class="oe_avatar"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Additional Information" name="additional_information">
+                                <group>
+                                    <field name="price_line_id"/>
+                                    <label for="create_uid" string="Created By" attrs="{'invisible': [('create_date', '=', False)]}"/>
+                                    <div attrs="{'invisible': [('create_date', '=', False)]}">
+                                        <field name="create_uid" class="oe_inline"/> -
+                                        <field name="create_date" class="oe_inline"/>
+                                    </div>
+                                    <label for="approve_uid" string="Approved By" attrs="{'invisible': [('approve_date', '=', False)]}"/>
+                                    <div attrs="{'invisible': [('approve_date', '=', False)]}">
+                                        <field name="approve_uid" class="oe_inline"/> -
+                                        <field name="approve_date" class="oe_inline"/>
+                                    </div>
+                                    <label for="send_uid" string="Sent By" attrs="{'invisible': [('send_date', '=', False)]}"/>
+                                    <div attrs="{'invisible': [('send_date', '=', False)]}">
+                                        <field name="send_uid" class="oe_inline"/> -
+                                        <field name="send_date" class="oe_inline"/>
+                                    </div>
+                                    <label for="cancel_uid" string="Cancelled By" attrs="{'invisible': [('cancel_date', '=', False)]}"/>
+                                    <div attrs="{'invisible': [('cancel_date', '=', False)]}">
+                                        <field name="cancel_uid" class="oe_inline"/> -
+                                        <field name="cancel_date" class="oe_inline"/>
+                                    </div>
+                                </group>
+                            </page>
+                        </notebook>
                         <group string="Notes">
                             <field name="notes"/>
                         </group>
@@ -169,6 +229,85 @@
           <field name="view_mode">tree,kanban,form</field>
         </record>
 
-        <menuitem name="Product Order" id="sales__order.product_order_menu" parent="sales__order.menu_root" action="sales__order.product_order_action_window" sequence="4"/>
+        <record model="ir.actions.act_window" id="sales__order.product_order_action_need_progress">
+            <field name="name">Product Order</field>
+            <field name="res_model">sales__order.product_order</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="sales__order.product_order_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'sales__order.product_order_form',
+                    'tree_view_ref': 'sales__order.product_order_tree',
+                    'kanban_view_ref': 'sales__order.product_order_kanban',
+                    'search_default_need_progress': 1,
+                }
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="sales__order.product_order_action_open_order">
+            <field name="name">Product Order</field>
+            <field name="res_model">sales__order.product_order</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="sales__order.product_order_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'sales__order.product_order_form',
+                    'tree_view_ref': 'sales__order.product_order_tree',
+                    'kanban_view_ref': 'sales__order.product_order_kanban',
+                    'search_default_open_order': 1
+                }
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="sales__order.product_order_action_fix_order">
+            <field name="name">Product Order</field>
+            <field name="res_model">sales__order.product_order</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="sales__order.product_order_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'sales__order.product_order_form',
+                    'tree_view_ref': 'sales__order.product_order_tree',
+                    'kanban_view_ref': 'sales__order.product_order_kanban',
+                    'search_default_fix_order': 1
+                }
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="sales__order.product_order_action_done">
+            <field name="name">Product Order</field>
+            <field name="res_model">sales__order.product_order</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="sales__order.product_order_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'sales__order.product_order_form',
+                    'tree_view_ref': 'sales__order.product_order_tree',
+                    'kanban_view_ref': 'sales__order.product_order_kanban',
+                    'search_default_done': 1
+                }
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="sales__order.product_order_action_cancel">
+            <field name="name">Product Order</field>
+            <field name="res_model">sales__order.product_order</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="sales__order.product_order_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'sales__order.product_order_form',
+                    'tree_view_ref': 'sales__order.product_order_tree',
+                    'kanban_view_ref': 'sales__order.product_order_kanban',
+                    'search_default_cancel': 1
+                }
+            </field>
+        </record>
+
+        <menuitem name="Product Order" id="sales__order.product_order_menu" parent="sales__order.menu_root" action="sales__order.product_order_action_window" sequence="3"/>
+        <!-- menu categories -->
+        <menuitem name="Need Progress" id="sales__order.product_order_submenu_need_progress" parent="sales__order.product_order_menu" action="sales__order.product_order_action_need_progress" sequence="2"/>
+        <menuitem name="Open Order" id="sales__order.product_order_submenu_open_order" parent="sales__order.product_order_menu" action="sales__order.product_order_action_open_order" sequence="3"/>
+        <menuitem name="Fix Order" id="sales__order.product_order_submenu_fix_order" parent="sales__order.product_order_menu" action="sales__order.product_order_action_fix_order" sequence="4"/>
+        <menuitem name="State" id="sales__order.product_order_submenu_state" parent="sales__order.product_order_menu" sequence="5"/>
+        <menuitem name="All" id="sales__order.product_order_submenu_all" parent="sales__order.product_order_submenu_state" action="sales__order.product_order_action_window" sequence="6"/>
+        <menuitem name="Done" id="sales__order.product_order_submenu_done" parent="sales__order.product_order_submenu_state" action="sales__order.product_order_action_done" sequence="7"/>
+        <menuitem name="Cancelled" id="sales__order.product_order_submenu_cancel" parent="sales__order.product_order_submenu_state" action="sales__order.product_order_action_cancel" sequence="8"/>
     </data>
 </odoo>

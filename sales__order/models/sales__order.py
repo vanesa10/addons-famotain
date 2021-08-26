@@ -99,12 +99,12 @@ class SalesOrder(models.Model):
 
     def monthly_report_notification(self):
         # Report bulan kemaren dpt order total brp pcs sama amount brp
-        # cron every month on date 01 next month time 00:00:00
+        # cron every month on date 01 next month time 08:00:00
         last_month = datetime.today() - relativedelta(months=1)
         sales_order = self.env['sales__order.sales__order'].search([
             ('state', '!=', 'draft'), ('state', '!=', 'cancel'),
-            ('confirm_date', '<', '{}-01 00:00:00'.format(datetime.today().strftime("%Y-%m"))),
-            ('confirm_date', '>=', '{}-01 00:00:00'.format(last_month.strftime('%Y-%m')))
+            ('confirm_date', '<', '{}-01 08:00:00'.format(datetime.today().strftime("%Y-%m"))),
+            ('confirm_date', '>=', '{}-01 08:00:00'.format(last_month.strftime('%Y-%m')))
         ])
         data = {'count': 0, 'qty_total': 0, 'qty_product': 0, 'qty_label': 0, 'qty_package': 0, 'qty_addons': 0,
                 'amount_total': 0, 'amount_product': 0, 'amount_label': 0, 'amount_package': 0, 'amount_addons': 0,
@@ -236,10 +236,10 @@ Total : Rp. {new_amount_total:,.0f}
                 else """<a href="{url}">{deadline} - {name}</a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data)
             if rec.deadline == fields.Date.today():
                 msg['today'] += message
-            elif rec.state not in ['on_progress', 'done']:
-                msg['urgent'] += message
             else:
                 msg['this_week'] += message
+            if rec.state not in ['on_progress', 'done']:
+                msg['urgent'] += message
         # 4. TERLAMBAT & blm pelunasan
         sales_order = self.env['sales__order.sales__order'].search([
             ('deadline', '<', fields.Date.today()), ('state', '!=', 'cancel'), ('state', '!=', 'send')], order="deadline")
@@ -566,6 +566,8 @@ Deadline : {deadline}
                 rec.state = 'confirm'
                 rec.confirm_date = fields.Datetime.now()
                 rec.confirm_uid = self.env.user.id
+                for product_order in rec.product_order_ids:
+                    product_order.state = 'confirm'
                 msg_data = {
                     'name': rec.name,
                     # 'customer_name': rec.customer_id.name,
@@ -590,7 +592,7 @@ Deadline : {deadline}
             if rec.state in ['confirm']:
                 # DONE: confirm all product order and package order
                 for product_order in rec.product_order_ids:
-                    product_order.action_confirm()
+                    product_order.action_approve()
                 for price_line in rec.price_line_ids:
                     price_line.action_confirm()
                 rec.state = 'approve'
@@ -663,6 +665,8 @@ Deadline : {deadline}
             if rec.state not in 'approve':
                 raise UserError(_("You can only process an approved sales order"))
             rec.state = 'on_progress'
+            for product_order in rec.product_order_ids:
+                product_order.state = 'on_progress'
 
     @api.multi
     def action_done(self):
@@ -670,6 +674,8 @@ Deadline : {deadline}
             if rec.state not in ['approve', 'on_progress']:
                 raise UserError(_("You can only process an approved sales order"))
             rec.state = 'done'
+            for product_order in rec.product_order_ids:
+                product_order.state = 'done'
 
     def action_url(self):
         return {

@@ -142,6 +142,6 @@
           <field name="view_mode">tree,kanban,form</field>
         </record>
 
-        <menuitem name="Customer" id="sales__order.customer_menu" parent="sales__order.menu_root" action="sales__order.customer_action_window" sequence="3"/>
+        <menuitem name="Customer" id="sales__order.customer_menu" parent="sales__order.menu_root" action="sales__order.customer_action_window" sequence="4"/>
     </data>
 </odoo>
