@@ -220,7 +220,7 @@
             </field>
         </record>
 
-        <menuitem name="Famotain" id="famotain.menu_root" sequence="99" web_icon="famotain,static/img/logo.png"/>
+        <menuitem name="Famotain" id="famotain.menu_root" sequence="99" web_icon="famotain,static/img/logo.jpg"/>
         <menuitem name="Product" id="famotain.product_menu" parent="famotain.menu_root" action="famotain.product_action_all" sequence="1"/>
         <menuitem name="All" id="famotain.product_submenu_all" parent="famotain.product_menu" action="famotain.product_action_all" sequence="1"/>
         <menuitem name="Product" id="famotain.product_submenu_product" parent="famotain.product_menu" action="famotain.product_action_product" sequence="2"/>
