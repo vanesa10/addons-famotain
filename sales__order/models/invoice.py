@@ -176,6 +176,10 @@ class Invoice(models.Model):
                 msg = "{} ({}) - Rp. {:,} cancelled (forced)".format(self.name, self.invoice_type, self.amount)
                 self.sales_order_id.message_post(body=msg)
 
+    def print_invoice(self):
+        test = self.env['ir.actions.report'].search([('report_name', '=', 'sales__order.report_sales__order_invoice')])
+        return test.render_qweb_pdf(self.ids)
+
     def open_record(self):
         rec_id = self.id
         form_id = self.env.ref('sales__order.invoice_form')
