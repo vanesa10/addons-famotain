@@ -62,7 +62,7 @@ class ProductOrder(models.Model):
             'qty': qty,
             'product_id': product_id,
             'fabric_color': fabric_color,
-            'deadline': sales_order_id.deadline if sales_order_id else None
+            # 'deadline': sales_order_id.deadline if sales_order_id else None
         }
 
     def create_price_line(self):
@@ -87,6 +87,7 @@ class ProductOrder(models.Model):
                 'design_image_3_small': tools.image_resize_image_medium(vals['design_image_3'].encode('ascii'))
             })
         product_order = super(ProductOrder, self).create(vals)
+        product_order.deadline = product_order.sales_order_id.deadline
         product_order.name = """{}/{}""".format(product_order.qty, product_order.product_id.code)
         price_line = product_order.create_price_line()
         product_order.price_line_id = price_line.id

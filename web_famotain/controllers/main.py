@@ -40,7 +40,7 @@ class WebsiteFamotain(http.Controller):
     def create_order_form_view(self, **kw):
         try:
             packaging_list = request.env['famotain.product'].sudo().search(
-                [('product_type', '=', 'package'), ('active', '=', True)])
+                [('product_type', '=', 'package'), ('active', '=', True), ('show_on_web', '=', True)], order="price")
             label = request.env['famotain.product'].sudo().search(
                 [('product_type', '=', 'label'), ('active', '=', True)], limit=1)
             data = {
@@ -73,7 +73,7 @@ class WebsiteFamotain(http.Controller):
                 _logger.error(json.dumps(error))
                 return request.render('web_famotain.error_layout', error)
             packaging_list = request.env['famotain.product'].sudo().search(
-                [('product_type', '=', 'package'), ('active', '=', True)])
+                [('product_type', '=', 'package'), ('active', '=', True), ('show_on_web', '=', True)], order="price")
             label = request.env['famotain.product'].sudo().search(
                 [('product_type', '=', 'label'), ('active', '=', True)], limit=1)
             data = {
@@ -210,19 +210,19 @@ class WebsiteFamotain(http.Controller):
                 packaging_id = packaging.id
 
             # search if order exist
-            sales_order = request.env['sales__order.sales__order'].sudo().search(
-                [('phone', '=', kw.get('input-hp')), ('address', '=', kw.get('input-address')),
-                 ('city', '=', kw.get('input-city')), ('qty_total', '=', kw.get('input-qty')),
-                 ('deadline', '=', kw.get('input-deadline')), ('event_date', '=', kw.get('input-eventdate')),
-                 ('product', '=', kw.get('input-product')), ('theme', '=', kw.get('input-theme')),
-                 ('packaging_id', '=', packaging_id), ('packing', '=', kw.get('input-packing')),
-                 ('label', '=', kw.get('input-label')), ('custom_name', '=', kw.get('input-customname')),
-                 ('additional_text', '=', kw.get('input-additionalwriting')),
-                 ('thanks_card_writing', '=', kw.get('input-thankcardwriting')),
-                 ('custom_request', '=', kw.get('input-customrequest')), ('customer_notes', '=', kw.get('input-note')),
-                 ('add_ons', '=', kw.get('input-addons'))], limit=1)
-            if sales_order:
-                return werkzeug.utils.redirect('/order/form/created/%s' % sales_order.encryption)
+            # sales_order = request.env['sales__order.sales__order'].sudo().search(
+            #     [('phone', '=', kw.get('input-hp')), ('address', '=', kw.get('input-address')),
+            #      ('city', '=', kw.get('input-city')), ('qty_total', '=', kw.get('input-qty')),
+            #      ('deadline', '=', kw.get('input-deadline')), ('event_date', '=', kw.get('input-eventdate')),
+            #      ('product', '=', kw.get('input-product')), ('theme', '=', kw.get('input-theme')),
+            #      ('packaging_id', '=', packaging_id), ('packing', '=', kw.get('input-packing')),
+            #      ('label', '=', kw.get('input-label')), ('custom_name', '=', kw.get('input-customname')),
+            #      ('additional_text', '=', kw.get('input-additionalwriting')),
+            #      ('thanks_card_writing', '=', kw.get('input-thankcardwriting')),
+            #      ('custom_request', '=', kw.get('input-customrequest')), ('customer_notes', '=', kw.get('input-note')),
+            #      ('add_ons', '=', kw.get('input-addons'))], limit=1)
+            # if sales_order:
+            #     return werkzeug.utils.redirect('/order/form/created/%s' % sales_order.encryption)
 
             # create customer
             data_customer = request.env['sales__order.customer'].sudo().prepare_vals(

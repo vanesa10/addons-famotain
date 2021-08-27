@@ -34,6 +34,7 @@ class Product(models.Model):
     price = fields.Monetary('Price', default=0, required=True)
     currency_id = fields.Many2one('res.currency', 'Currency', readonly=True, default=lambda self: self.env.user.company_id.currency_id)
     active = fields.Boolean('Active', readonly=True, default=1)
+    show_on_web = fields.Boolean('Show On Web', readonly=True, default=1)
     product_type = fields.Selection(PRODUCT_TYPE_LIST, 'Product Type', required=True, default='product')
     notes = fields.Text('Notes')
 
@@ -82,6 +83,11 @@ class Product(models.Model):
     def _onchange_code(self):
         for rec in self:
             rec.code = rec.category_id.get_last_code()
+
+    @api.multi
+    def toggle_show_on_web(self):
+        for rec in self:
+            rec.show_on_web = not rec.show_on_web
 
 
 class ProductCategory(models.Model):
