@@ -126,7 +126,7 @@
 <!--                                </tr>-->
                                 <tr>
                                     <th class="text-center" style="border: 1px solid #dee2e6;">Notes</th>
-                                    <td style="border: 1px solid #dee2e6;"><span t-field="o.customer_notes"/></td>
+                                    <td style="border: 1px solid #dee2e6;" colspan="3"><span t-field="o.customer_notes"/></td>
                                 </tr>
                             </table>
                         </div>
