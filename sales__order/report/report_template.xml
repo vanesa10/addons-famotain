@@ -81,8 +81,10 @@
                                     <td style="border: 1px solid #dee2e6; min-width: 200px;"><span t-if="o.event_date" t-esc="o.event_date.strftime('%d-%b-%Y')"/></td>
                                 </tr>
                                 <tr>
-                                    <th class="text-center" style="border: 1px solid #dee2e6;">Theme</th>
-                                    <td style="border: 1px solid #dee2e6;"><span t-field="o.theme"/></td>
+<!--                                    <th class="text-center" style="border: 1px solid #dee2e6;">Theme</th>-->
+<!--                                    <td style="border: 1px solid #dee2e6;"><span t-field="o.theme"/></td>-->
+                                    <th class="text-center" style="border: 1px solid #dee2e6;">Custom Request</th>
+                                    <td style="border: 1px solid #dee2e6;"><span t-field="o.custom_request"/></td>
                                     <th class="text-center" style="border: 1px solid #dee2e6;">Custom Name</th>
                                     <td style="border: 1px solid #dee2e6;">
                                         <span t-if="o.custom_name=='yes'" t-field="o.custom_name"/>
@@ -116,15 +118,13 @@
 <!--                                        <span t-else="">-</span>-->
 <!--                                    </td>-->
 <!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <th class="text-center" style="border: 1px solid #dee2e6;">Additional Text</th>-->
+<!--                                    <td style="border: 1px solid #dee2e6;"><span t-field="o.additional_text"/></td>-->
+<!--                                    <th class="text-center" style="border: 1px solid #dee2e6;">Thanks Card Writing</th>-->
+<!--                                    <td style="border: 1px solid #dee2e6;"><span t-field="o.thanks_card_writing"/></td>-->
+<!--                                </tr>-->
                                 <tr>
-                                    <th class="text-center" style="border: 1px solid #dee2e6;">Additional Text</th>
-                                    <td style="border: 1px solid #dee2e6;"><span t-field="o.additional_text"/></td>
-                                    <th class="text-center" style="border: 1px solid #dee2e6;">Thanks Card Writing</th>
-                                    <td style="border: 1px solid #dee2e6;"><span t-field="o.thanks_card_writing"/></td>
-                                </tr>
-                                <tr>
-                                    <th class="text-center" style="border: 1px solid #dee2e6;">Custom Request</th>
-                                    <td style="border: 1px solid #dee2e6;"><span t-field="o.custom_request"/></td>
                                     <th class="text-center" style="border: 1px solid #dee2e6;">Notes</th>
                                     <td style="border: 1px solid #dee2e6;"><span t-field="o.customer_notes"/></td>
                                 </tr>
