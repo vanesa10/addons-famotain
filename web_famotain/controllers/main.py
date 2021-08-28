@@ -4,7 +4,7 @@ import werkzeug
 
 from odoo import http
 from odoo.addons.web.controllers.main import Home
-from odoo.http import request, serialize_exception as _serialize_exception
+from odoo.http import request, content_disposition, serialize_exception as _serialize_exception
 from ...famotain.models.encryption import decrypt
 from ...famotain.models.telegram_bot import send_telegram_message
 
@@ -370,6 +370,45 @@ class WebsiteFamotain(http.Controller):
                 'info': info
             }
             return request.render('web_famotain.order_info_layout', data)
+        except Exception as e:
+            se = _serialize_exception(e)
+            if se['name'] == "cryptography.fernet.InvalidToken":
+                error = {
+                    'name': "Your order can't be found",
+                    'message': 'Please check the requested url or contact our admin for more info.'
+                }
+            else:
+                error = {
+                    'code': 200,
+                    'name': "Server Error",
+                    'data': se,
+                    'message': 'Contact admin for more info.'
+                }
+            _logger.error(json.dumps(error))
+            return request.render('web_famotain.error_layout', error)
+
+    @http.route('/print_invoice/<code>', auth="public")
+    def print_invoice(self, code=None):
+        try:
+            inv = decrypt(code)
+            invoice = request.env['sales__order.invoice'].sudo().search([('name', '=', inv)], limit=1)
+            if not invoice:
+                error = {
+                    'name': "Your order can't be found",
+                    'message': 'Please check the requested url or contact our admin for more info.'
+                }
+                _logger.error(json.dumps(error))
+                return request.render('web_famotain.error_layout', error)
+
+            report = request.env['ir.actions.report'].sudo()._get_report_from_name('sales__order.report_sales__order_invoice')
+            pdf = report.render_qweb_pdf([invoice.id])[0]
+            filename = """{} - {}.pdf""".format(invoice.name, invoice.source_document)
+            pdfhttpheaders = [
+                ('Content-Type', 'application/pdf'),
+                ('Content-Length', len(pdf)),
+                ('Content-Disposition', content_disposition(filename))
+            ]
+            return request.make_response(pdf, headers=pdfhttpheaders)
         except Exception as e:
             se = _serialize_exception(e)
             if se['name'] == "cryptography.fernet.InvalidToken":

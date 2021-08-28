@@ -410,15 +410,15 @@ Deadline : {deadline}
                     product_type='product', sales_order_id=rec.id, qty=rec.qty_total,
                     product_id=product.id)
                 self.env['sales__order.product_order'].sudo().create(product_order_vals)
-            if product_rec and not product:
-                product_rec.sudo().unlink()
+            # if product_rec and not product:
+            #     product_rec.sudo().unlink()
             if packaging and not package_rec:
                 product_order_vals = self.env['sales__order.product_order'].prepare_vals_list(
                     product_type='package', sales_order_id=rec.id, qty=rec.qty_total,
                     product_id=packaging.id, fabric_color=rec.packing)
                 self.env['sales__order.product_order'].sudo().create(product_order_vals)
-            if package_rec and not packaging:
-                package_rec.sudo().unlink()
+            # if package_rec and not packaging:
+            #     package_rec.sudo().unlink()
             if label and not label_rec:
                 product_order_vals = self.env['sales__order.product_order'].prepare_vals_list(
                     product_type='label', sales_order_id=rec.id, qty=rec.qty_total,
@@ -478,6 +478,9 @@ Deadline : {deadline}
     @api.multi
     def write(self, vals):
         tools.image_resize_images(vals)
+        if vals.get('deadline'):
+            for product in self.product_order_ids:
+                product.deadline = vals['deadline']
         return super(SalesOrder, self).write(vals)
 
     @api.multi

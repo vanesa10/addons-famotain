@@ -4,6 +4,7 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 from datetime import date
 from dateutil.relativedelta import relativedelta
+from ...famotain.models.encryption import encrypt
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -37,6 +38,7 @@ class Invoice(models.Model):
 
     state = fields.Selection([('draft', 'Draft'), ('open', 'Open'), ('paid', 'Paid'), ('cancel', 'Cancelled')], 'State', required=True, default='draft', readonly=True, track_visibility='onchange')
     notes = fields.Text('Notes')
+    encryption = fields.Char('Encryption', compute='_compute_encryption', store=True, readonly=True)
 
     paid_uid = fields.Many2one('res.users', 'Paid By', readonly=True)
     paid_date = fields.Datetime('Paid On', readonly=True)
@@ -105,6 +107,13 @@ class Invoice(models.Model):
                     , limit=1).number_value / 100 * rec.sales_order_id.remaining
             elif rec.invoice_type in ['clearance']:
                 rec.amount = rec.sales_order_id.remaining
+
+    @api.multi
+    @api.onchange('name')
+    @api.depends('name')
+    def _compute_encryption(self):
+        for rec in self:
+            rec.encryption = encrypt(rec.name)
 
     @api.one
     def pay_invoice(self, amount, payment_date):
@@ -178,11 +187,13 @@ class Invoice(models.Model):
 
     @api.multi
     def print_invoice(self):
-        data = {
-            'ids': self.ids,
-            'model': self._name,
+        return {
+            'name': 'Go to website',
+            'res_model': 'ir.actions.act_url',
+            'type': 'ir.actions.act_url',
+            'target': 'self',
+            'url': '%s/print_invoice/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), self.encryption)
         }
-        return self.env.ref('sales__order.sales_order_invoice_action_report').report_action(self, data=data)
 
     def open_record(self):
         rec_id = self.id
@@ -214,17 +225,3 @@ class PayInvoiceWizard(models.TransientModel):
 
     def action_pay(self):
         self._default_session().pay_invoice(self.amount, self.payment_date)
-
-
-class PrintInvoice(models.AbstractModel):
-    _name = 'report.sales__order.report_sales__order_invoice'
-
-    @api.model
-    def _get_report_values(self, docids, data=None):
-        sales_order = self.env['sales__order.invoice'].search([('id', '=', data['ids'])])
-        docids = []
-        docids.append(sales_order)
-        return {
-            'docs': docids,
-            'data': data,
-        }
