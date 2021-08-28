@@ -24,22 +24,22 @@ class ProductOrder(models.Model):
     price_line_id = fields.Many2one('sales__order.price_line', 'Price Line', readonly=True)
 
     deadline = fields.Date('Deadline', readonly=True, compute='_compute_deadline', store=True)
-    product_type = fields.Selection(PRODUCT_TYPE_LIST, 'Product Type', readonly=True, required=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]})
+    product_type = fields.Selection(PRODUCT_TYPE_LIST, 'Product Type', readonly=True, required=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)]})
     product_id = fields.Many2one('famotain.product', 'Product', required=True, readonly=True,
                                  domain=[('active', '=', True)],
-                                 states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]},
+                                 states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)]},
                                  track_visibility='onchange')
     product_price = fields.Monetary('Price', related="product_id.price")
     # product_description = fields.Char('Description', related="product_id.description")
 
-    qty = fields.Integer('Qty', default=1, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]}, track_visibility='onchange')
-    fabric_color = fields.Char('Description', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]}, track_visibility='onchange')
-    ribbon_color = fields.Char('Ribbon Color', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
-    design_image = fields.Binary('Design Image', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]}, track_visibility='onchange')
+    qty = fields.Integer('Qty', default=1, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)]}, track_visibility='onchange')
+    fabric_color = fields.Char('Description', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)]}, track_visibility='onchange')
+    ribbon_color = fields.Char('Ribbon Color', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
+    design_image = fields.Binary('Design Image', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)]}, track_visibility='onchange')
     design_image_small = fields.Binary("Small-sized Design Image", attachment=True, readonly=True)
-    design_image_2 = fields.Binary('Design Image 2', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]}, track_visibility='onchange')
+    design_image_2 = fields.Binary('Design Image 2', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)]}, track_visibility='onchange')
     design_image_2_small = fields.Binary("Small-sized Design Image 2", attachment=True, readonly=True)
-    design_image_3 = fields.Binary('Design Image 3', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]}, track_visibility='onchange')
+    design_image_3 = fields.Binary('Design Image 3', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)]}, track_visibility='onchange')
     design_image_3_small = fields.Binary("Small-sized Design Image 3", attachment=True, readonly=True)
 
     price = fields.Monetary('Total', readonly=True, compute='_compute_price', store=True)
