@@ -390,8 +390,7 @@ class WebsiteFamotain(http.Controller):
     @http.route('/print_invoice/<code>', auth="public")
     def print_invoice(self, code=None):
         try:
-            inv = decrypt(code)
-            invoice = request.env['sales__order.invoice'].sudo().search([('name', '=', inv)], limit=1)
+            invoice = request.env['sales__order.invoice'].sudo().search([('name', '=', decrypt(code))], limit=1)
             if not invoice:
                 error = {
                     'name': "Your order can't be found",
@@ -402,7 +401,7 @@ class WebsiteFamotain(http.Controller):
 
             report = request.env['ir.actions.report'].sudo()._get_report_from_name('sales__order.report_sales__order_invoice')
             pdf = report.render_qweb_pdf([invoice.id])[0]
-            filename = """{} - {}.pdf""".format(invoice.name, invoice.source_document)
+            filename = """{} - {}.pdf""".format(invoice.source_document, invoice.name)
             pdfhttpheaders = [
                 ('Content-Type', 'application/pdf'),
                 ('Content-Length', len(pdf)),
