@@ -192,7 +192,7 @@ class Invoice(models.Model):
             'res_model': 'ir.actions.act_url',
             'type': 'ir.actions.act_url',
             'target': 'self',
-            'url': '%s/print_invoice/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), self.encryption)
+            'url': '%s/print_invoice/%s' % (self.env['ir.config_parameter'].sudo().get_param('web.base.url'), self.encryption)
         }
 
     def open_record(self):

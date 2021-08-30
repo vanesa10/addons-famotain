@@ -156,8 +156,8 @@ To: {to_date}
 
     def weekly_report_notification(self):
         # Report minggu ini dpt brp order
-        from_date = fields.Datetime.to_string(datetime.today() - relativedelta(days=7))
-        to_date = fields.Datetime.to_string(datetime.today())
+        from_date = '{} 00:00:00'.format((datetime.today() - relativedelta(days=7)).strftime("%Y-%m-%d"))
+        to_date = '{} 00:00:00'.format(datetime.today().strftime('%Y-%m-%d'))
         sales_order = self.env['sales__order.sales__order'].search([
             ('state', '!=', 'draft'), ('state', '!=', 'cancel'),
             ('confirm_date', '<=', to_date),
@@ -194,8 +194,8 @@ To: {to_date}
             data['total'] += rec.total_price
             data['remaining'] += rec.remaining
             data['paid'] += rec.paid
-        to_date = fields.Datetime.to_string(datetime.today())
-        from_date = fields.Datetime.to_string(datetime.today() - relativedelta(days=1))
+        from_date = '{} 00:00:00'.format((datetime.today() - relativedelta(days=1)).strftime("%Y-%m-%d"))
+        to_date = '{} 00:00:00'.format(datetime.today().strftime('%Y-%m-%d'))
         sales_order = self.env['sales__order.sales__order'].search([
             ('state', '!=', 'draft'), ('state', '!=', 'cancel'),
             ('confirm_date', '<=', to_date),
@@ -716,7 +716,7 @@ Deadline : {deadline}
             'res_model': 'ir.actions.act_url',
             'type': 'ir.actions.act_url',
             'target': 'self',
-            'url': '%s/order/form/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), self.encryption)
+            'url': '%s/order/form/%s' % (self.env['ir.config_parameter'].sudo().get_param('web.base.url'), self.encryption)
         }
 
     def print_sales_order_quotation(self):
