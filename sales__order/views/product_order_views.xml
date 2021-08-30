@@ -17,6 +17,13 @@
                     </group>
                     <separator/>
                     <group>
+                        <filter string="Product" name="product" domain="[('product_type', '=', 'product')]"/>
+                        <filter string="Package" name="package" domain="[('product_type', '=', 'package')]"/>
+                        <filter string="Label" name="label" domain="[('product_type', '=', 'label')]"/>
+                        <filter string="Addons" name="addons" domain="[('product_type', '=', 'addons')]"/>
+                    </group>
+                    <separator/>
+                    <group>
                         <filter string="All" name="all"/>
                         <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
                         <filter string="Confirmed" name="confirm" domain="[('state','=','confirm')]"/>
@@ -26,26 +33,6 @@
                         <filter string="Sent" name="send" domain="[('state','=','send')]"/>
                         <filter string="Cancelled" name="cancel" domain="[('state','=','cancel')]"/>
                     </group>
-                    <separator/>
-                    <filter name="today" string="Deadline Today" domain="[('deadline','=',time.strftime('%%Y-%%m-%%d'))]"/>
-                    <filter name="yesterday" string="Deadline Yesterday"
-                            domain="[
-                                    ('deadline', '&lt;', (context_today()).strftime('%Y-%m-%d')),
-                                    ('deadline', '&gt;=', (context_today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
-                            ]"/>
-                    <filter name="this_week" string="Deadline This Week"
-                            domain="[
-                                    '&amp;',
-                                    ('deadline', '>=', (context_today() + relativedelta(weeks=-1,days=1,weekday=0)).strftime('%Y-%m-%d')),
-                                    ('deadline', '&lt;=', (context_today() + relativedelta(weekday=6)).strftime('%Y-%m-%d')),
-                                ]"/>
-                    <filter string="Deadline This Month" name="thismonth" domain="[('deadline','&gt;=',time.strftime('%%Y-%%m-01'))]"/>
-                    <filter string="Deadline This Year" name="thisyear" domain="[('deadline','&gt;=',time.strftime('%%Y-01-01'))]"/>
-                    <filter name="next_day" string="Deadline Next Days" domain="[('deadline','&gt;=',time.strftime('%%Y-%%m-%%d'))]"/>
-                    <filter name="before_today" string="Deadline Before Today"
-                            domain="[
-                                    ('deadline', '&lt;', (context_today()).strftime('%Y-%m-%d')),
-                            ]"/>
                     <group string="Group By">
                         <filter string="Deadline" name="group_deadline" domain="[]" context="{'group_by':'deadline'}"/>
                         <filter string="Sales Order" name="group_sales_order" domain="[]" context="{'group_by':'sales_order_id'}"/>
