@@ -130,7 +130,7 @@ class SalesOrder(models.Model):
             ('state', '!=', 'draft'), ('state', '!=', 'cancel'), ('state', '!=', 'send'),
             ('confirm_date', '<', to_date),('confirm_date', '>=', from_date)
         ])
-        data = {'qty_total_open': 0, 'total_open': 0, 'count_open': 0}
+        data.update({'qty_total_open': 0, 'total_open': 0, 'count_open': 0})
         for rec in sales_order:
             data['count_open'] += 1
             data['qty_total_open'] += rec.qty_total
