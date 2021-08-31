@@ -100,13 +100,14 @@ class SalesOrder(models.Model):
     def monthly_report_notification(self):
         # Report bulan kemaren dpt order total brp pcs sama amount brp
         # cron every month on date 01 next month time 00:00:00
-        last_month = datetime.today() - relativedelta(months=1)
-        from_date = '{}-01 00:00:00'.format(datetime.today().strftime("%Y-%m"))
-        to_date = '{}-01 00:00:00'.format(last_month.strftime('%Y-%m'))
+        last_month = datetime.today()
+        next_month = datetime.today() + relativedelta(days=1)
+        to_date = '{}-01 00:00:00'.format(next_month.strftime("%Y-%m"))
+        from_date = '{}-01 00:00:00'.format(last_month.strftime('%Y-%m'))
         sales_order = self.env['sales__order.sales__order'].search([
             ('state', '!=', 'draft'), ('state', '!=', 'cancel'),
-            ('confirm_date', '<', from_date),
-            ('confirm_date', '>=', to_date)
+            ('confirm_date', '<', to_date),
+            ('confirm_date', '>=', from_date)
         ])
         data = {'count': 0, 'qty_total': 0, 'qty_product': 0, 'qty_label': 0, 'qty_package': 0, 'qty_addons': 0,
                 'amount_total': 0, 'amount_product': 0, 'amount_label': 0, 'amount_package': 0, 'amount_addons': 0,
@@ -125,6 +126,15 @@ class SalesOrder(models.Model):
             for price in rec.price_line_ids:
                 if price.prices_type:
                     data['amount_{}'.format(price.prices_type)] += price.balance
+        sales_order = self.env['sales__order.sales__order'].search([
+            ('state', '!=', 'draft'), ('state', '!=', 'cancel'), ('state', '!=', 'send'),
+            ('confirm_date', '<', to_date),('confirm_date', '>=', from_date)
+        ])
+        data = {'qty_total_open': 0, 'total_open': 0, 'count_open': 0}
+        for rec in sales_order:
+            data['count_open'] += 1
+            data['qty_total_open'] += rec.qty_total
+            data['total_open'] += rec.total_price
         msg = """
 <b>Monthly Report ({date})</b>
 ========================
@@ -134,6 +144,10 @@ Product: {qty_product}pcs
 Package: {qty_package}pcs
 Label: {qty_label}pcs
 Addons: {qty_addons}pcs
+========================
+<b>{count_open} Open Order</b>
+Qty : {qty_total_open}pcs
+Total : Rp. {total_open:,.0f}
 ========================
 Product: Rp. {amount_product:,.0f}
 Package: Rp. {amount_package:,.0f}
@@ -151,17 +165,21 @@ Charge: Rp. {amount_charge:,.0f}
 TESTING ONLY
 From: {from_date}
 To: {to_date}
+========================
+yang bener Aug-2021
+dri 01-08 00:00
+smp 01-09 00:00
 """.format(**data)
         send_telegram_message(msg, 'famotain')
 
     def weekly_report_notification(self):
         # Report minggu ini dpt brp order
-        from_date = '{} 00:00:00'.format((datetime.today() - relativedelta(days=7)).strftime("%Y-%m-%d"))
-        to_date = '{} 00:00:00'.format(datetime.today().strftime('%Y-%m-%d'))
+        from_date = '{} 00:00:00'.format((datetime.today() - relativedelta(days=6)).strftime("%Y-%m-%d"))
+        to_date = '{} 23:59:59'.format(datetime.today().strftime('%Y-%m-%d'))
         sales_order = self.env['sales__order.sales__order'].search([
             ('state', '!=', 'draft'), ('state', '!=', 'cancel'),
             ('confirm_date', '<=', to_date),
-            ('confirm_date', '>', from_date)
+            ('confirm_date', '>=', from_date)
         ])
         data = {'new_qty_total': 0, 'count': 0, 'new_amount_total': 0, 'date': fields.Date.today().strftime('%d-%b-%Y')}
         data.update({'from_date': from_date, 'to_date': to_date})
@@ -179,6 +197,10 @@ Total : Rp. {new_amount_total:,.0f}
 TESTING ONLY
 From: {from_date}
 To: {to_date}
+=======================
+buat tgl 6 harus e
+dari 30-08 00:00:00
+samp 05-09 23:59:59
 """.format(**data)
         send_telegram_message(msg, 'famotain')
 
@@ -195,11 +217,11 @@ To: {to_date}
             data['remaining'] += rec.remaining
             data['paid'] += rec.paid
         from_date = '{} 00:00:00'.format((datetime.today() - relativedelta(days=1)).strftime("%Y-%m-%d"))
-        to_date = '{} 00:00:00'.format(datetime.today().strftime('%Y-%m-%d'))
+        to_date = '{} 23:59:59'.format(datetime.today().strftime('%Y-%m-%d'))
         sales_order = self.env['sales__order.sales__order'].search([
             ('state', '!=', 'draft'), ('state', '!=', 'cancel'),
             ('confirm_date', '<=', to_date),
-            ('confirm_date', '>', from_date)
+            ('confirm_date', '>=', from_date)
         ])
         data.update({'new_qty_total': 0, 'count': 0, 'new_amount_total': 0})
         data.update({'from_date': from_date, 'to_date': to_date})
@@ -223,6 +245,10 @@ Total : Rp. {new_amount_total:,.0f}
 TESTING ONLY
 From: {from_date}
 To: {to_date}
+=======================
+harus e
+30-08 00:00
+31-08 23:59
 """.format(**data)
         send_telegram_message(msg, 'famotain')
 
