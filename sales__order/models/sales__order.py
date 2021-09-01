@@ -161,14 +161,6 @@ Charge: Rp. {amount_charge:,.0f}
 <b>TOTAL: Rp. {amount_total:,.0f}</b>
 <b>PAID: Rp. {paid:,.0f}</b>
 <b>REMAIN: Rp. {remaining:,.0f}</b>
-========================
-TESTING ONLY
-From: {from_date}
-To: {to_date}
-========================
-yang bener Aug-2021
-dri 01-08 00:00
-smp 01-09 00:00
 """.format(**data)
         send_telegram_message(msg, 'famotain')
 
@@ -193,14 +185,6 @@ smp 01-09 00:00
 <b>{count} New Order</b>
 Qty : {new_qty_total}pcs
 Total : Rp. {new_amount_total:,.0f}
-=======================
-TESTING ONLY
-From: {from_date}
-To: {to_date}
-=======================
-buat tgl 6 harus e
-dari 30-08 00:00:00
-samp 05-09 23:59:59
 """.format(**data)
         send_telegram_message(msg, 'famotain')
 
@@ -241,14 +225,6 @@ Remain : Rp. {remaining:,.0f}
 <b>{count} New Order</b>
 Qty : {new_qty_total}pcs
 Total : Rp. {new_amount_total:,.0f}
-=======================
-TESTING ONLY
-From: {from_date}
-To: {to_date}
-=======================
-harus e
-30-08 00:00
-31-08 23:59
 """.format(**data)
         send_telegram_message(msg, 'famotain')
 
