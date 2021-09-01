@@ -100,8 +100,8 @@ class SalesOrder(models.Model):
     def monthly_report_notification(self):
         # Report bulan kemaren dpt order total brp pcs sama amount brp
         # cron every month on date 01 next month time 00:00:00
-        last_month = datetime.today()
-        next_month = datetime.today() + relativedelta(days=1)
+        last_month = datetime.today() - relativedelta(days=3) #ambil bulannya aja, jd terserah days nya
+        next_month = datetime.today()
         to_date = '{}-01 00:00:00'.format(next_month.strftime("%Y-%m"))
         from_date = '{}-01 00:00:00'.format(last_month.strftime('%Y-%m'))
         sales_order = self.env['sales__order.sales__order'].search([
@@ -216,7 +216,7 @@ samp 05-09 23:59:59
             data['total'] += rec.total_price
             data['remaining'] += rec.remaining
             data['paid'] += rec.paid
-        from_date = '{} 00:00:00'.format((datetime.today() - relativedelta(days=1)).strftime("%Y-%m-%d"))
+        from_date = '{} 00:00:00'.format((datetime.today()).strftime("%Y-%m-%d"))
         to_date = '{} 23:59:59'.format(datetime.today().strftime('%Y-%m-%d'))
         sales_order = self.env['sales__order.sales__order'].search([
             ('state', '!=', 'draft'), ('state', '!=', 'cancel'),
