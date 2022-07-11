@@ -19,7 +19,7 @@ class ProductOrder(models.Model):
         image_path = get_module_resource('web', 'static/src/img', 'placeholder.png')
         return tools.image_resize_image_big(base64.b64encode(open(image_path, 'rb').read()))
 
-    name = fields.Char('Product Order', default='New', readonly=True)
+    name = fields.Char('Product Order', default='New', readonly=True, compute='_compute_name', store=True)
     sales_order_id = fields.Many2one('sales__order.sales__order', 'Sales Order', readonly=True, required=True)
     price_line_id = fields.Many2one('sales__order.price_line', 'Price Line', readonly=True)
 
@@ -88,9 +88,14 @@ class ProductOrder(models.Model):
             })
         product_order = super(ProductOrder, self).create(vals)
         product_order.deadline = product_order.sales_order_id.deadline
-        product_order.name = """{}/{}""".format(product_order.qty, product_order.product_id.code)
+        # product_order.name = """{}/{}""".format(product_order.qty, product_order.product_id.code)
         price_line = product_order.create_price_line()
         product_order.price_line_id = price_line.id
+        # create product order kalo sales order udh confirm/approve berarti product order state juga sama
+        if product_order.sales_order_id.state in ['confirm', 'approve']:
+            product_order.state = 'confirm'
+            if product_order.sales_order_id.state in ['approve']:
+                product_order.action_approve()
         if image and product_order.product_id.product_type in ['product'] and not product_order.sales_order_id.image:
             product_order.sales_order_id.image = vals['design_image']
         msg = "{}pcs {} Rp. {:,} product order created".format(product_order.qty, product_order.product_id.display_name, product_order.price)
@@ -148,6 +153,13 @@ class ProductOrder(models.Model):
     @api.onchange('product_type')
     def onchange_product_type(self):
         return {'domain': {'product_id': [('product_type', '=', self.product_type)]}}
+
+    @api.multi
+    @api.onchange('product_id', 'qty')
+    @api.depends('product_id', 'qty')
+    def _compute_name(self):
+        for rec in self:
+            rec.name = """{}/{}""".format(rec.qty, rec.product_id.code)
 
     @api.multi
     @api.onchange('product_id', 'qty')

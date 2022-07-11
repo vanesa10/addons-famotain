@@ -24,7 +24,12 @@ class WebsiteFamotain(http.Controller):
     @http.route('/links', auth='public')
     def links_view(self, **kw):
         try:
-            return request.render('web_famotain.links_layout')
+            catalog_link = request.env['famotain.settings'].sudo().search(
+                [('key_name', '=', 'catalog_link'), ('active', '=', True)], limit=1)
+            data = {
+                'catalog_link': catalog_link,
+            }
+            return request.render('web_famotain.links_layout', data)
         except Exception as e:
             se = _serialize_exception(e)
             error = {
