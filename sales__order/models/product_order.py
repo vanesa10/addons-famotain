@@ -135,8 +135,8 @@ class ProductOrder(models.Model):
             msg = "{}pcs {} Rp. {:,} product order changed to {}pcs {} Rp. {:,}".format(
                 initial_qty, initial_product_id.display_name, initial_price, self.qty, self.product_id.display_name, self.price)
             self.sales_order_id.message_post(body=msg)
-        elif any(c in vals.keys() for c in 'fabric_color'):
-            msg = "{} - {} changed to {}".format(
+        if 'fabric_color' in vals.keys():
+            msg = "{} description {} changed to {}".format(
                 initial_product_id.display_name, initial_fabric_color, self.fabric_color)
             self.sales_order_id.message_post(body=msg)
         return product_order
