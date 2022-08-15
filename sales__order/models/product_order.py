@@ -32,14 +32,14 @@ class ProductOrder(models.Model):
     product_price = fields.Monetary('Price', related="product_id.price")
     # product_description = fields.Char('Description', related="product_id.description")
 
-    qty = fields.Integer('Qty', default=1, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)]}, track_visibility='onchange')
-    fabric_color = fields.Char('Description', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)]}, track_visibility='onchange')
+    qty = fields.Integer('Qty', default=1, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
+    fabric_color = fields.Char('Description', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
     ribbon_color = fields.Char('Ribbon Color', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
-    design_image = fields.Binary('Design Image', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)]}, track_visibility='onchange')
+    design_image = fields.Binary('Design Image', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
     design_image_small = fields.Binary("Small-sized Design Image", attachment=True, readonly=True)
-    design_image_2 = fields.Binary('Design Image 2', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)]}, track_visibility='onchange')
+    design_image_2 = fields.Binary('Design Image 2', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
     design_image_2_small = fields.Binary("Small-sized Design Image 2", attachment=True, readonly=True)
-    design_image_3 = fields.Binary('Design Image 3', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)]}, track_visibility='onchange')
+    design_image_3 = fields.Binary('Design Image 3', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
     design_image_3_small = fields.Binary("Small-sized Design Image 3", attachment=True, readonly=True)
 
     price = fields.Monetary('Total', readonly=True, compute='_compute_price', store=True)
@@ -121,6 +121,7 @@ class ProductOrder(models.Model):
         initial_qty = self.qty
         initial_product_id = self.product_id
         initial_price = self.price
+        initial_fabric_color = self.fabric_color
         test = self.env['sales__order.price_line'].browse(self.price_line_id.id)
         for t in test:
             t.qty = vals['qty'] if 'qty' in vals.keys() else self.qty
@@ -134,13 +135,17 @@ class ProductOrder(models.Model):
             msg = "{}pcs {} Rp. {:,} product order changed to {}pcs {} Rp. {:,}".format(
                 initial_qty, initial_product_id.display_name, initial_price, self.qty, self.product_id.display_name, self.price)
             self.sales_order_id.message_post(body=msg)
+        elif any(c in vals.keys() for c in 'fabric_color'):
+            msg = "{} - {} changed to {}".format(
+                initial_product_id.display_name, initial_fabric_color, self.fabric_color)
+            self.sales_order_id.message_post(body=msg)
         return product_order
 
     @api.multi
     @api.model
     def unlink(self):
         for rec in self:
-            if rec.state in ['draft', 'confirm']:
+            if rec.state in ['draft', 'confirm', 'approve', 'on_progress']:
                 if rec.price_line_id:
                     rec.price_line_id.product_order_id = None
                     rec.price_line_id.unlink()
