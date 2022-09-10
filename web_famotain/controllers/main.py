@@ -248,9 +248,15 @@ class WebsiteFamotain(http.Controller):
                 customer_id=customer.id, qty_total=kw.get('input-qty'), deadline=kw.get('input-deadline'),
                 event_date=kw.get('input-eventdate'), product=kw.get('input-product'), theme=kw.get('input-theme'),
                 packaging_id=packaging_id, packing=kw.get('input-packing'), label=kw.get('input-label'),
-                custom_name=kw.get('input-customname'), additional_text=kw.get('input-additionalwriting'),
-                thanks_card_writing=kw.get('input-thankcardwriting'), custom_request=kw.get('input-customrequest'),
-                notes=kw.get('input-note'), add_ons=kw.get('input-addons'))
+                custom_name=kw.get('input-customname'), notes=kw.get('input-note'), add_ons=kw.get('input-addons'))
+            # hapus thanks card writing, additional writing, custom request
+            # data_order = request.env['sales__order.sales__order'].sudo().prepare_vals_list(
+            #     customer_id=customer.id, qty_total=kw.get('input-qty'), deadline=kw.get('input-deadline'),
+            #     event_date=kw.get('input-eventdate'), product=kw.get('input-product'), theme=kw.get('input-theme'),
+            #     packaging_id=packaging_id, packing=kw.get('input-packing'), label=kw.get('input-label'),
+            #     custom_name=kw.get('input-customname'), additional_text=kw.get('input-additionalwriting'),
+            #     thanks_card_writing=kw.get('input-thankcardwriting'), custom_request=kw.get('input-customrequest'),
+            #     notes=kw.get('input-note'), add_ons=kw.get('input-addons'))
             sales_order = request.env['sales__order.sales__order'].sudo().create(data_order)
             return werkzeug.utils.redirect('/order/form/created/%s' % sales_order.encryption)
         except Exception as e:
@@ -308,9 +314,15 @@ class WebsiteFamotain(http.Controller):
                 customer_id=customer.id, qty_total=kw.get('input-qty'), deadline=kw.get('input-deadline'),
                 event_date=kw.get('input-eventdate'), product=kw.get('input-product'), theme=kw.get('input-theme'),
                 packaging_id=packaging_id, packing=kw.get('input-packing'), label=kw.get('input-label'),
-                custom_name=kw.get('input-customname'), additional_text=kw.get('input-additionalwriting'),
-                thanks_card_writing=kw.get('input-thankcardwriting'), custom_request=kw.get('input-customrequest'),
-                notes=kw.get('input-note'), add_ons=kw.get('input-addons'))
+                custom_name=kw.get('input-customname'), notes=kw.get('input-note'), add_ons=kw.get('input-addons'))
+            # hapus thanks card writing, additional writing, custom request
+            # data_order = request.env['sales__order.sales__order'].sudo().prepare_vals_list(
+            #     customer_id=customer.id, qty_total=kw.get('input-qty'), deadline=kw.get('input-deadline'),
+            #     event_date=kw.get('input-eventdate'), product=kw.get('input-product'), theme=kw.get('input-theme'),
+            #     packaging_id=packaging_id, packing=kw.get('input-packing'), label=kw.get('input-label'),
+            #     custom_name=kw.get('input-customname'), additional_text=kw.get('input-additionalwriting'),
+            #     thanks_card_writing=kw.get('input-thankcardwriting'), custom_request=kw.get('input-customrequest'),
+            #     notes=kw.get('input-note'), add_ons=kw.get('input-addons'))
             sales_order.write_from_web(data_order)
             return werkzeug.utils.redirect('/order/form/edited/%s' % sales_order.encryption)
         except Exception as e:
@@ -405,13 +417,8 @@ class WebsiteFamotain(http.Controller):
                 return request.render('web_famotain.error_layout', error)
 
             report = request.env['ir.actions.report'].sudo()._get_report_from_name('sales__order.report_sales__order_invoice')
-            # terms n condition
-            terms_conditions = request.env['famotain.settings'].sudo().search(
-                [('key_name', '=', 'terms_conditions'), ('active', '=', True)], limit=1)
-            data = {
-                'test': terms_conditions.text_value
-            }
-            pdf = report.render_qweb_pdf([invoice.id], data)[0]
+
+            pdf = report.render_qweb_pdf([invoice.id])[0]
             filename = """{} - {}.pdf""".format(invoice.source_document, invoice.name)
             pdfhttpheaders = [
                 ('Content-Type', 'application/pdf'),

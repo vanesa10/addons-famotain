@@ -142,8 +142,7 @@ class Invoice(models.Model):
             if rec.state == 'draft':
                 rec.unlink()
             elif rec.state == 'open':
-                if rec.due_date < date.today():
-                    rec.action_cancel()
+                rec.action_cancel()
 
     @api.multi
     def action_validate(self):
@@ -235,3 +234,18 @@ class PayInvoiceWizard(models.TransientModel):
 
     def action_pay(self):
         self._default_session().pay_invoice(self.amount, self.payment_date)
+
+
+class ReportInvoice(models.AbstractModel):
+    _name = 'report.sales__order.report_sales__order_invoice'
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        return {
+            'doc_ids': docids,
+            'doc_model': 'sales__order.invoice',
+            'docs': self.env['sales__order.invoice'].browse(docids),
+            'report_type': data.get('report_type') if data else '',
+            'tnc': self.env['famotain.settings'].sudo().search(
+                [('key_name', '=', 'terms_conditions'), ('active', '=', True)], limit=1).text_value
+        }

@@ -680,9 +680,9 @@ Deadline : {deadline}
             #DONE: ga bisa di send sebelum paid
             if rec.remaining != 0:
                 raise UserError(_("This sales order isn't fully paid"))
-                # delete semua invoice yg draft dan cancel invoice open tp lewat dari due date
-                for invoice in rec.invoice_ids:
-                    invoice.auto_cancel_or_delete()
+            # delete semua invoice yg draft dan cancel invoice open tp lewat dari due date
+            for invoice in rec.invoice_ids:
+                invoice.auto_cancel_or_delete()
             # DONE: set all products order and package order to done.
             for product_order in rec.product_order_ids:
                 product_order.action_send()

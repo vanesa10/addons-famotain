@@ -65,17 +65,17 @@
                                     <input t-else="" id="input-zipcode" name="input-zipcode" type="text" class="form-control" required=""/>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="input-orderby">
-                                Pemesanan Melalui <span style="color:red;">*</span>
-                                </label>
-                                <select id="input-orderby" name="input-orderby" class="form-control" required="">
-                                    <option value="WA" selected="" t-if="not sales_order or (sales_order and sales_order.customer_id.contact_by == 'WA')">WA</option>
-                                    <option value="WA" t-else="">WA</option>
-                                    <option value="line" selected="" t-if="sales_order and sales_order.customer_id.contact_by == 'line'">Line</option>
-                                    <option value="line" t-else="">Line</option>
-                                </select>
-                            </div>
+<!--                            <div class="form-group">-->
+<!--                                <label for="input-orderby">-->
+<!--                                Pemesanan Melalui <span style="color:red;">*</span>-->
+<!--                                </label>-->
+<!--                                <select id="input-orderby" name="input-orderby" class="form-control" required="">-->
+<!--                                    <option value="WA" selected="" t-if="not sales_order or (sales_order and sales_order.customer_id.contact_by == 'WA')">WA</option>-->
+<!--                                    <option value="WA" t-else="">WA</option>-->
+<!--                                    <option value="line" selected="" t-if="sales_order and sales_order.customer_id.contact_by == 'line'">Line</option>-->
+<!--                                    <option value="line" t-else="">Line</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
                         </section>
 
                         <!-- SECTION 2 -->
@@ -159,7 +159,7 @@
                                         </t>
                                     </t>
                                 </select>
-                                <small class="form-text text-muted">Paket = sudah termasuk pita dan thankscard</small>
+<!--                                <small class="form-text text-muted">Paket = sudah termasuk pita dan thankscard</small>-->
                             </div>
                             <div id="form-packing" t-attf-class="{{packing_class}}">
                                 <legend for="input-packing" class="col-form-label pt-0">
@@ -176,7 +176,7 @@
                                 <div class="form-check">
                                   <input t-if="sales_order and sales_order.packing == 'pack'" class="form-check-input" type="radio" name="input-packing" id="input-packing-pack" value="pack" required="" checked=""/>
                                   <input t-else="" class="form-check-input" type="radio" name="input-packing" id="input-packing-pack" value="pack" required=""/>
-                                  <label class="form-check-label" for="input-packing-pack">Sudah packing</label>
+                                  <label class="form-check-label" for="input-packing-pack">Sudah terpacking (Packing di kami)</label>
                                 </div>
                                 <small class="form-text text-muted" style="margin-left: 1.3rem;">
                                     Ongkir lebih mahal karena volume
@@ -216,33 +216,33 @@
                         <!-- SECTION 4 -->
                         <h4></h4>
                         <section>
-                            <div class="form-group">
-                                <label for="input-additionalwriting">
-                                    Tambahan Penulisan
-                                </label>
-                                <textarea name="input-additionalwriting" id="input-additionalwriting" class="form-control" placeholder="CONTOH : Wilford is turning 5" style="height: 80px"><t t-if="sales_order" t-esc="sales_order.additional_text"/></textarea>
-                                <small class="form-text text-muted">
-                                    untuk dituliskan pada design tas/label dalam tas. Bisa menyusul (tulis menyusul).
-                                </small>
-                            </div>
-                            <div t-attf-class="{{thankcard_class}}" id="form-thankcard">
-                                <label for="input-thankcardwriting">
-                                    Tulisan pada thanks card
-                                </label>
-                                <textarea name="input-thankcardwriting" id="input-thankcardwriting" class="form-control" placeholder="CONTOH: Thankyou for making my birthday so special" style="height: 80px"><t t-if="sales_order" t-esc="sales_order.thanks_card_writing"/></textarea>
-                                <small class="form-text text-muted">
-                                    untuk dituliskan pada thankyou card. Bisa menyusul (tulis menyusul).
-                                </small>
-                            </div>
-                            <div class="form-group">
-                                <label for="input-customrequest">
-                                    Custom Request
-                                </label>
-                                <textarea name="input-customrequest" id="input-customrequest" class="form-control" style="height: 80px"><t t-if="sales_order" t-esc="sales_order.custom_request"/></textarea>
-                                <small class="form-text text-muted">
-                                    request khusus terkait model tas/ukuran tas/bahan tas harap dituliskan dengan jelas di kolom ini
-                                </small>
-                            </div>
+<!--                            <div class="form-group">-->
+<!--                                <label for="input-additionalwriting">-->
+<!--                                    Tambahan Penulisan-->
+<!--                                </label>-->
+<!--                                <textarea name="input-additionalwriting" id="input-additionalwriting" class="form-control" placeholder="CONTOH : Wilford is turning 5" style="height: 80px"><t t-if="sales_order" t-esc="sales_order.additional_text"/></textarea>-->
+<!--                                <small class="form-text text-muted">-->
+<!--                                    untuk dituliskan pada design tas/label dalam tas. Bisa menyusul (tulis menyusul).-->
+<!--                                </small>-->
+<!--                            </div>-->
+<!--                            <div t-attf-class="{{thankcard_class}}" id="form-thankcard">-->
+<!--                                <label for="input-thankcardwriting">-->
+<!--                                    Tulisan pada thanks card-->
+<!--                                </label>-->
+<!--                                <textarea name="input-thankcardwriting" id="input-thankcardwriting" class="form-control" placeholder="CONTOH: Thankyou for making my birthday so special" style="height: 80px"><t t-if="sales_order" t-esc="sales_order.thanks_card_writing"/></textarea>-->
+<!--                                <small class="form-text text-muted">-->
+<!--                                    untuk dituliskan pada thankyou card. Bisa menyusul (tulis menyusul).-->
+<!--                                </small>-->
+<!--                            </div>-->
+<!--                            <div class="form-group">-->
+<!--                                <label for="input-customrequest">-->
+<!--                                    Custom Request-->
+<!--                                </label>-->
+<!--                                <textarea name="input-customrequest" id="input-customrequest" class="form-control" style="height: 80px"><t t-if="sales_order" t-esc="sales_order.custom_request"/></textarea>-->
+<!--                                <small class="form-text text-muted">-->
+<!--                                    request khusus terkait model tas/ukuran tas/bahan tas harap dituliskan dengan jelas di kolom ini-->
+<!--                                </small>-->
+<!--                            </div>-->
                             <div class="form-group">
                                 <label for="input-note">
                                     Notes
