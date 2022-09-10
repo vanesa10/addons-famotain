@@ -185,14 +185,6 @@ class ProductOrder(models.Model):
         for rec in self:
             rec.deadline = rec.sales_order_id.deadline
 
-    # @api.multi
-    # def action_set_deadline_temp(self):
-    #     for rec in self:
-    #         record = rec.env['sales__order.product_order'].search([])
-    #         for r in record:
-    #             r.deadline = r.sales_order_id.deadline
-    #             r.name = """{}/{}""".format(r.qty, r.product_id.code)
-
     @api.multi
     def action_approve(self):
         for rec in self:
@@ -240,13 +232,6 @@ class ProductOrder(models.Model):
                 # rec.design_image = tools.image_resize_image_big(rec.design_image)
                 # rec.design_image_2 = tools.image_resize_image_big(rec.design_image_2)
                 # rec.design_image_3 = tools.image_resize_image_big(rec.design_image_3)
-
-    @api.multi
-    def action_force_send_temp(self):
-        for rec in self:
-            rec.state = 'sent'
-            rec.send_date = fields.Datetime.now()
-            rec.send_uid = self.env.user.id
 
     def open_record(self):
         rec_id = self.id

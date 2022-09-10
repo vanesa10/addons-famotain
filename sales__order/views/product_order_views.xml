@@ -75,8 +75,6 @@
                         <button string="Approve" name="action_approve" confirm="Are you sure you want to approve this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['confirm'])]}"/>
                         <button string="Process" name="action_on_progress" confirm="Are you sure you want to process this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'in', ['draft', 'on_progress', 'done', 'sent', 'cancel'])]}"/>
                         <button string="Done" name="action_done" confirm="Are you sure you want to process this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['on_progress'])]}"/>
-                        <button string="Force Send" name="action_force_send_temp" type="object"/>
-<!--                        <button string="Set Deadline Temp" name="action_set_deadline_temp" type="object"/>-->
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirm,approve,on_progress,done,sent,cancel"/>
                     </header>
                     <sheet>
