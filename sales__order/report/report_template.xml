@@ -282,12 +282,10 @@
 
                     <t t-if="has_history" t-raw="payment_history"/>
 
-                    <h4 class="mt32">Notes</h4>
+                    <h4 class="mt32">Payment Method</h4>
                     <div class="row">
                         <div class="col-12">
                             <ul>
-                                <li t-if="o.invoice_type=='down_payment'">DP = No Cancel</li>
-                                <li t-if="o.invoice_type=='down_payment'">Design will be made 2-3 days after payment</li>
                                 <li>Please use the following communication for your payment: <strong><span t-field="o.name"/></strong></li>
                                 <li>Make your payment promptly to the following bank account:</li>
                                 <ul>
@@ -298,6 +296,28 @@
                             </ul>
                         </div>
                     </div>
+
+<!--                    <t t-set="tnc">-->
+<!--                        <h4 class="mt32">Terms &amp; Conditions</h4>-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-12">-->
+<!--                                <ul>-->
+<!--                                    <li>DP = No Cancel</li>-->
+<!--                                    <li>Design will be made 2-3 days after payment</li>-->
+<!--                                </ul>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </t>-->
+<!--                    <t t-if="o.invoice_type=='down_payment'" t-raw="tnc"/>-->
+
+                    <p style="page-break-after:always"/>
+                    <div class="row mx-0" style="border-bottom: 1px solid #A9A9A9;">
+                        <div class="col-12 mb16">
+                            <h2 class="pt8" style="text-align:center">Terms &amp; Conditions</h2>
+                        </div>
+                    </div>
+                    <!-- buat snk lewat setting -->
+                    <t t-raw="test"/>
                     <div class="oe_structure"/>
                 </div>
             </t>

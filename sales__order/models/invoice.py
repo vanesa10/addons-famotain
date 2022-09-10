@@ -66,16 +66,18 @@ class Invoice(models.Model):
     @api.multi
     @api.model
     def unlink(self):
+        # check dulu semua record draft or not
         for rec in self:
-            if rec.state in ['draft']:
-                for invoice_line in rec.invoice_line_ids:
-                    invoice_line.unlink()
-                if rec.sales_order_id:
-                    msg = "{} ({}) - Rp. {:,} deleted".format(self.name, self.invoice_type, self.amount)
-                    self.sales_order_id.message_post(body=msg)
-                super(Invoice, self).unlink()
-            else:
+            if rec.state not in ['draft']:
                 raise UserError(_("You can only delete a draft record"))
+        # kalau semua record dh aman
+        for rec in self:
+            msg = "{} ({}) - Rp. {:,} deleted".format(rec.name, rec.invoice_type, rec.amount)
+            for invoice_line in rec.invoice_line_ids:
+                invoice_line.unlink()
+            if rec.sales_order_id:
+                rec.sales_order_id.message_post(body=msg)
+        super(Invoice, self).unlink()
 
     @api.multi
     def write(self, vals):
@@ -133,6 +135,15 @@ class Invoice(models.Model):
                     self.sales_order_id.action_confirm()
         else:
             raise UserError(_("You can only pay an open invoice"))
+
+    @api.multi
+    def auto_cancel_or_delete(self):
+        for rec in self:
+            if rec.state == 'draft':
+                rec.unlink()
+            elif rec.state == 'open':
+                if rec.due_date < date.today():
+                    rec.action_cancel()
 
     @api.multi
     def action_validate(self):

@@ -405,7 +405,13 @@ class WebsiteFamotain(http.Controller):
                 return request.render('web_famotain.error_layout', error)
 
             report = request.env['ir.actions.report'].sudo()._get_report_from_name('sales__order.report_sales__order_invoice')
-            pdf = report.render_qweb_pdf([invoice.id])[0]
+            # terms n condition
+            terms_conditions = request.env['famotain.settings'].sudo().search(
+                [('key_name', '=', 'terms_conditions'), ('active', '=', True)], limit=1)
+            data = {
+                'test': terms_conditions.text_value
+            }
+            pdf = report.render_qweb_pdf([invoice.id], data)[0]
             filename = """{} - {}.pdf""".format(invoice.source_document, invoice.name)
             pdfhttpheaders = [
                 ('Content-Type', 'application/pdf'),

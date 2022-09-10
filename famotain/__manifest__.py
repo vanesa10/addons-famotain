@@ -7,7 +7,7 @@
     'author': "Famotain",
     'website': "http://www.famotain.com",
     'version': '0.1',
-    'depends': ['base'],
+    'depends': ['base', 'mail'],
     'data': [
         'security/ir.model.access.csv',
         'data/paper_format.xml',

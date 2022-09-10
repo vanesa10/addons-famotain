@@ -10,6 +10,7 @@ PRODUCT_TYPE_LIST = [('product', 'Product'), ('package', 'Package'), ('label', '
 
 class Product(models.Model):
     _name = 'famotain.product'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'product_type, name asc'
     _description = 'Famotain Products'
     _rec_name = 'display_name'
@@ -19,24 +20,24 @@ class Product(models.Model):
         image_path = get_module_resource('web', 'static/src/img', 'placeholder.png')
         return tools.image_resize_image_big(base64.b64encode(open(image_path, 'rb').read()))
 
-    name = fields.Char('Name', required=True, index=True)
+    name = fields.Char('Name', required=True, index=True, track_visibility='onchange')
     display_name = fields.Char('Name', readonly=True, compute='_compute_name', store=True, index=True)
-    code = fields.Char('Code', index=True)
-    description = fields.Char('Description')
+    code = fields.Char('Code', index=True, track_visibility='onchange')
+    description = fields.Char('Description', track_visibility='onchange')
 
-    category_id = fields.Many2one('famotain.product_category', 'Category', domain=[('active', '=', True)])
+    category_id = fields.Many2one('famotain.product_category', 'Category', domain=[('active', '=', True)], track_visibility='onchange')
     design_Size_ids = fields.One2many('famotain.design_size', 'product_id', 'Design Sizes')
 
     image = fields.Binary("Photo", default=_default_image, attachment=True)
     image_medium = fields.Binary("Medium-sized photo", attachment=True)
     image_small = fields.Binary("Small-sized photo", attachment=True)
 
-    price = fields.Monetary('Price', default=0, required=True)
+    price = fields.Monetary('Price', default=0, required=True, track_visibility='onchange')
     currency_id = fields.Many2one('res.currency', 'Currency', readonly=True, default=lambda self: self.env.user.company_id.currency_id)
-    active = fields.Boolean('Active', readonly=True, default=1)
-    show_on_web = fields.Boolean('Show On Web', readonly=True, default=1)
-    product_type = fields.Selection(PRODUCT_TYPE_LIST, 'Product Type', required=True, default='product')
-    notes = fields.Text('Notes')
+    active = fields.Boolean('Active', readonly=True, default=1, track_visibility='onchange')
+    show_on_web = fields.Boolean('Show On Web', readonly=True, default=1, track_visibility='onchange')
+    product_type = fields.Selection(PRODUCT_TYPE_LIST, 'Product Type', required=True, default='product', track_visibility='onchange')
+    notes = fields.Text('Notes', track_visibility='onchange')
 
     _sql_constraints = [
         ('code_unique', 'unique(code)', 'code already exists!')
