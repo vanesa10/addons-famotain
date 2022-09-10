@@ -91,11 +91,9 @@ class ProductOrder(models.Model):
         # product_order.name = """{}/{}""".format(product_order.qty, product_order.product_id.code)
         price_line = product_order.create_price_line()
         product_order.price_line_id = price_line.id
-        # create product order kalo sales order udh confirm/approve berarti product order state juga sama
-        if product_order.sales_order_id.state in ['confirm', 'approve']:
+        # create product order kalo sales order udh confirm/approve/on progress berarti product order state auto confirm
+        if product_order.sales_order_id.state in ['confirm', 'approve', 'on_progress']:
             product_order.state = 'confirm'
-            if product_order.sales_order_id.state in ['approve']:
-                product_order.action_approve()
         if image and product_order.product_id.product_type in ['product'] and not product_order.sales_order_id.image:
             product_order.sales_order_id.image = vals['design_image']
         msg = "{}pcs {} Rp. {:,} product order created".format(product_order.qty, product_order.product_id.display_name, product_order.price)
@@ -242,6 +240,13 @@ class ProductOrder(models.Model):
                 # rec.design_image = tools.image_resize_image_big(rec.design_image)
                 # rec.design_image_2 = tools.image_resize_image_big(rec.design_image_2)
                 # rec.design_image_3 = tools.image_resize_image_big(rec.design_image_3)
+
+    @api.multi
+    def action_force_send_temp(self):
+        for rec in self:
+            rec.state = 'sent'
+            rec.send_date = fields.Datetime.now()
+            rec.send_uid = self.env.user.id
 
     def open_record(self):
         rec_id = self.id
