@@ -4,7 +4,7 @@ from odoo import models, fields, api
 from odoo import tools
 from odoo.modules.module import get_module_resource
 
-
+# TODO: type label diganti charge, isine ada charge 1k-15k, sama charge yg paten kaya magnet, label, tali panjang katun
 PRODUCT_TYPE_LIST = [('product', 'Product'), ('package', 'Package'), ('label', 'Label'), ('addons', 'Add-ons')]
 
 
@@ -72,6 +72,7 @@ class Product(models.Model):
         product = super(Product, self).write(vals)
         return product
 
+    # TODO: code hanya untuk product tas saja, dibuat readonly, compute name kalo product baru dikasi code, yg lain cuma title aja
     @api.multi
     @api.onchange('code', 'category_id', 'name')
     @api.depends('code', 'category_id', 'name')

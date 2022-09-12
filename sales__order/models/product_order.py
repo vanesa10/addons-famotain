@@ -94,7 +94,7 @@ class ProductOrder(models.Model):
         # create product order kalo sales order udh confirm/approve/on progress berarti product order state auto confirm
         if product_order.sales_order_id.state in ['confirm', 'approve', 'on_progress']:
             product_order.state = 'confirm'
-        if image and product_order.product_id.product_type in ['product'] and not product_order.sales_order_id.image:
+        if image and product_order.product_id.product_type in ['product', 'addons'] and not product_order.sales_order_id.image:
             product_order.sales_order_id.image = vals['design_image']
         msg = "{}pcs {} Rp. {:,} product order created".format(product_order.qty, product_order.product_id.display_name, product_order.price)
         product_order.sales_order_id.message_post(body=msg)

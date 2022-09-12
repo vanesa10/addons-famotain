@@ -13,7 +13,7 @@ class Customer(models.Model):
     name = fields.Char('Name', required=True, track_visibility='onchange')
     email = fields.Char('Email', required=True, track_visibility='onchange')
     phone = fields.Char('Phone', required=True, track_visibility='onchange')
-    contact_by = fields.Selection([('WA', 'Whatsapp (WA)'), ('line', 'Line')], required=True, track_visibility='onchange')
+    contact_by = fields.Selection([('WA', 'Whatsapp (WA)'), ('line', 'Line')], track_visibility='onchange')
     address = fields.Text('Address', required=True, track_visibility='onchange')
     city = fields.Char('City', track_visibility='onchange')
     zip_code = fields.Char('Zip Code', track_visibility='onchange')
@@ -49,7 +49,7 @@ class Customer(models.Model):
                 sale_order_count += 1
             self.sale_order_count = sale_order_count
 
-    def prepare_vals(self, name, email, phone, contact_by, address, city="", zip_code=""):
+    def prepare_vals(self, name, email, phone, address, contact_by="WA", city="", zip_code=""):
         return {
             'name': str(name).capitalize(),
             'email': str(email).lower(),

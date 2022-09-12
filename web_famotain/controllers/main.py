@@ -230,10 +230,13 @@ class WebsiteFamotain(http.Controller):
             #     return werkzeug.utils.redirect('/order/form/created/%s' % sales_order.encryption)
 
             # create customer
+            # data_customer = request.env['sales__order.customer'].sudo().prepare_vals(
+            #     name=kw.get('input-name'), phone=kw.get('input-hp'), email=kw.get('input-email'),
+            #     address=kw.get('input-address'), city=kw.get('input-city'), zip_code=kw.get('input-zipcode'),
+            #     contact_by=kw.get('input-orderby'))
             data_customer = request.env['sales__order.customer'].sudo().prepare_vals(
                 name=kw.get('input-name'), phone=kw.get('input-hp'), email=kw.get('input-email'),
-                address=kw.get('input-address'), city=kw.get('input-city'), zip_code=kw.get('input-zipcode'),
-                contact_by=kw.get('input-orderby'))
+                address=kw.get('input-address'), city=kw.get('input-city'), zip_code=kw.get('input-zipcode'))
             # search if customer is exist
             customer = request.env['sales__order.customer'].sudo().search([
                 ('phone', '=ilike', data_customer.get('phone')),
@@ -292,10 +295,13 @@ class WebsiteFamotain(http.Controller):
                 _logger.error(json.dumps(error))
                 return request.render('web_famotain.error_layout', error)
             # edit customer
+            # data_customer = request.env['sales__order.customer'].sudo().prepare_vals(
+            #     name=kw.get('input-name'), phone=kw.get('input-hp'), email=kw.get('input-email'),
+            #     address=kw.get('input-address'), city=kw.get('input-city'), zip_code=kw.get('input-zipcode'),
+            #     contact_by=kw.get('input-orderby'))
             data_customer = request.env['sales__order.customer'].sudo().prepare_vals(
                 name=kw.get('input-name'), phone=kw.get('input-hp'), email=kw.get('input-email'),
-                address=kw.get('input-address'), city=kw.get('input-city'), zip_code=kw.get('input-zipcode'),
-                contact_by=kw.get('input-orderby'))
+                address=kw.get('input-address'), city=kw.get('input-city'), zip_code=kw.get('input-zipcode'))
             customer = request.env['sales__order.customer'].sudo().browse(sales_order.customer_id.id)
             customer.sudo().write(data_customer)
 
