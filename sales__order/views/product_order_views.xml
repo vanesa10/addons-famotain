@@ -193,20 +193,6 @@
                                         </div>
                                     </div>
                                 </div>
-<!--                                <div class="o_kanban_record_top mb16">-->
-<!--                                    <div class="o_kanban_record_headings mt4">-->
-<!--                                        <strong class="o_kanban_record_title"><span><t t-esc="record.qty.value"/> - <t t-esc="record.product_id.value"/> @ <field name="product_price" widget="monetary"/></span></strong>-->
-<!--                                    </div>-->
-<!--                                    <strong groups="famotain.famotain_manager"><field name="price" widget="monetary"/></strong>-->
-<!--                                </div>-->
-<!--                                <div class="o_kanban_record_bottom">-->
-<!--                                    <div class="oe_kanban_bottom_left text-muted">-->
-<!--                                        Desc: <t t-esc="record.fabric_color.value"/>-->
-<!--                                    </div>-->
-<!--                                    <div class="oe_kanban_bottom_right">-->
-<!--                                        <field name="state" widget="label_selection" options="{'classes': {'draft': 'warning', 'confirm': 'info', 'on_progress': 'info', 'sent': 'success', 'cancel': 'default'}}"/>-->
-<!--                                    </div>-->
-<!--                                </div>-->
                             </div>
                         </t>
                     </templates>
@@ -236,6 +222,17 @@
                     'search_default_product_id': active_id,
                     'search_default_fix_order': 1
                 }
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="sales__order.product_order_product_inherit_search">
+            <field name="name">Product Order Product Inherit Search</field>
+            <field name="model">famotain.product</field>
+            <field name="inherit_id" ref="famotain.product_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='open_order']"  position="inside">
+                    <filter string="Open Order" name="open_order_count" domain="[('open_order_count', '>=', 1)]"/>
+                </xpath>
             </field>
         </record>
 

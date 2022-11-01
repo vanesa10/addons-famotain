@@ -8,6 +8,10 @@
                     <field name="name"/>
                     <field name="code"/>
                     <separator/>
+                    <group name="open_order">
+
+                    </group>
+                    <separator/>
                     <group>
                         <filter string="All" name="all"/>
                         <filter string="Product" name="product" domain="[('product_type','=','product')]"/>
@@ -235,12 +239,31 @@
             </field>
         </record>
 
+        <record model="ir.actions.act_window" id="famotain.product_action_open_order">
+            <field name="name">Product</field>
+            <field name="res_model">famotain.product</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="search_view_id" ref="famotain.product_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'famotain.product_form',
+                    'tree_view_ref': 'famotain.product_tree',
+                    'kanban_view_ref': 'famotain.product_kanban',
+                    'search_default_open_order_count': 1
+                }
+            </field>
+        </record>
+
+        <menuitem name="Open Order" id="famotain.product_open_order_menu" parent="famotain.product_menu" action="famotain.product_action_open_order" sequence="0"/>
+
         <menuitem name="Famotain" id="famotain.menu_root" sequence="99" web_icon="famotain,static/img/logo.jpg"/>
         <menuitem name="Product" id="famotain.product_menu" parent="famotain.menu_root" action="famotain.product_action_all" sequence="1"/>
-        <menuitem name="All" id="famotain.product_submenu_all" parent="famotain.product_menu" action="famotain.product_action_all" sequence="1"/>
-        <menuitem name="Product" id="famotain.product_submenu_product" parent="famotain.product_menu" action="famotain.product_action_product" sequence="2"/>
-        <menuitem name="Package" id="famotain.product_submenu_package" parent="famotain.product_menu" action="famotain.product_action_package" sequence="3"/>
-        <menuitem name="Charge" id="famotain.product_submenu_charge" parent="famotain.product_menu" action="famotain.product_action_charge" sequence="4"/>
-        <menuitem name="Add-ons" id="famotain.product_submenu_add_ons" parent="famotain.product_menu" action="famotain.product_action_addons" sequence="5"/>
+
+        <menuitem name="Product Type" id="famotain.product_submenu_type" parent="famotain.product_menu" sequence="1"/>
+        <menuitem name="All" id="famotain.product_submenu_all" parent="famotain.product_submenu_type" action="famotain.product_action_all" sequence="1"/>
+        <menuitem name="Product" id="famotain.product_submenu_product" parent="famotain.product_submenu_type" action="famotain.product_action_product" sequence="2"/>
+        <menuitem name="Package" id="famotain.product_submenu_package" parent="famotain.product_submenu_type" action="famotain.product_action_package" sequence="3"/>
+        <menuitem name="Charge" id="famotain.product_submenu_charge" parent="famotain.product_submenu_type" action="famotain.product_action_charge" sequence="4"/>
+        <menuitem name="Add-ons" id="famotain.product_submenu_add_ons" parent="famotain.product_submenu_type" action="famotain.product_action_addons" sequence="5"/>
     </data>
 </odoo>
