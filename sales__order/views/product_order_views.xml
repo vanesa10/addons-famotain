@@ -159,7 +159,7 @@
           <field name="arch" type="xml">
                 <kanban class="o_kanban_mobile" quick_create="0" archivable="0">
                     <field name="id"/>
-                    <field name="design_image"/>
+                    <field name="design_image_small"/>
                     <field name="qty"/>
                     <field name="product_id"/>
                     <field name="fabric_color"/>
@@ -173,7 +173,7 @@
                                 <div class="row mt4">
                                     <div class="col-2">
                                         <div class="o_kanban_image">
-                                            <img alt="Avatar" t-att-src="kanban_image('sales__order.product_order', 'design_image', record.id.raw_value)"/>
+                                            <img alt="Avatar" t-att-src="kanban_image('sales__order.product_order', 'design_image_small', record.id.raw_value)"/>
                                         </div>
                                     </div>
                                     <div class="col-10" style="padding-left:20px">
