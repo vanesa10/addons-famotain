@@ -721,7 +721,7 @@ Deadline : {deadline}
                 raise UserError(_("You can only process an approved sales order"))
             rec.state = 'done'
             for product_order in rec.product_order_ids:
-                product_order.state = 'done'
+                product_order.action_done()
 
     def action_url(self):
         return {
