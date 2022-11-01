@@ -4,4 +4,4 @@ access_famotain_product_category,famotain.product_category,model_famotain_produc
 access_famotain_fabric,famotain.fabric,model_famotain_fabric,base.group_user,1,1,1,0
 access_famotain_courier_shipment,famotain.courier_shipment,model_famotain_courier_shipment,base.group_user,1,1,1,0
 access_famotain_design_size,famotain.design_size,model_famotain_design_size,base.group_user,1,1,1,0
-access_famotain_settings,famotain.settings,model_famotain_settings,famotain.famotain_manager,1,1,1,0
+access_famotain_settings,famotain.settings,model_famotain_settings,base.group_user,1,1,1,0
