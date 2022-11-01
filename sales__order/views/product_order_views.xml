@@ -59,8 +59,7 @@
                     <field name="product_id"/>
                     <field name="currency_id" invisible="1"/>
                     <field name="product_price"/>
-<!--                    <field name="price" sum="Total" groups="famotain.famotain_manager"/>-->
-                    <field name="price" sum="Total"/>
+                    <field name="price" sum="Total" groups="famotain.famotain_manager"/>
                     <field name="state"/>
 <!--                    <button name="open_record" type="object" class="oe_highlight" icon="fa-asterisk text-success"/>-->
                 </tree>
@@ -175,8 +174,7 @@
                                     <div class="o_kanban_record_headings mt4">
                                         <strong class="o_kanban_record_title"><span><t t-esc="record.qty.value"/> - <t t-esc="record.product_id.value"/> @ <field name="product_price" widget="monetary"/></span></strong>
                                     </div>
-<!--                                    <strong groups="famotain.famotain_manager"><field name="price" widget="monetary"/></strong>-->
-                                    <strong><field name="price" widget="monetary"/></strong>
+                                    <strong groups="famotain.famotain_manager"><field name="price" widget="monetary"/></strong>
                                 </div>
                                 <div class="o_kanban_record_bottom">
                                     <div class="oe_kanban_bottom_left text-muted">
@@ -227,8 +225,7 @@
                     <button class="oe_stat_button" type="action" name="%(sales__order.act_open_order_count)d" icon="fa-folder-open">
                         <field string="Orders" name="open_order_count" widget="statinfo"/>
                     </button>
-<!--                    <button class="oe_stat_button" type="action" name="%(sales__order.act_fix_order_qty)d" icon="fa-shopping-cart" groups="famotain.famotain_manager">-->
-                    <button class="oe_stat_button" type="action" name="%(sales__order.act_fix_order_qty)d" icon="fa-shopping-cart">
+                    <button class="oe_stat_button" type="action" name="%(sales__order.act_fix_order_qty)d" icon="fa-shopping-cart" groups="famotain.famotain_manager">
                         <field string="pcs sold" name="fix_order_qty" widget="statinfo"/>
                     </button>
                 </xpath>
@@ -241,13 +238,11 @@
             <field name="inherit_id" ref="famotain.product_kanban"/>
             <field name="arch" type="xml">
                 <xpath expr="//kanban[@class='o_kanban_mobile']" position="inside">
-                    <field name="fix_order_qty"/>
-<!--                    <field name="fix_order_qty" groups="famotain.famotain_manager"/>-->
+                    <field name="fix_order_qty" groups="famotain.famotain_manager"/>
                     <field name="open_order_count"/>
                 </xpath>
                 <xpath expr="//li[@class='inherit1']" position="inside">
-                    <span class="badge badge-pill badge-success float-right mt4 mr16"><i class="fa fa-fw fa-shopping-cart" aria-label="Sold" role="img" title="Sold"/> <t t-esc="record.fix_order_qty.value"/></span>
-<!--                    <span class="badge badge-pill badge-success float-right mt4 mr16" groups="famotain.famotain_manager"><i class="fa fa-fw fa-shopping-cart" aria-label="Sold" role="img" title="Sold"/> <t t-esc="record.fix_order_qty.value"/></span>-->
+                    <span class="badge badge-pill badge-success float-right mt4 mr16" groups="famotain.famotain_manager"><i class="fa fa-fw fa-shopping-cart" aria-label="Sold" role="img" title="Sold"/> <t t-esc="record.fix_order_qty.value"/></span>
                 </xpath>
                 <xpath expr="//li[@class='inherit2']" position="inside">
                     <span t-if="record.open_order_count.value!=0" class="badge badge-pill badge-info float-right mt4 mr16"><i class="fa fa-fw fa-folder-open" aria-label="Sold" role="img" title="Sold"/> <t t-esc="record.open_order_count.value"/></span>
@@ -261,9 +256,7 @@
             <field name="inherit_id" ref="famotain.product_tree"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='currency_id']" position="after">
-                    <field name="fix_order_qty"/>
-<!--                    <field name="fix_order_qty" groups="famotain.famotain_manager"/>-->
-                    <field name="open_order_count"/>
+                    <field name="fix_order_qty" groups="famotain.famotain_manager"/>
                     <field name="open_order_count" groups="famotain.famotain_manager"/>
                 </xpath>
             </field>
