@@ -70,7 +70,7 @@ class SalesOrder(models.Model):
     paid = fields.Monetary('Paid', readonly=True, track_visibility='onchange')
     remaining = fields.Monetary('Remaining', compute='_compute_remaining', readonly=True, store=True, track_visibility='onchange')
 
-    url = fields.Char('URL', compute='_compute_url', store=True, readonly=True)
+    # url = fields.Char('URL', compute='_compute_url', store=True, readonly=True)
     encryption = fields.Char('Encryption', compute='_compute_url', store=True, readonly=True)
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -238,7 +238,8 @@ Total : Rp. {new_amount_total:,.0f}
         ], order="deadline")
         notif = "<b>Need tobe designed:</b>\n========================\n"
         for rec in sales_order:
-            msg_data = {'url': rec.url, 'deadline': rec.deadline.strftime('%d-%b'), 'name': rec.name,
+            url = '%s/order/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), rec.encryption)
+            msg_data = {'url': url, 'deadline': rec.deadline.strftime('%d-%b'), 'name': rec.name,
                         'theme': rec.theme, 'qty': rec.qty_total, 'product': rec.product}
             if rec.deadline < fields.Date.today() + relativedelta(days=10):
                 notif += """<a href="{url}"><b>{deadline} - {name}</b></a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data)
@@ -256,7 +257,8 @@ Total : Rp. {new_amount_total:,.0f}
         ], order="deadline")
         msg = {'today': "", 'urgent': "", 'this_week': "", 'late': "", 'need_clearance': ""}
         for rec in sales_order:
-            msg_data = {'url': rec.url, 'deadline': rec.deadline.strftime('%d-%b'), 'name': rec.name,
+            url = '%s/order/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), rec.encryption)
+            msg_data = {'url': url, 'deadline': rec.deadline.strftime('%d-%b'), 'name': rec.name,
                         'theme': rec.theme, 'qty': rec.qty_total, 'product': rec.product}
             message = """<a href="{url}"><b>{deadline} - {name}</b></a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data) if rec.state == 'draft' \
                 else """<a href="{url}">{deadline} - {name}</a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data)
@@ -270,7 +272,8 @@ Total : Rp. {new_amount_total:,.0f}
         sales_order = self.env['sales__order.sales__order'].search([
             ('deadline', '<', fields.Date.today()), ('state', '!=', 'cancel'), ('state', '!=', 'send')], order="deadline")
         for rec in sales_order:
-            msg_data = {'url': rec.url, 'deadline': rec.deadline.strftime('%d-%b'), 'name': rec.name,
+            url = '%s/order/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), rec.encryption)
+            msg_data = {'url': url, 'deadline': rec.deadline.strftime('%d-%b'), 'name': rec.name,
                         'theme': rec.theme, 'qty': rec.qty_total, 'product': rec.product}
             if rec.state == 'done':
                 msg['need_clearance'] += """<a href="{url}"><b>{deadline} - {name}</b></a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data) if rec.state == 'draft' \
@@ -364,7 +367,7 @@ Total : Rp. {new_amount_total:,.0f}
             'theme': sales_order.theme,
             # 'packaging': sales_order.packaging_id.name if sales_order.packaging_id else '',
             # 'packing': sales_order.packing,
-            'url': sales_order.url,
+            'url': '%s/order/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), sales_order.encryption),
             # 'custom_request': sales_order.custom_request if sales_order.custom_request else '-',
             # 'notes': sales_order.customer_notes if sales_order.customer_notes else '-'
         }
@@ -489,7 +492,7 @@ Deadline : {deadline}
                 'theme': rec.theme,
                 # 'packaging': rec.packaging_id.name,
                 # 'packing': rec.packing,
-                'url': rec.url,
+                'url': '%s/order/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), rec.encryption),
                 # 'custom_request': rec.custom_request if rec.custom_request else '-',
                 # 'notes': rec.customer_notes if rec.customer_notes else '-'
             }
@@ -550,7 +553,7 @@ Deadline : {deadline}
     def _compute_url(self):
         for rec in self:
             rec.encryption = encrypt(rec.name)
-            rec.url = '%s/order/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), rec.encryption)
+            # rec.url = '%s/order/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), rec.encryption)
 
     @api.multi
     @api.onchange('price_line_ids', 'product_order_ids')
@@ -606,7 +609,7 @@ Deadline : {deadline}
                 rec.confirm_date = fields.Datetime.now()
                 rec.confirm_uid = self.env.user.id
                 for product_order in rec.product_order_ids:
-                    product_order.state = 'confirm'
+                    product_order.action_confirm()
                 msg_data = {
                     'name': rec.name,
                     # 'customer_name': rec.customer_id.name,
@@ -614,7 +617,7 @@ Deadline : {deadline}
                     'qty_total': rec.qty_total,
                     'product': rec.product,
                     'theme': rec.theme,
-                    'url': rec.url
+                    'url': '%s/order/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), rec.encryption)
                 }
                 msg = """
 <a href="{url}"><b>{name} CONFIRMED</b></a>
@@ -644,7 +647,7 @@ Deadline : {deadline}
                     'qty_total': rec.qty_total,
                     'product': rec.product,
                     'theme': rec.theme,
-                    'url': rec.url
+                    'url':'%s/order/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), rec.encryption)
                 }
                 msg = """
 <a href="{url}"><b>{name} APPROVED</b></a>
@@ -674,14 +677,15 @@ Deadline : {deadline}
     @api.multi
     def action_force_cancel(self):
         for rec in self:
-            for product_order in rec.product_order_ids:
-                product_order.action_force_cancel()
-            for invoice in rec.invoice_ids:
-                if invoice.state != 'cancel':
-                    invoice.action_force_cancel()
-            rec.state = 'cancel'
-            rec.cancel_date = fields.Datetime.now()
-            rec.cancel_uid = self.env.user.id
+            if rec.state != 'send':
+                for product_order in rec.product_order_ids:
+                    product_order.action_force_cancel()
+                for invoice in rec.invoice_ids:
+                    if invoice.state != 'cancel':
+                        invoice.action_force_cancel()
+                rec.state = 'cancel'
+                rec.cancel_date = fields.Datetime.now()
+                rec.cancel_uid = self.env.user.id
 
     @api.multi
     def action_send(self):
@@ -725,7 +729,7 @@ Deadline : {deadline}
             'res_model': 'ir.actions.act_url',
             'type': 'ir.actions.act_url',
             'target': 'self',
-            'url': self.url
+            'url': '%s/order/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), self.encryption)
         }
 
     def action_order_again_web(self):

@@ -1,7 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_famotain_product,famotain.product,model_famotain_product,base.group_user,1,1,1,0
-access_famotain_product_category,famotain.product_category,model_famotain_product_category,base.group_user,1,1,1,0
-access_famotain_fabric,famotain.fabric,model_famotain_fabric,base.group_user,1,1,1,0
-access_famotain_courier_shipment,famotain.courier_shipment,model_famotain_courier_shipment,base.group_user,1,1,1,0
-access_famotain_design_size,famotain.design_size,model_famotain_design_size,base.group_user,1,1,1,0
-access_famotain_settings,famotain.settings,model_famotain_settings,base.group_user,1,1,1,0
+access_famotain_product,famotain.product,model_famotain_product,famotain.famotain_user,1,1,1,0
+access_famotain_product_category,famotain.product_category,model_famotain_product_category,famotain.famotain_user,1,1,1,0
+access_famotain_fabric,famotain.fabric,model_famotain_fabric,famotain.famotain_user,1,1,1,0
+access_famotain_courier_shipment,famotain.courier_shipment,model_famotain_courier_shipment,famotain.famotain_user,1,1,1,0
+access_famotain_design_size,famotain.design_size,model_famotain_design_size,famotain.famotain_user,1,1,1,0
+access_famotain_settings,famotain.settings,model_famotain_settings,famotain.famotain_manager,1,1,1,0

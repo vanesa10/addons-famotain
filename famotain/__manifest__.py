@@ -10,6 +10,7 @@
     'depends': ['base', 'mail'],
     'data': [
         'security/ir.model.access.csv',
+        'security/famotain_security.xml',
         'data/paper_format.xml',
         'data/settings.xml',
         'data/courier_shipment.xml',

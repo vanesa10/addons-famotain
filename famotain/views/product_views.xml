@@ -88,7 +88,7 @@
                                 options='{"terminology": "archive"}'/>
                         </button>
                         <button name="toggle_show_on_web" type="object"
-                                class="oe_stat_button" icon="fa-eye">
+                                class="oe_stat_button" icon="fa-globe">
                             <field name="show_on_web" widget="boolean_button"/>
                         </button>
                     </div>

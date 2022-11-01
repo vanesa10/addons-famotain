@@ -29,7 +29,7 @@ class ProductOrder(models.Model):
                                  domain=[('active', '=', True)],
                                  states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)]},
                                  track_visibility='onchange')
-    product_price = fields.Monetary('Price', related="product_id.price")
+    product_price = fields.Monetary('Price', related="price_line_id.amount")
     # product_description = fields.Char('Description', related="product_id.description")
 
     qty = fields.Integer('Qty', default=1, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
@@ -93,7 +93,7 @@ class ProductOrder(models.Model):
         product_order.price_line_id = price_line.id
         # create product order kalo sales order udh confirm/approve/on progress berarti product order state auto confirm
         if product_order.sales_order_id.state in ['confirm', 'approve', 'on_progress']:
-            product_order.state = 'confirm'
+            product_order.action_confirm()
         if image and product_order.product_id.product_type in ['product', 'addons'] and not product_order.sales_order_id.image:
             product_order.sales_order_id.image = vals['design_image']
         msg = "{}pcs {} Rp. {:,} product order created".format(product_order.qty, product_order.product_id.display_name, product_order.price)
@@ -130,6 +130,9 @@ class ProductOrder(models.Model):
                 t.description = product.name
         product_order = super(ProductOrder, self).write(vals)
         if any(c in vals.keys() for c in ('qty', 'product_id')):
+            self.product_id.compute_product_order_count()
+            if 'product_id' in vals.keys():
+                initial_product_id.compute_product_order_count()
             msg = "{}pcs {} Rp. {:,} product order changed to {}pcs {} Rp. {:,}".format(
                 initial_qty, initial_product_id.display_name, initial_price, self.qty, self.product_id.display_name, self.price)
             self.sales_order_id.message_post(body=msg)
@@ -144,6 +147,9 @@ class ProductOrder(models.Model):
     def unlink(self):
         for rec in self:
             if rec.state in ['draft', 'confirm', 'approve', 'on_progress']:
+                if rec.state != 'draft':
+                    rec.product_id.change_open_order_count(-1)
+                    rec.product_id.change_fix_order_qty(rec.qty * -1)
                 if rec.price_line_id:
                     rec.price_line_id.product_order_id = None
                     rec.price_line_id.unlink()
@@ -186,6 +192,14 @@ class ProductOrder(models.Model):
             rec.deadline = rec.sales_order_id.deadline
 
     @api.multi
+    def action_confirm(self):
+        for rec in self:
+            if rec.state in ['draft']:
+                rec.state = 'confirm'
+                rec.product_id.change_open_order_count(1)
+                rec.product_id.change_fix_order_qty(rec.qty)
+
+    @api.multi
     def action_approve(self):
         for rec in self:
             if rec.state in ['confirm']:
@@ -201,14 +215,20 @@ class ProductOrder(models.Model):
                 rec.state = 'cancel'
                 rec.cancel_date = fields.Datetime.now()
                 rec.cancel_uid = self.env.user.id
+                # rec.product_id.compute_product_order_count()
 
     @api.multi
     def action_force_cancel(self):
         for rec in self:
             if rec.state not in ['cancel', 'sent']:
+                if rec.state != 'draft':
+                    if rec.state != 'done':
+                        rec.product_id.change_open_order_count(-1)
+                    rec.product_id.change_fix_order_qty(rec.qty * -1)
                 rec.state = 'cancel'
                 rec.cancel_date = fields.Datetime.now()
                 rec.cancel_uid = self.env.user.id
+                # rec.product_id.compute_product_order_count()
 
     @api.multi
     def action_on_progress(self):
@@ -221,11 +241,14 @@ class ProductOrder(models.Model):
         for rec in self:
             if rec.state in ['on_progress']:
                 rec.state = 'done'
+                rec.product_id.change_open_order_count(-1)
 
     @api.multi
     def action_send(self):
         for rec in self:
             if rec.state in ['confirm', 'approve', 'on_progress', 'done']:
+                if rec.state != 'done':
+                    rec.product_id.change_open_order_count(-1)
                 rec.state = 'sent'
                 rec.send_date = fields.Datetime.now()
                 rec.send_uid = self.env.user.id
@@ -254,8 +277,8 @@ class Product(models.Model):
     _inherit = 'famotain.product'
 
     product_order_ids = fields.One2many('sales__order.product_order', 'product_id', string='Product Orders')
-    product_order_count = fields.Integer('Order Count', compute='_compute_product_order_count', store=True)
-    product_order_qty = fields.Integer('Order Qty', compute='_compute_product_order_count', store=True)
+    open_order_count = fields.Integer('Open Order', compute='_compute_product_order_count', store=True)
+    fix_order_qty = fields.Integer('Fix Order Qty', compute='_compute_product_order_count', store=True)
 
     @api.multi
     @api.onchange('product_order_ids')
@@ -266,18 +289,37 @@ class Product(models.Model):
                 order_count = 0
                 order_qty = 0
                 for r in rec.product_order_ids:
-                    order_count += 1
                     if r.state not in ['draft', 'cancel']:
                         order_qty += r.qty
-                rec.product_order_count = order_count
-                rec.product_order_qty = order_qty
+                        if r.state not in ['sent', 'done']:
+                            order_count += 1
+                rec.open_order_count = order_count
+                rec.fix_order_qty = order_qty
 
-    def set_product_order_qty(self):
-        product = self.env['famotain.product'].search([])
-        for rec in product:
-            if rec.product_order_ids:
-                order_qty = 0
-                for r in rec.product_order_ids:
-                    if r.state not in ['draft', 'cancel']:
-                        order_qty += r.qty
-                rec.product_order_qty = order_qty
+    @api.one
+    def change_open_order_count(self, count):
+        order_count = self.open_order_count + count
+        self.write({
+            'open_order_count': order_count,
+        })
+
+    @api.one
+    def change_fix_order_qty(self, qty):
+        order_qty = self.fix_order_qty + qty
+        self.write({
+            'fix_order_qty': order_qty,
+        })
+
+    @api.one
+    def compute_product_order_count(self):
+        order_count = 0
+        order_qty = 0
+        for r in self.product_order_ids:
+            if r.state not in ['draft', 'cancel']:
+                order_qty += r.qty
+                if r.state not in ['sent', 'done']:
+                        order_count += 1
+        self.write({
+            'open_order_count': order_count,
+            'fix_order_qty': order_qty
+        })
