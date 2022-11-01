@@ -10,25 +10,25 @@
         <record id="famotain_charge_qty_1" model="famotain.settings">
             <field name="name">Charge Qty 1</field>
             <field name="key_name">charge_qty_1</field>
-            <field name="number_value">25</field>
+            <field name="number_value">12</field>
         </record>
 
         <record id="famotain_charge_amount_1" model="famotain.settings">
             <field name="name">Charge Amount 1</field>
             <field name="key_name">charge_amount_1</field>
-            <field name="number_value">50000</field>
+            <field name="number_value">10000</field>
         </record>
 
         <record id="famotain_charge_qty_2" model="famotain.settings">
             <field name="name">Charge Qty 2</field>
             <field name="key_name">charge_qty_2</field>
-            <field name="number_value">30</field>
+            <field name="number_value">2</field>
         </record>
 
         <record id="famotain_charge_amount_2" model="famotain.settings">
             <field name="name">Charge Amount 2</field>
             <field name="key_name">charge_amount_2</field>
-            <field name="number_value">100000</field>
+            <field name="number_value">50000</field>
         </record>
     </data>
 </openerp>

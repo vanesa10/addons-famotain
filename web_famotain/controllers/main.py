@@ -47,7 +47,7 @@ class WebsiteFamotain(http.Controller):
             packaging_list = request.env['famotain.product'].sudo().search(
                 [('product_type', '=', 'package'), ('active', '=', True), ('show_on_web', '=', True)], order="price")
             label = request.env['famotain.product'].sudo().search(
-                [('product_type', '=', 'label'), ('active', '=', True)], limit=1)
+                [('code', '=', 'label'), ('active', '=', True)], limit=1)
             data = {
                 'label': label,
                 'packaging_list': packaging_list,
@@ -80,7 +80,7 @@ class WebsiteFamotain(http.Controller):
             packaging_list = request.env['famotain.product'].sudo().search(
                 [('product_type', '=', 'package'), ('active', '=', True), ('show_on_web', '=', True)], order="price")
             label = request.env['famotain.product'].sudo().search(
-                [('product_type', '=', 'label'), ('active', '=', True)], limit=1)
+                [('code', '=', 'label'), ('active', '=', True)], limit=1)
             data = {
                 'label': label,
                 'sales_order': sales_order,
@@ -173,9 +173,9 @@ class WebsiteFamotain(http.Controller):
                 _logger.error(json.dumps(error))
                 return request.render('web_famotain.error_layout', error)
             packaging_list = request.env['famotain.product'].sudo().search(
-                [('product_type', '=', 'package'), ('active', '=', True)])
+                [('product_type', '=', 'package'), ('active', '=', True), ('show_on_web', '=', True)], order="price")
             label = request.env['famotain.product'].sudo().search(
-                [('product_type', '=', 'label'), ('active', '=', True)], limit=1)
+                [('code', '=', 'label'), ('active', '=', True)], limit=1)
             data = {
                 'edit': True,
                 'label': label,

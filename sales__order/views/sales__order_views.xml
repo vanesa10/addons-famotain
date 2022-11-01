@@ -95,7 +95,7 @@
                 <field name="theme"/>
                 <field name="customer_id"/>
                 <field name="city"/>
-                <field name="total_price" sum="Total"/>
+                <field name="total_price_without_shipment" sum="Total" string="Total"/>
 <!--                <field name="paid" sum="Total Paid"/>-->
 <!--                <field name="remaining" sum="Total Remaining"/>-->
                 <field name="state"/>
@@ -180,7 +180,7 @@
                                     <control>
                                         <create string="Add product" context="{'default_product_type': 'product'}"/>
                                         <create string="Add package" context="{'default_product_type': 'package'}"/>
-                                        <create string="Add label" context="{'default_product_type': 'label'}"/>
+                                        <create string="Add charge" context="{'default_product_type': 'charge'}"/>
                                         <create string="Add add-ons" context="{'default_product_type': 'addons'}"/>
                                     </control>
                                 </tree>
@@ -332,6 +332,7 @@
                         <group class="oe_subtotal_footer oe_right">
                             <field name="currency_id" invisible="1"/>
                             <field name="total_price"/>
+                            <field name="total_price_without_shipment"/>
                             <field name="paid"/>
                             <field name="remaining" class="oe_subtotal_footer_separator"/>
                         </group>

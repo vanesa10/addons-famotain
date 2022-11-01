@@ -147,7 +147,7 @@
                                 <t t-set="packing_class" t-value="'form-group form-hide'"/>
                                 <t t-set="thankcard_class" t-value="'form-group form-hide'"/>
                                 <select id="input-packaging" name="input-packaging" class="form-control" required="">
-                                    <option value="-">No Packaging</option>
+                                    <option value="-">No Packaging (Hanya Tas/Barang Saja)</option>
                                     <t t-foreach="packaging_list" t-as="packaging">
                                         <t t-if="sales_order and sales_order.packaging_id.id == packaging.id">
                                             <t t-if="packaging.code != 'TC'" t-set="packing_class" t-value="'form-group'"/>
@@ -179,7 +179,7 @@
                                   <label class="form-check-label" for="input-packing-pack">Sudah terpacking (Packing di kami)</label>
                                 </div>
                                 <small class="form-text text-muted" style="margin-left: 1.3rem;">
-                                    Ongkir lebih mahal karena volume
+                                    Tambahan biaya charge +3.000/pcs
                                 </small>
                             </div>
                             <div class="form-group">

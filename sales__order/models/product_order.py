@@ -254,11 +254,30 @@ class Product(models.Model):
     _inherit = 'famotain.product'
 
     product_order_ids = fields.One2many('sales__order.product_order', 'product_id', string='Product Orders')
-    product_order_count = fields.Integer(compute='_compute_product_order_count', string='Product Order Count')
+    product_order_count = fields.Integer('Order Count', compute='_compute_product_order_count', store=True)
+    product_order_qty = fields.Integer('Order Qty', compute='_compute_product_order_count', store=True)
 
+    @api.multi
+    @api.onchange('product_order_ids')
+    @api.depends('product_order_ids')
     def _compute_product_order_count(self):
-        if self.product_order_ids:
-            product_order_count = 0
-            for r in self.product_order_ids:
-                product_order_count += 1
-            self.product_order_count = product_order_count
+        for rec in self:
+            if rec.product_order_ids:
+                order_count = 0
+                order_qty = 0
+                for r in rec.product_order_ids:
+                    order_count += 1
+                    if r.state not in ['draft', 'cancel']:
+                        order_qty += r.qty
+                rec.product_order_count = order_count
+                rec.product_order_qty = order_qty
+
+    def set_product_order_qty(self):
+        product = self.env['famotain.product'].search([])
+        for rec in product:
+            if rec.product_order_ids:
+                order_qty = 0
+                for r in rec.product_order_ids:
+                    if r.state not in ['draft', 'cancel']:
+                        order_qty += r.qty
+                rec.product_order_qty = order_qty

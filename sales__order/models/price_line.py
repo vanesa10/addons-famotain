@@ -6,7 +6,7 @@ from odoo.exceptions import UserError
 import logging
 _logger = logging.getLogger(__name__)
 
-PRICES_LIST = [('product', 'Product'), ('package', 'Package'), ('label', 'Label'), ('addons', 'Add-ons'),
+PRICES_LIST = [('product', 'Product'), ('package', 'Package'), ('addons', 'Add-ons'),
                ('charge', 'Charge'), ('discount', 'Discount'), ('shipment', 'Shipment')]
 
 
@@ -44,20 +44,20 @@ class PriceLine(models.Model):
                 'debit': product_order_id.qty * product_order_id.product_id.price,
                 'prices_type': product_order_id.product_id.product_type
             }
-        if sales_order_id:
-            return {
-                'sales_order_id': sales_order_id.id,
-                'description': 'Charge',
-                'qty': 1,
-                'amount': amount,
-                'debit': amount,
-                'prices_type': 'charge'
-            }
+        # if sales_order_id:
+        #     return {
+        #         'sales_order_id': sales_order_id.id,
+        #         'description': 'Charge',
+        #         'qty': 1,
+        #         'amount': amount,
+        #         'debit': amount,
+        #         'prices_type': 'charge'
+        #     }
 
     @api.model
     def create(self, vals_list):
         price_line = super(PriceLine, self).create(vals_list)
-        if price_line.prices_type not in ['product', 'package', 'label', 'addons']:
+        if not price_line.product_order_id:
             msg = "{} price Rp. {:,} created".format(price_line.description, price_line.debit - price_line.credit)
             price_line.sales_order_id.message_post(body=msg)
         return price_line
@@ -86,7 +86,8 @@ class PriceLine(models.Model):
     @api.depends('prices_type')
     def _compute_description(self):
         for rec in self:
-            rec.description = str(rec.prices_type).title() if rec.prices_type not in ['product', 'package', 'label', 'addons'] else rec.product_order_id.product_id.display_name
+            # rec.description = str(rec.prices_type).title() if rec.prices_type not in ['product', 'package', 'addons'] else rec.product_order_id.product_id.display_name
+            rec.description = str(rec.prices_type).title() if not rec.product_order_id else rec.product_order_id.product_id.display_name
 
     @api.multi
     @api.onchange('qty', 'amount', 'prices_type')

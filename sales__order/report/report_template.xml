@@ -73,7 +73,7 @@
 
                     <div class="row mt32">
                         <div class="col-12">
-                            <table class="table" style="width:100%">
+                            <table class="table o_main_table" style="width:100%">
                                 <tr>
                                     <th class="text-center" style="border: 1px solid #dee2e6; width: 130px;">Deadline</th>
                                     <td style="border: 1px solid #dee2e6; min-width: 200px;"><span t-if="o.deadline" t-esc="o.deadline.strftime('%d-%b-%Y')"/></td>
@@ -85,10 +85,9 @@
                                     <td style="border: 1px solid #dee2e6;"><span t-field="o.theme"/></td>
 <!--                                    <th class="text-center" style="border: 1px solid #dee2e6;">Custom Request</th>-->
 <!--                                    <td style="border: 1px solid #dee2e6;"><span t-field="o.custom_request"/></td>-->
-                                    <th class="text-center" style="border: 1px solid #dee2e6;">Custom Name</th>
+                                    <th class="text-center" style="border: 1px solid #dee2e6;">Packing</th>
                                     <td style="border: 1px solid #dee2e6;">
-                                        <span t-if="o.custom_name=='yes'" t-field="o.custom_name"/>
-                                        <span t-else="">-</span>
+                                        <span t-field="o.packing"/>
                                     </td>
                                 </tr>
 <!--                                <tr>-->
@@ -126,7 +125,9 @@
 <!--                                </tr>-->
                                 <tr>
                                     <th class="text-center" style="border: 1px solid #dee2e6;">Notes</th>
-                                    <td style="border: 1px solid #dee2e6;" colspan="3"><span t-field="o.customer_notes"/></td>
+                                    <td style="border: 1px solid #dee2e6; column-count: 3;" colspan="3">
+                                        <p t-field="o.customer_notes"/>
+                                    </td>
                                 </tr>
                             </table>
                         </div>

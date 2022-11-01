@@ -5,7 +5,7 @@ from odoo import tools
 from odoo.modules.module import get_module_resource
 
 # TODO: type label diganti charge, isine ada charge 1k-15k, sama charge yg paten kaya magnet, label, tali panjang katun
-PRODUCT_TYPE_LIST = [('product', 'Product'), ('package', 'Package'), ('label', 'Label'), ('addons', 'Add-ons')]
+PRODUCT_TYPE_LIST = [('product', 'Product'), ('package', 'Package'), ('charge', 'Charge'), ('addons', 'Add-ons'), ('label', 'lbl')]
 
 
 class Product(models.Model):
@@ -72,13 +72,16 @@ class Product(models.Model):
         product = super(Product, self).write(vals)
         return product
 
-    # TODO: code hanya untuk product tas saja, dibuat readonly, compute name kalo product baru dikasi code, yg lain cuma title aja
+    # DONE: code hanya untuk product tas saja, dibuat readonly, compute name kalo product, baru dikasi code, yg lain cuma title aja
     @api.multi
     @api.onchange('code', 'category_id', 'name')
     @api.depends('code', 'category_id', 'name')
     def _compute_name(self):
         for rec in self:
-            rec.display_name = """%s - %s""" % (str(rec.name).title(), rec.code)
+            if rec.product_type == 'product':
+                rec.display_name = """%s - %s""" % (str(rec.name).title(), rec.code)
+            else:
+                rec.display_name = str(rec.name).title()
 
     @api.multi
     @api.onchange('category_id')

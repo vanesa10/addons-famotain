@@ -19,7 +19,7 @@ _logger = logging.getLogger(__name__)
 #     'thank_card': 'Thankyou Card'
 # }
 # PACKAGING_LIST = [('-', 'No Packaging'), ('plastik', 'Plastik'), ('tile', 'Tile'), ('plastik_jinjing', 'Plastik Jinjing'), ('thank_card', 'Thank you card saja')]
-PACKING_LIST = [('-', 'No Pack'), ('pack', 'Packing'), ('sendiri', 'Packing Sendiri')]
+PACKING_LIST = [('-', 'Tanpa Packing (Tas/Barang Saja)'), ('pack', 'Sudah terpacking (Packing di kami)'), ('sendiri', 'Packing Sendiri')]
 
 
 class SalesOrder(models.Model):
@@ -66,6 +66,7 @@ class SalesOrder(models.Model):
     shipment_receipt_number = fields.Char('Shipment Receipt Number', readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]})
 
     total_price = fields.Monetary('Total Amount', compute='_compute_total_price', readonly=True, store=True, track_visibility='onchange')
+    total_price_without_shipment = fields.Monetary('Total without Shipment', compute='_compute_total_price', readonly=True, store=True, track_visibility='onchange')
     paid = fields.Monetary('Paid', readonly=True, track_visibility='onchange')
     remaining = fields.Monetary('Remaining', compute='_compute_remaining', readonly=True, store=True, track_visibility='onchange')
 
@@ -101,7 +102,7 @@ class SalesOrder(models.Model):
         # Report bulan kemaren dpt order total brp pcs sama amount brp
         # cron every month on date 01 next month time 00:00:01
         last_month = datetime.today() - relativedelta(days=6) #ambil bulannya aja, jd terserah days nya
-        next_month = datetime.today()
+        next_month = datetime.today() + relativedelta(days=6)
         _logger.info("last_month= %s, next_month = %s", last_month.strftime("%d-%m-%Y"), next_month.strftime("%d-%m-%Y"))
         to_date = '{}-01 00:00:00'.format(next_month.strftime("%Y-%m"))
         from_date = '{}-01 00:00:00'.format(last_month.strftime('%Y-%m'))
@@ -325,32 +326,32 @@ Total : Rp. {new_amount_total:,.0f}
         if sales_order.packaging_id:
             package_vals = self.env['sales__order.product_order'].prepare_vals_list(
                 product_type='package', sales_order_id=sales_order.id, qty=sales_order.qty_total,
-                product_id=sales_order.packaging_id.id, fabric_color=sales_order.packing)
+                product_id=sales_order.packaging_id.id)
             self.env['sales__order.product_order'].sudo().create(package_vals)
 
         # create product order label if label = 'yes'
         if sales_order.label == 'yes':
             # DONE: search product yg label -> prepare vals list product order -> create product order
-            product_label = self.env['famotain.product'].search([('product_type', '=', 'label'), ('active', '=', True)],
+            product_label = self.env['famotain.product'].search([('code', '=', 'label'), ('active', '=', True)],
                                                                 limit=1)
             product_order_vals = self.env['sales__order.product_order'].prepare_vals_list(
-                product_type='label', sales_order_id=sales_order.id, qty=sales_order.qty_total,
+                product_type='charge', sales_order_id=sales_order.id, qty=sales_order.qty_total,
                 product_id=product_label.id)
             self.env['sales__order.product_order'].sudo().create(product_order_vals)
 
         # create charge price line if qty < settings
-        self.env['famotain.settings'].search([('key_name', '=', 'charge_qty_1'), ('active', '=', True)], limit=1)
-        charge = 0
-        if sales_order.qty_total < self.env['famotain.settings'].search(
-                [('key_name', '=', 'charge_qty_1'), ('active', '=', True)], limit=1).number_value:
-            charge = self.env['famotain.settings'].search(
-                [('key_name', '=', 'charge_amount_1'), ('active', '=', True)], limit=1).number_value
-        elif sales_order.qty_total < self.env['famotain.settings'].search(
-                [('key_name', '=', 'charge_qty_2'), ('active', '=', True)], limit=1).number_value:
-            charge = self.env['famotain.settings'].search(
-                [('key_name', '=', 'charge_amount_2'), ('active', '=', True)], limit=1).number_value
-        if charge > 0:
-            sales_order._add_price_line(charge)
+        # self.env['famotain.settings'].search([('key_name', '=', 'charge_qty_1'), ('active', '=', True)], limit=1)
+        # charge = 0
+        # if sales_order.qty_total < self.env['famotain.settings'].search(
+        #         [('key_name', '=', 'charge_qty_1'), ('active', '=', True)], limit=1).number_value:
+        #     charge = self.env['famotain.settings'].search(
+        #         [('key_name', '=', 'charge_amount_1'), ('active', '=', True)], limit=1).number_value
+        # elif sales_order.qty_total < self.env['famotain.settings'].search(
+        #         [('key_name', '=', 'charge_qty_2'), ('active', '=', True)], limit=1).number_value:
+        #     charge = self.env['famotain.settings'].search(
+        #         [('key_name', '=', 'charge_amount_2'), ('active', '=', True)], limit=1).number_value
+        # if charge > 0:
+        #     sales_order._add_price_line(charge)
 
         msg_data = {
             'name': sales_order.name,
@@ -407,7 +408,7 @@ Deadline : {deadline}
             label = False
             if rec.label == 'yes':
                 label = self.env['famotain.product'].search(
-                    [('product_type', '=', 'label'), ('active', '=', True)],
+                    [('code', '=', 'label'), ('active', '=', True)],
                     limit=1)
             packaging = False
             if rec.packaging_id:
@@ -419,7 +420,7 @@ Deadline : {deadline}
                 product_order_vals = {}
                 product_rec = product_order if product_order.product_type == 'product' else product_rec
                 package_rec = product_order if product_order.product_type == 'package' else package_rec
-                label_rec = product_order if product_order.product_type == 'label' else label_rec
+                label_rec = product_order if product_order.product_id.code == 'label' else label_rec
                 if product and product_order.product_type == 'product' and product.id != product_order.product_id.id:
                     product_order_vals.update({'product_id': product.id})
                 if packaging and product_order.product_type == 'package' and packaging.id != product_order.product_id.id:
@@ -440,42 +441,42 @@ Deadline : {deadline}
             if packaging and not package_rec:
                 product_order_vals = self.env['sales__order.product_order'].prepare_vals_list(
                     product_type='package', sales_order_id=rec.id, qty=rec.qty_total,
-                    product_id=packaging.id, fabric_color=rec.packing)
+                    product_id=packaging.id)
                 self.env['sales__order.product_order'].sudo().create(product_order_vals)
             # if package_rec and not packaging:
             #     package_rec.sudo().unlink()
             if label and not label_rec:
                 product_order_vals = self.env['sales__order.product_order'].prepare_vals_list(
-                    product_type='label', sales_order_id=rec.id, qty=rec.qty_total,
+                    product_type='charge', sales_order_id=rec.id, qty=rec.qty_total,
                     product_id=label.id)
                 self.env['sales__order.product_order'].sudo().create(product_order_vals)
             if label_rec and not label:
                 label_rec.sudo().unlink()
 
-            self.env['famotain.settings'].search([('key_name', '=', 'charge_qty_1'), ('active', '=', True)], limit=1)
-            charge = 0
-            if rec.qty_total < self.env['famotain.settings'].search(
-                    [('key_name', '=', 'charge_qty_1'), ('active', '=', True)], limit=1).number_value:
-                charge = self.env['famotain.settings'].search(
-                    [('key_name', '=', 'charge_amount_1'), ('active', '=', True)], limit=1).number_value
-            elif rec.qty_total < self.env['famotain.settings'].search(
-                    [('key_name', '=', 'charge_qty_2'), ('active', '=', True)], limit=1).number_value:
-                charge = self.env['famotain.settings'].search(
-                    [('key_name', '=', 'charge_amount_2'), ('active', '=', True)], limit=1).number_value
-            rec_charge = False
-            for price_line in rec.price_line_ids:
-                if price_line.prices_type == 'charge':
-                    rec_charge = price_line
-                    if price_line.amount != charge and charge > 0:
-                        rec_charge.sudo().write({
-                            'amount': charge,
-                            'debit': charge,
-                        })
-                    break
-            if charge > 0 and not rec_charge:
-                rec._add_price_line(charge)
-            if charge == 0 and rec_charge:
-                rec_charge.sudo().unlink()
+            # self.env['famotain.settings'].search([('key_name', '=', 'charge_qty_1'), ('active', '=', True)], limit=1)
+            # charge = 0
+            # if rec.qty_total < self.env['famotain.settings'].search(
+            #         [('key_name', '=', 'charge_qty_1'), ('active', '=', True)], limit=1).number_value:
+            #     charge = self.env['famotain.settings'].search(
+            #         [('key_name', '=', 'charge_amount_1'), ('active', '=', True)], limit=1).number_value
+            # elif rec.qty_total < self.env['famotain.settings'].search(
+            #         [('key_name', '=', 'charge_qty_2'), ('active', '=', True)], limit=1).number_value:
+            #     charge = self.env['famotain.settings'].search(
+            #         [('key_name', '=', 'charge_amount_2'), ('active', '=', True)], limit=1).number_value
+            # rec_charge = False
+            # for price_line in rec.price_line_ids:
+            #     if price_line.prices_type == 'charge':
+            #         rec_charge = price_line
+            #         if price_line.amount != charge and charge > 0:
+            #             rec_charge.sudo().write({
+            #                 'amount': charge,
+            #                 'debit': charge,
+            #             })
+            #         break
+            # if charge > 0 and not rec_charge:
+            #     rec._add_price_line(charge)
+            # if charge == 0 and rec_charge:
+            #     rec_charge.sudo().unlink()
 
             msg_data = {
                 'name': rec.name,
@@ -523,14 +524,14 @@ Deadline : {deadline}
             else:
                 raise UserError(_("You can only delete a draft record"))
 
-    @api.multi
-    @api.onchange('packaging_id')
-    def _onchange_packing(self):
-        for rec in self:
-            if not rec.packaging_id:
-                rec.packing = '-'
-            else:
-                rec.packing = 'pack'
+    # @api.multi
+    # @api.onchange('packaging_id')
+    # def _onchange_packing(self):
+    #     for rec in self:
+    #         if not rec.packaging_id:
+    #             rec.packing = '-'
+    #         else:
+    #             rec.packing = 'pack'
 
     @api.multi
     @api.onchange('product_order_ids')
@@ -557,18 +558,28 @@ Deadline : {deadline}
     def _compute_total_price(self):
         for rec in self:
             price = 0
+            price_without_shipment = 0
             for product in rec.price_line_ids:
                 price += product.debit - product.credit
+                # DONE: TESTING!
+                if product.prices_type != 'shipment':
+                    price_without_shipment += product.debit - product.credit
             rec.total_price = price
+            rec.total_price_without_shipment = price_without_shipment
 
     @api.one
     def compute_total_price(self):
         price = 0
+        price_without_shipment = 0
         for product in self.price_line_ids:
             price += product.debit - product.credit
+            # DONE: TESTING!
+            if product.prices_type != 'shipment':
+                price_without_shipment += product.debit - product.credit
         self.write({
             'total_price': price,
-            'remaining': price - self.paid
+            'remaining': price - self.paid,
+            'total_price_without_shipment': price_without_shipment
         })
 
     @api.multi
