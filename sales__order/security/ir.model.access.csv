@@ -1,18 +1,18 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_sales__order_sales__order,sales__order.sales__order,model_sales__order_sales__order,famotain.famotain_user,1,1,1,1
+access_sales__order_sales__order,sales__order.sales__order,model_sales__order_sales__order,base.group_user,1,1,1,1
 access_sales__order_sales__order_public,sales__order.sales__order,model_sales__order_sales__order,base.group_public,1,1,1,0
 
-access_sales__order_customer,sales__order.customer,model_sales__order_customer,famotain.famotain_user,1,1,1,0
+access_sales__order_customer,sales__order.customer,model_sales__order_customer,base.group_user,1,1,1,0
 access_sales__order_customer_public,sales__order.customer,model_sales__order_customer,base.group_public,1,1,1,0
 
-access_sales__order_product_order,sales__order.product_order,model_sales__order_product_order,famotain.famotain_user,1,1,1,1
+access_sales__order_product_order,sales__order.product_order,model_sales__order_product_order,base.group_user,1,1,1,1
 access_sales__order_product_order_public,sales__order.product_order,model_sales__order_product_order,base.group_public,1,1,1,1
 
-access_sales__order_price_line,sales__order.price_line,model_sales__order_price_line,famotain.famotain_user,1,1,1,1
+access_sales__order_price_line,sales__order.price_line,model_sales__order_price_line,base.group_user,1,1,1,1
 access_sales__order_price_line_public,sales__order.price_line,model_sales__order_price_line,base.group_public,1,1,1,0
 
-access_sales__order_invoice,sales__order.invoice,model_sales__order_invoice,famotain.famotain_user,1,1,1,1
-access_sales__order_invoice_line,sales__order.invoice_line,model_sales__order_invoice_line,famotain.famotain_user,1,1,1,1
+access_sales__order_invoice,sales__order.invoice,model_sales__order_invoice,base.group_user,1,1,1,1
+access_sales__order_invoice_line,sales__order.invoice_line,model_sales__order_invoice_line,base.group_user,1,1,1,1
 
 access_ir_sequence_group_public,ir_sequence group_public,base.model_ir_sequence,base.group_public,1,0,0,0
 access_mail_followers_public,mail.followers.public,mail.model_mail_followers,base.group_public,1,1,1,0
