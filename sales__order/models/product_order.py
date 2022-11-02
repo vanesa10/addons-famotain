@@ -29,7 +29,8 @@ class ProductOrder(models.Model):
                                  domain=[('active', '=', True)],
                                  states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)]},
                                  track_visibility='onchange')
-    product_price = fields.Monetary('Price', related="price_line_id.amount")
+    product_price = fields.Monetary('Product Price', related="product_id.price")
+    price = fields.Monetary('Price', related="price_line_id.amount")
     # product_description = fields.Char('Description', related="product_id.description")
 
     qty = fields.Integer('Qty', default=1, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
@@ -42,7 +43,7 @@ class ProductOrder(models.Model):
     design_image_3 = fields.Binary('Design Image 3', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
     design_image_3_small = fields.Binary("Small-sized Design Image 3", attachment=True, readonly=True)
 
-    price = fields.Monetary('Total', readonly=True, compute='_compute_price', store=True)
+    total = fields.Monetary('Total', readonly=True, compute='_compute_total', store=True)
     currency_id = fields.Many2one('res.currency', 'Currency', readonly=True, default=lambda self: self.env.user.company_id.currency_id)
 
     state = fields.Selection([('draft', 'Draft'), ('confirm', 'Confirmed'), ('approve','Approved'), ('on_progress', 'On Progress'), ('done', 'Done'), ('sent', 'Sent'), ('cancel', 'Cancelled')], 'State', required=True, default='draft', readonly=True, track_visibility='onchange')
@@ -96,7 +97,7 @@ class ProductOrder(models.Model):
             product_order.action_confirm()
         if image and product_order.product_id.product_type in ['product', 'addons'] and not product_order.sales_order_id.image:
             product_order.sales_order_id.image = vals['design_image']
-        msg = "{}pcs {} Rp. {:,} product order created".format(product_order.qty, product_order.product_id.display_name, product_order.price)
+        msg = "{}pcs {} Rp. {:,} product order created".format(product_order.qty, product_order.product_id.display_name, product_order.total)
         product_order.sales_order_id.message_post(body=msg)
         return product_order
 
@@ -118,7 +119,7 @@ class ProductOrder(models.Model):
             })
         initial_qty = self.qty
         initial_product_id = self.product_id
-        initial_price = self.price
+        initial_total = self.total
         initial_fabric_color = self.fabric_color
         test = self.env['sales__order.price_line'].browse(self.price_line_id.id)
         for t in test:
@@ -134,7 +135,7 @@ class ProductOrder(models.Model):
             if 'product_id' in vals.keys():
                 initial_product_id.compute_product_order_count()
             msg = "{}pcs {} Rp. {:,} product order changed to {}pcs {} Rp. {:,}".format(
-                initial_qty, initial_product_id.display_name, initial_price, self.qty, self.product_id.display_name, self.price)
+                initial_qty, initial_product_id.display_name, initial_total, self.qty, self.product_id.display_name, self.total)
             self.sales_order_id.message_post(body=msg)
         if 'fabric_color' in vals.keys():
             msg = "{} description {} changed to {}".format(
@@ -154,7 +155,7 @@ class ProductOrder(models.Model):
                     rec.price_line_id.product_order_id = None
                     rec.price_line_id.unlink()
                 msg = "{}pcs {} Rp. {:,} product order deleted".format(rec.qty, rec.product_id.display_name,
-                                                                         rec.price)
+                                                                         rec.total)
                 rec.sales_order_id.message_post(body=msg)
                 return super(ProductOrder, self).unlink()
             raise UserError(_("You can only delete a draft record"))
@@ -173,9 +174,9 @@ class ProductOrder(models.Model):
     @api.multi
     @api.onchange('product_id', 'qty')
     @api.depends('product_id', 'qty')
-    def _compute_price(self):
+    def _compute_total(self):
         for rec in self:
-            rec.price = rec.product_id.price * rec.qty
+            rec.total = rec.product_id.price * rec.qty
 
     @api.multi
     @api.onchange('product_id')

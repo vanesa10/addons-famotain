@@ -104,7 +104,7 @@ class Invoice(models.Model):
                 return
             if rec.invoice_type in ['down_payment']:
                 #DONE : buat dinamis jadi 80% di setting
-                rec.amount = self.env['famotain.settings'].search(
+                rec.amount = self.env['famotain.settings'].sudo().search(
                     [('key_name', '=', 'down_payment'), ('active', '=', True)]
                     , limit=1).number_value / 100 * rec.sales_order_id.remaining
             elif rec.invoice_type in ['clearance']:

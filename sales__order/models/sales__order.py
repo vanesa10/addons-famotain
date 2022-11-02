@@ -238,7 +238,7 @@ Total : Rp. {new_amount_total:,.0f}
         ], order="deadline")
         notif = "<b>Need tobe designed:</b>\n========================\n"
         for rec in sales_order:
-            url = '%s/order/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), rec.encryption)
+            url = '%s/order/%s' % (self.env['ir.config_parameter'].sudo().get_param('web.base.url'), rec.encryption)
             msg_data = {'url': url, 'deadline': rec.deadline.strftime('%d-%b'), 'name': rec.name,
                         'theme': rec.theme, 'qty': rec.qty_total, 'product': rec.product}
             if rec.deadline < fields.Date.today() + relativedelta(days=10):
@@ -257,7 +257,7 @@ Total : Rp. {new_amount_total:,.0f}
         ], order="deadline")
         msg = {'today': "", 'urgent': "", 'this_week': "", 'late': "", 'need_clearance': ""}
         for rec in sales_order:
-            url = '%s/order/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), rec.encryption)
+            url = '%s/order/%s' % (self.env['ir.config_parameter'].sudo().get_param('web.base.url'), rec.encryption)
             msg_data = {'url': url, 'deadline': rec.deadline.strftime('%d-%b'), 'name': rec.name,
                         'theme': rec.theme, 'qty': rec.qty_total, 'product': rec.product}
             message = """<a href="{url}"><b>{deadline} - {name}</b></a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data) if rec.state == 'draft' \
@@ -272,7 +272,7 @@ Total : Rp. {new_amount_total:,.0f}
         sales_order = self.env['sales__order.sales__order'].search([
             ('deadline', '<', fields.Date.today()), ('state', '!=', 'cancel'), ('state', '!=', 'send')], order="deadline")
         for rec in sales_order:
-            url = '%s/order/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), rec.encryption)
+            url = '%s/order/%s' % (self.env['ir.config_parameter'].sudo().get_param('web.base.url'), rec.encryption)
             msg_data = {'url': url, 'deadline': rec.deadline.strftime('%d-%b'), 'name': rec.name,
                         'theme': rec.theme, 'qty': rec.qty_total, 'product': rec.product}
             if rec.state == 'done':
@@ -367,7 +367,7 @@ Total : Rp. {new_amount_total:,.0f}
             'theme': sales_order.theme,
             # 'packaging': sales_order.packaging_id.name if sales_order.packaging_id else '',
             # 'packing': sales_order.packing,
-            'url': '%s/order/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), sales_order.encryption),
+            'url': '%s/order/%s' % (self.env['ir.config_parameter'].sudo().get_param('web.base.url'), sales_order.encryption),
             # 'custom_request': sales_order.custom_request if sales_order.custom_request else '-',
             # 'notes': sales_order.customer_notes if sales_order.customer_notes else '-'
         }
@@ -492,7 +492,7 @@ Deadline : {deadline}
                 'theme': rec.theme,
                 # 'packaging': rec.packaging_id.name,
                 # 'packing': rec.packing,
-                'url': '%s/order/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), rec.encryption),
+                'url': '%s/order/%s' % (self.env['ir.config_parameter'].sudo().get_param('web.base.url'), rec.encryption),
                 # 'custom_request': rec.custom_request if rec.custom_request else '-',
                 # 'notes': rec.customer_notes if rec.customer_notes else '-'
             }
@@ -617,7 +617,7 @@ Deadline : {deadline}
                     'qty_total': rec.qty_total,
                     'product': rec.product,
                     'theme': rec.theme,
-                    'url': '%s/order/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), rec.encryption)
+                    'url': '%s/order/%s' % (self.env['ir.config_parameter'].sudo().get_param('web.base.url'), rec.encryption)
                 }
                 msg = """
 <a href="{url}"><b>{name} CONFIRMED</b></a>
@@ -647,7 +647,7 @@ Deadline : {deadline}
                     'qty_total': rec.qty_total,
                     'product': rec.product,
                     'theme': rec.theme,
-                    'url':'%s/order/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), rec.encryption)
+                    'url':'%s/order/%s' % (self.env['ir.config_parameter'].sudo().get_param('web.base.url'), rec.encryption)
                 }
                 msg = """
 <a href="{url}"><b>{name} APPROVED</b></a>
@@ -712,7 +712,7 @@ Deadline : {deadline}
                 raise UserError(_("You can only process an approved sales order"))
             rec.state = 'on_progress'
             for product_order in rec.product_order_ids:
-                product_order.state = 'on_progress'
+                product_order.action_on_progress()
 
     @api.multi
     def action_done(self):
@@ -729,7 +729,7 @@ Deadline : {deadline}
             'res_model': 'ir.actions.act_url',
             'type': 'ir.actions.act_url',
             'target': 'self',
-            'url': '%s/order/%s' % (self.env['ir.config_parameter'].get_param('web.base.url'), self.encryption)
+            'url': '%s/order/%s' % (self.env['ir.config_parameter'].sudo().get_param('web.base.url'), self.encryption)
         }
 
     def action_order_again_web(self):
