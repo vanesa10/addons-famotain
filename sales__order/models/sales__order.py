@@ -323,13 +323,12 @@ Total : Rp. {new_amount_total:,.0f}
             [('name', '=ilike', sales_order.product), ('product_type', '=', 'product'), ('active', '=', True)], limit=1)
         if product:
             product_order_vals = self.env['sales__order.product_order'].prepare_vals_list(
-                product_type='product', sales_order_id=sales_order.id, qty=sales_order.qty_total, product_id=product.id)
+                sales_order_id=sales_order.id, qty=sales_order.qty_total, product_id=product)
             self.env['sales__order.product_order'].sudo().create(product_order_vals)
 
         if sales_order.packaging_id:
             package_vals = self.env['sales__order.product_order'].prepare_vals_list(
-                product_type='package', sales_order_id=sales_order.id, qty=sales_order.qty_total,
-                product_id=sales_order.packaging_id.id)
+                sales_order_id=sales_order.id, qty=sales_order.qty_total, product_id=sales_order.packaging_id)
             self.env['sales__order.product_order'].sudo().create(package_vals)
 
         # create product order label if label = 'yes'
@@ -338,8 +337,7 @@ Total : Rp. {new_amount_total:,.0f}
             product_label = self.env['famotain.product'].search([('code', '=', 'label'), ('active', '=', True)],
                                                                 limit=1)
             product_order_vals = self.env['sales__order.product_order'].prepare_vals_list(
-                product_type='charge', sales_order_id=sales_order.id, qty=sales_order.qty_total,
-                product_id=product_label.id)
+                sales_order_id=sales_order.id, qty=sales_order.qty_total, product_id=product_label)
             self.env['sales__order.product_order'].sudo().create(product_order_vals)
 
         # create charge price line if qty < settings
@@ -436,22 +434,19 @@ Deadline : {deadline}
                     product_order.sudo().write(product_order_vals)
             if product and not product_rec:
                 product_order_vals = self.env['sales__order.product_order'].prepare_vals_list(
-                    product_type='product', sales_order_id=rec.id, qty=rec.qty_total,
-                    product_id=product.id)
+                    sales_order_id=rec.id, qty=rec.qty_total, product_id=product)
                 self.env['sales__order.product_order'].sudo().create(product_order_vals)
             # if product_rec and not product:
             #     product_rec.sudo().unlink()
             if packaging and not package_rec:
                 product_order_vals = self.env['sales__order.product_order'].prepare_vals_list(
-                    product_type='package', sales_order_id=rec.id, qty=rec.qty_total,
-                    product_id=packaging.id)
+                    sales_order_id=rec.id, qty=rec.qty_total, product_id=packaging)
                 self.env['sales__order.product_order'].sudo().create(product_order_vals)
             # if package_rec and not packaging:
             #     package_rec.sudo().unlink()
             if label and not label_rec:
                 product_order_vals = self.env['sales__order.product_order'].prepare_vals_list(
-                    product_type='charge', sales_order_id=rec.id, qty=rec.qty_total,
-                    product_id=label.id)
+                    sales_order_id=rec.id, qty=rec.qty_total, product_id=label)
                 self.env['sales__order.product_order'].sudo().create(product_order_vals)
             if label_rec and not label:
                 label_rec.sudo().unlink()

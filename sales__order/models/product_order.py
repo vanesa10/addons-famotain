@@ -56,13 +56,14 @@ class ProductOrder(models.Model):
     send_uid = fields.Many2one('res.users', 'Send By', readonly=True)
     send_date = fields.Datetime('Send On', readonly=True)
 
-    def prepare_vals_list(self, product_type=None, sales_order_id=None, qty=0, product_id=None, fabric_color=''):
+    def prepare_vals_list(self, sales_order_id, product_id, qty=0, fabric_color=''):
         return {
-            'product_type': product_type,
+            # 'product_type': product_type,
             'sales_order_id': sales_order_id,
             'qty': qty,
-            'product_id': product_id,
+            'product_id': product_id.id,
             'fabric_color': fabric_color,
+            'product_type': product_id.product_type
             # 'deadline': sales_order_id.deadline if sales_order_id else None
         }
 
@@ -70,6 +71,15 @@ class ProductOrder(models.Model):
         vals = self.env['sales__order.price_line'].prepare_vals_list(self)
         new_rec = self.env['sales__order.price_line'].sudo().create(vals)
         return new_rec
+
+    def set_empty_product_type(self):
+        # product_orders = self.env['sales__order.product_order'].sudo().search([('product_type', 'in', ['label', False])])
+        product_orders = self.env['sales__order.product_order'].sudo().search([])
+        for po in product_orders:
+            if po.product_type in ['label', False] or po.product_type != po.product_id.product_type:
+                po.write({
+                    'product_type': po.product_id.product_type
+                })
 
     @api.model
     def create(self, vals):
@@ -88,7 +98,10 @@ class ProductOrder(models.Model):
                 'design_image_3_small': tools.image_resize_image_medium(vals['design_image_3'].encode('ascii'))
             })
         product_order = super(ProductOrder, self).create(vals)
-        product_order.deadline = product_order.sales_order_id.deadline
+        product_order.write({
+            'deadline': product_order.sales_order_id.deadline,
+            'product_type': product_order.product_id.product_type
+        })
         # product_order.name = """{}/{}""".format(product_order.qty, product_order.product_id.code)
         price_line = product_order.create_price_line()
         product_order.price_line_id = price_line.id
@@ -121,11 +134,14 @@ class ProductOrder(models.Model):
         initial_product_id = self.product_id
         initial_total = self.total
         initial_fabric_color = self.fabric_color
+        product = self.product_id
+        if 'product_id' in vals.keys():
+            product = self.env['famotain.product'].browse(vals['product_id'])[0]
+        vals.update({'product_type': product.product_type})
         test = self.env['sales__order.price_line'].browse(self.price_line_id.id)
         for t in test:
             t.qty = vals['qty'] if 'qty' in vals.keys() else self.qty
             if 'product_id' in vals.keys():
-                product = self.env['famotain.product'].browse(vals['product_id'])[0]
                 t.amount = product.price
                 t.debit = t.qty * product.price
                 t.description = product.name

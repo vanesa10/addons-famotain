@@ -11,7 +11,7 @@ PRODUCT_TYPE_LIST = [('product', 'Product'), ('package', 'Package'), ('charge', 
 class Product(models.Model):
     _name = 'famotain.product'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'product_type, name asc'
+    _order = 'product_type desc, name asc'
     _description = 'Famotain Products'
     _rec_name = 'display_name'
 
