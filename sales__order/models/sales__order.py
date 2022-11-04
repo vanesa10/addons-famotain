@@ -397,6 +397,12 @@ Deadline : {deadline}
             'custom_request': custom_request, 'customer_notes': notes, 'product': product, 'theme': theme, 'add_ons': add_ons
         }
 
+    def resize_image_small(self):
+        for po in self.product_order_ids:
+            po.write({
+                'design_image_small': tools.image_resize_image_small(po.design_image.encode('ascii'))
+            })
+
     @api.multi
     def write_from_web(self, vals):
         for rec in self:
