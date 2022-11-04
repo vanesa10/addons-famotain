@@ -162,7 +162,9 @@
                 <kanban class="o_kanban_mobile" quick_create="0" archivable="0">
                     <field name="id"/>
                     <field name="design_image_small"/>
+                    <field name="sales_order_id"/>
                     <field name="qty"/>
+                    <field name="deadline"/>
                     <field name="product_id"/>
                     <field name="fabric_color"/>
 <!--                    <field name="product_price"/>-->
@@ -172,7 +174,7 @@
                     <templates>
                         <t t-name="kanban-box">
                             <div t-attf-class="oe_kanban_card oe_kanban_global_click">
-                                <div class="row mt4">
+                                <div class="row mt4" style="align-items: center;">
                                     <div class="col-2">
                                         <div class="o_kanban_image">
                                             <img alt="Avatar" t-att-src="kanban_image('sales__order.product_order', 'design_image_small', record.id.raw_value)"/>
@@ -185,9 +187,12 @@
                                             </div>
                                             <strong groups="famotain.famotain_manager"><field name="price" widget="monetary"/></strong>
                                         </div>
+                                        <div class="text-muted o_kanban_record_subtitle">
+                                            <span>Desc: <t t-esc="record.fabric_color.value"/></span>
+                                        </div>
                                         <div class="o_kanban_record_bottom">
                                             <div class="oe_kanban_bottom_left text-muted">
-                                                <span>Desc: <t t-esc="record.fabric_color.value"/></span>
+                                                <span><t t-esc="record.deadline.value"/> - <t t-esc="record.sales_order_id.value"/></span>
                                             </div>
                                             <div class="oe_kanban_bottom_right">
                                                 <field name="state" widget="label_selection" options="{'classes': {'draft': 'warning', 'confirm': 'info', 'on_progress': 'info', 'sent': 'success', 'cancel': 'default'}}"/>
