@@ -163,6 +163,7 @@
                                    mode="tree,kanban"
                                    context="{'default_qty': qty_total, 'default_sales_order_id': id}">
                                 <tree default_order="product_type desc" editable="bottom" delete="1">
+                                    <field name="design_image"  widget="image" class="oe_avatar oe_left" options='{"preview_image": "design_image_small"}'/>
                                     <field name="product_type" invisible="1"/>
 <!--                                    <field name="product_type" />-->
                                     <field name="qty"/>
@@ -170,7 +171,7 @@
 <!--                                    <field name="design_image" widget="image" class="oe_avatar" options='{"preview_image": "design_image_small"}'/>-->
 <!--                                    <field name="design_image_2" widget="image" class="oe_avatar" options='{"preview_image": "design_image_2_small"}'/>-->
                                     <field name="fabric_color"/>
-                                    <field name="ribbon_color"/>
+<!--                                    <field name="ribbon_color"/>-->
                                     <field name="currency_id" invisible="1"/>
                                     <field name="product_price"/>
                                     <field name="price" groups="famotain.famotain_manager"/>
