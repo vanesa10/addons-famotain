@@ -400,7 +400,7 @@ Deadline : {deadline}
     def resize_image_small(self):
         for po in self.product_order_ids:
             po.write({
-                'design_image_small': tools.image_resize_image_small(po.design_image.encode('ascii'))
+                'design_image_small': tools.image_resize_image_small(po.design_image)
             })
 
     @api.multi
