@@ -129,7 +129,7 @@
                     <div class="oe_button_box" name="button_box">
                         <button name="action_url" class="oe_stat_button" string="Web Link" type="object" icon="fa-globe"/>
                     </div>
-                    <field name="image" widget="image" class="oe_avatar oe_left" options='{"preview_image": "image_medium"}'/>
+                    <field name="image" widget="image" class="oe_avatar oe_left" options='{"preview_image": "image_small"}'/>
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only"/>
                         <h1>

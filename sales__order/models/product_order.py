@@ -83,7 +83,7 @@ class ProductOrder(models.Model):
 
     def resize_image_small(self):
         self.write({
-            'design_image_small': tools.image_resize_image_small(self.design_image.encode('ascii'))
+            'design_image_small': tools.image_resize_image_small(self.design_image)
         })
 
     @api.model
