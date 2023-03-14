@@ -16,7 +16,7 @@
         'data/courier_shipment.xml',
         'data/product_category.xml',
         'views/product_views.xml',
-        'views/fabric_views.xml',
+        # 'views/fabric_views.xml',
         'views/courier_shipment_views.xml',
         'views/settings_views.xml',
         'views/product_category_views.xml',
