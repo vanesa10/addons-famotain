@@ -108,7 +108,7 @@ class ProductOrder(models.Model):
         # create product order kalo sales order udh confirm/approve/on progress berarti product order state auto confirm
         if product_order.sales_order_id.state in ['confirm', 'approve', 'on_progress']:
             product_order.action_confirm()
-        if image and product_order.product_id.product_type in ['product', 'addons'] and not product_order.sales_order_id.image:
+        if image and product_order.product_id.product_type in ['product', 'addons', 'charge'] and not product_order.sales_order_id.image:
             product_order.sales_order_id.image = vals['design_image']
         msg = "{}pcs {} Rp. {:,} product order created".format(product_order.qty, product_order.product_id.display_name, product_order.total)
         product_order.sales_order_id.message_post(body=msg)
@@ -120,7 +120,7 @@ class ProductOrder(models.Model):
             vals.update({
                 'design_image_small': tools.image_resize_image_medium(vals['design_image'].encode('ascii'))
             })
-            if self.product_id.product_type in ['product'] and not self.sales_order_id.image:
+            if self.product_id.product_type in ['product', 'addons', 'charge'] and not self.sales_order_id.image:
                 self.sales_order_id.image = vals['design_image']
         if 'design_image_2' in vals.keys() and vals['design_image_2']:
             vals.update({
@@ -281,6 +281,22 @@ class ProductOrder(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Product Order Form',
             'res_model': 'sales__order.product_order',
+            'res_id': rec_id,
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': form_id.id,
+            'context': {},
+            'target': 'current',
+        }
+
+    def open_sales_order_record(self):
+        rec_id = self.sales_order_id.id
+        form_id = self.env.ref('sales__order.sales__order_form')
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Sales Order Form',
+            'res_model': 'sales__order.sales__order',
             'res_id': rec_id,
             'view_type': 'form',
             'view_mode': 'form',

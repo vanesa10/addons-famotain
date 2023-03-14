@@ -1,0 +1,147 @@
+Fabric Type
+ - name Dop, D420, Daphne, Busa Foam
+ - display_name [str] kain luar imitasi, kain dalam parasut, kain dalam spunbund, kain luar kanvas jepang
+ - width (cm)
+ - price_calculation (in meters)
+ - margin potong atas bawah (cm)
+ - margin lebar kanan kiri (cm)
+
+Fabric
+ - name Dop hitam (auto) [str]
+ - fabric type Dop [1 to M]
+ - Color Hitam [str]
+ - Stock (in meters) [float] => otomatis hitung
+ - requirements (in meters) [float] => otomatis hitung
+ - price (in case beda sama yang biasanya, yg diutamain price yg ini) [float]
+
+Webbing Type
+ - name LT 2.5, L22, Resleting, Tali Kur
+ - display_name [str] tali tas, list, resleting, tali serut
+ - size (meters) 1 Roll isi berapa
+ - price (in meters)
+
+Webbing
+ - name LT 2.5 Hitam (auto) [str]
+ - webbing type LT 2.5 [1 to M]
+ - Color Hitam [str]
+ - Stock (in meters) [float] => otomatis hitung
+ - requirements (in meters) [float] => otomatis hitung
+ - price (in case beda sama yang biasanya, yg diutamain price yg ini) [float]
+
+Accessories
+ - name Kepala ret YKK, kepala ret amco, Magnet BNK, Ring D tebal, Ring D tipis
+ - price (in pcs)
+ - stock
+ - requirements
+
+Print
+ - name Imitasi Ci Yeti, Kanvas Printex, Kanvas Lporter, Kanvas Lporter promo, Bordir 7cm, Bordir 12cm, Bordir 10cm
+ - width (cm)
+ - max print area (cm)
+ - price (in meters)
+
+Bordir
+ - name Bordir 7cm, Bordir 10cm, Bordir 12cm, Bordir 15cm
+ - width (cm)
+ - price 4000, 6000, 8000, 9000
+
+Fabric Pieces
+ - name [str] auto
+ - product [1toM] Clea, Handbag Half
+ - Fabric Type [1toM] Dop
+ - width (cm) [float]
+ - height (cm) [float]
+ - desc [str] bordir + kantong
+ - qty 1x, 2x, 3x
+
+Printing Pieces
+ - name [str] auto
+ - product [1toM]
+ - print [1toM]
+ - width (cm) [float]
+ - height (cm) [float]
+ - desc [str]
+ - qty 1x, 2x, 3x
+
+Webbing Pieces
+ - name [str] auto
+ - product [1toM]
+ - webbing type [1toM]
+ - width (m) [float]
+ - desc [str] ret bawah
+
+Acc Pieces
+ - name [str] auto
+ - product [1toM]
+ - acc [1toM]
+ - qty [int]
+ - desc [str]
+
+Bordir Pieces
+ - name [str] auto
+ - product [1toM]
+ - bordir [1toM]
+ - qty [int] 1x
+ - desc [str] 7cm dr kanan
+
+BoM
+ - product order [1toM]
+ - Print 2m
+ - Dop Hitam 3m
+ - Dop putih 2m
+ - Kepala ret 60pcs
+
+BoM line
+ -
+
+CASE 2:
+Component
+ - name Dop, Daphne, Kepala Ret YKK, Kepala Ret Tipis, LT 2.5, Print Imitasi, Bordir, Gail, Selang, Ring D tebal, Ring D tipis [str]
+ - component_type (fabric, acc, webbing, print, bordir) [str]
+ - vendor_default_id (buat nentuin harga calculation ikutin vendor mana) [1 to M]
+ - display_name (kain luar imitasi, kain dalam parasut, busa, kepala ret, tali tas) [str]
+ - width (cm)
+ - margin potong atas bawah (cm)
+ - margin lebar kanan kiri (cm)
+ - max print area (cm)
+ - uom
+
+Component Color: Accessories jg harus punya, masio color diisi kosongan gpp
+ - name Dop hitam (auto) [str]
+ - component_id
+ - color (str)
+ - stock
+ - requirement
+ - vendor_default_id (buat nentuin warna tertentu biasa ada dmn) [1 to M]
+
+Vendor:
+ - name [str]
+ - address [str]
+ - telp [str]
+ - city [str]
+ - desc [str]
+
+Component Vendor:
+ - component_id
+ - vendor_id
+ - price (normal) dipake buat hitung
+ - gross_price [float] (dh dicalculate manual)
+ - gross_qty (1 Roll isi brp/1 pack isi brp) [str]
+
+BoM: taruh di page product kalo mau nambah
+ - component_id
+ - product_id
+ - width (cm) [float]
+ - height (cm) [float]
+ - desc [str] bordir + kantong
+ - multiply [int] 1x, 2x, 3x
+ - qty [float]
+
+Manufacturing Order: (bisa ditambah/dikurangi manual) taruh di page product order, create waktu confirm po
+ - component_id (auto waktu confirm product order)
+ - component_color_id (milih)
+ - product_order_id
+ - qty [float] (2m, 20pcs, uom nyesuaiin component_id, bisa diganti sesuai kebutuhan saat itu)
+ - vendor_id (vendor yg dipakai) milih
+ - price_calculation (dihitung auto pake normal pricenya component id x kebutuhan)
+ - state (draft, approve, ready, done)

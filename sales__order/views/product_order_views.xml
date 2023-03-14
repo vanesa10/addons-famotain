@@ -8,6 +8,7 @@
                 <search string="Search Product Order">
                     <field name="product_id"/>
                     <field name="sales_order_id"/>
+                    <field name="fabric_color"/>
                     <field name="product_type"/>
                     <separator/>
                     <group>
@@ -75,7 +76,7 @@
                         <button string="Approve" name="action_approve" confirm="Are you sure you want to approve this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['confirm'])]}"/>
                         <button string="Process" name="action_on_progress" confirm="Are you sure you want to process this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'in', ['draft', 'on_progress', 'done', 'sent', 'cancel'])]}"/>
                         <button string="Done" name="action_done" confirm="Are you sure you want to process this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['on_progress'])]}"/>
--                        <button string="Set Product Type" name="set_empty_product_type" class="btn btn-secondary" type="object"/>
+<!-- -                        <button string="Set Product Type" name="set_empty_product_type" class="btn btn-secondary" type="object"/>-->
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirm,approve,on_progress,done,sent,cancel"/>
                     </header>
                     <sheet>
@@ -192,7 +193,12 @@
                                         </div>
                                         <div class="o_kanban_record_bottom">
                                             <div class="oe_kanban_bottom_left text-muted">
-                                                <span><t t-esc="record.deadline.value"/> - <t t-esc="record.sales_order_id.value"/></span>
+                                                <span>
+                                                    <t t-esc="record.deadline.value"/> -
+                                                    <a name="open_sales_order_record" type="object">
+                                                        <t t-esc="record.sales_order_id.value"/>
+                                                    </a>
+                                                </span>
                                             </div>
                                             <div class="oe_kanban_bottom_right">
                                                 <field name="state" widget="label_selection" options="{'classes': {'draft': 'warning', 'confirm': 'info', 'on_progress': 'info', 'sent': 'success', 'cancel': 'default'}}"/>
@@ -295,6 +301,66 @@
           <field name="view_mode">tree,kanban,form</field>
         </record>
 
+        <record model="ir.actions.act_window" id="sales__order.product_order_action_product">
+            <field name="name">Product Order</field>
+            <field name="res_model">sales__order.product_order</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="sales__order.product_order_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'sales__order.product_order_form',
+                    'tree_view_ref': 'sales__order.product_order_tree',
+                    'kanban_view_ref': 'sales__order.product_order_kanban',
+                    'search_default_open_order': 1,
+                    'search_default_product': 1,
+                }
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="sales__order.product_order_action_package">
+            <field name="name">Product Order</field>
+            <field name="res_model">sales__order.product_order</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="sales__order.product_order_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'sales__order.product_order_form',
+                    'tree_view_ref': 'sales__order.product_order_tree',
+                    'kanban_view_ref': 'sales__order.product_order_kanban',
+                    'search_default_open_order': 1,
+                    'search_default_package': 1,
+                }
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="sales__order.product_order_action_addons">
+            <field name="name">Product Order</field>
+            <field name="res_model">sales__order.product_order</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="sales__order.product_order_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'sales__order.product_order_form',
+                    'tree_view_ref': 'sales__order.product_order_tree',
+                    'kanban_view_ref': 'sales__order.product_order_kanban',
+                    'search_default_open_order': 1,
+                    'search_default_addons': 1,
+                }
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="sales__order.product_order_action_charge">
+            <field name="name">Product Order</field>
+            <field name="res_model">sales__order.product_order</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="search_view_id" ref="sales__order.product_order_search"/>
+            <field name="context">
+                {
+                    'form_view_ref': 'sales__order.product_order_form',
+                    'tree_view_ref': 'sales__order.product_order_tree',
+                    'kanban_view_ref': 'sales__order.product_order_kanban',
+                    'search_default_open_order': 1,
+                    'search_default_charge': 1,
+                }
+            </field>
+        </record>
         <record model="ir.actions.act_window" id="sales__order.product_order_action_need_progress">
             <field name="name">Product Order</field>
             <field name="res_model">sales__order.product_order</field>
@@ -337,43 +403,18 @@
                 }
             </field>
         </record>
-        <record model="ir.actions.act_window" id="sales__order.product_order_action_done">
-            <field name="name">Product Order</field>
-            <field name="res_model">sales__order.product_order</field>
-            <field name="view_mode">tree,kanban,form</field>
-            <field name="search_view_id" ref="sales__order.product_order_search"/>
-            <field name="context">
-                {
-                    'form_view_ref': 'sales__order.product_order_form',
-                    'tree_view_ref': 'sales__order.product_order_tree',
-                    'kanban_view_ref': 'sales__order.product_order_kanban',
-                    'search_default_done': 1
-                }
-            </field>
-        </record>
-        <record model="ir.actions.act_window" id="sales__order.product_order_action_cancel">
-            <field name="name">Product Order</field>
-            <field name="res_model">sales__order.product_order</field>
-            <field name="view_mode">tree,kanban,form</field>
-            <field name="search_view_id" ref="sales__order.product_order_search"/>
-            <field name="context">
-                {
-                    'form_view_ref': 'sales__order.product_order_form',
-                    'tree_view_ref': 'sales__order.product_order_tree',
-                    'kanban_view_ref': 'sales__order.product_order_kanban',
-                    'search_default_cancel': 1
-                }
-            </field>
-        </record>
 
         <menuitem name="Product Order" id="sales__order.product_order_menu" parent="sales__order.menu_root" action="sales__order.product_order_action_window" sequence="3"/>
         <!-- menu categories -->
-        <menuitem name="Need Progress" id="sales__order.product_order_submenu_need_progress" parent="sales__order.product_order_menu" action="sales__order.product_order_action_need_progress" sequence="2"/>
-        <menuitem name="Open Order" id="sales__order.product_order_submenu_open_order" parent="sales__order.product_order_menu" action="sales__order.product_order_action_open_order" sequence="3"/>
-        <menuitem name="Fix Order" id="sales__order.product_order_submenu_fix_order" parent="sales__order.product_order_menu" action="sales__order.product_order_action_fix_order" sequence="4"/>
-        <menuitem name="State" id="sales__order.product_order_submenu_state" parent="sales__order.product_order_menu" sequence="5"/>
-        <menuitem name="All" id="sales__order.product_order_submenu_all" parent="sales__order.product_order_submenu_state" action="sales__order.product_order_action_window" sequence="6"/>
-        <menuitem name="Done" id="sales__order.product_order_submenu_done" parent="sales__order.product_order_submenu_state" action="sales__order.product_order_action_done" sequence="7"/>
-        <menuitem name="Cancelled" id="sales__order.product_order_submenu_cancel" parent="sales__order.product_order_submenu_state" action="sales__order.product_order_action_cancel" sequence="8"/>
+
+        <menuitem name="Product" id="sales__order.product_order_submenu_product" parent="sales__order.product_order_menu" action="sales__order.product_order_action_product" sequence="2"/>
+        <menuitem name="Package" id="sales__order.product_order_submenu_package" parent="sales__order.product_order_menu" action="sales__order.product_order_action_package" sequence="3"/>
+        <menuitem name="Addons" id="sales__order.product_order_submenu_addons" parent="sales__order.product_order_menu" action="sales__order.product_order_action_addons" sequence="4"/>
+        <menuitem name="Charge" id="sales__order.product_order_submenu_charge" parent="sales__order.product_order_menu" action="sales__order.product_order_action_charge" sequence="5"/>
+
+        <menuitem name="State" id="sales__order.product_order_submenu_state" parent="sales__order.product_order_menu" sequence="6"/>
+        <menuitem name="Need Progress" id="sales__order.product_order_submenu_need_progress" parent="sales__order.product_order_submenu_state" action="sales__order.product_order_action_need_progress" sequence="7"/>
+        <menuitem name="Open Order" id="sales__order.product_order_submenu_open_order" parent="sales__order.product_order_submenu_state" action="sales__order.product_order_action_open_order" sequence="8"/>
+        <menuitem name="Fix Order" id="sales__order.product_order_submenu_fix_order" parent="sales__order.product_order_submenu_state" action="sales__order.product_order_action_fix_order" sequence="9"/>
     </data>
 </odoo>
