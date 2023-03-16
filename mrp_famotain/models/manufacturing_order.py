@@ -20,13 +20,16 @@ _logger = logging.getLogger(__name__)
 
 class ManufacturingOrder(models.Model):
     _name = 'mrp_famotain.manufacturing_order'
-    # _order = 'product_order_id asc'
+    _order = 'product_order_id asc'
+    _desc = 'Manufacturing Order'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
+    name = fields.Char('Manufacturing Order', default='New', readonly=True, index=True, tracking=True)
     component_id = fields.Many2one('mrp_famotain.component', 'Component', required=True, domain=[('active', '=', True)], track_visibility='onchange')
     component_color_id = fields.Many2one('mrp_famotain.component_color', 'Component Color', domain=[('active', '=', True)], track_visibility='onchange')
     product_order_id = fields.Many2one('sales__order.product_order', 'Product Order', required=True, track_visibility='onchange')
 
+    #TODO: tambah field product_id
     qty = fields.Float('Qty', track_visibility='onchange')
     vendor_id = fields.Many2one('mrp_famotain.vendor', 'Vendor', domain=[('active', '=', True)], track_visibility='onchange')
 
@@ -35,3 +38,12 @@ class ManufacturingOrder(models.Model):
     state = fields.Selection([('draft', 'Draft'), ('approve','Approved'), ('ready', 'Ready'), ('done', 'Done'), ('cancel', 'Cancelled')], 'State', required=True, default='draft', readonly=True, track_visibility='onchange')
     notes = fields.Text('Notes', track_visibility='onchange')
     currency_id = fields.Many2one('res.currency', 'Currency', readonly=True, default=lambda self: self.env.user.company_id.currency_id)
+
+    @api.model
+    def create(self, vals_list):
+        if vals_list.get('name') != 'New':
+            vals_list.update({
+                'name': self.env['ir.sequence'].with_context(
+                    ir_sequence_date=str(fields.Date.today())[:10]).next_by_code('mrp_famotain.manufacturing_order'),
+            })
+        return super(ManufacturingOrder, self).create(vals_list)

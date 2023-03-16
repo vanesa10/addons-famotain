@@ -128,14 +128,14 @@ Component Vendor:
  - gross_price [float] (dh dicalculate manual)
  - gross_qty (1 Roll isi brp/1 pack isi brp) [str]
 
-BoM: taruh di page product kalo mau nambah
+BoM: taruh di page product kalo mau nambah dan di po (no edit. only for view)
  - component_id
  - product_id
  - width (cm) [float]
  - height (cm) [float]
  - desc [str] bordir + kantong
- - multiply [int] 1x, 2x, 3x
- - qty [float]
+ - multiply [int] 1x, 2x, 3x ga jadi. kasihke di qty aja
+ - qty [float] 1x, 2x, 3x
 
 Manufacturing Order: (bisa ditambah/dikurangi manual) taruh di page product order, create waktu confirm po
  - component_id (auto waktu confirm product order)
@@ -144,4 +144,5 @@ Manufacturing Order: (bisa ditambah/dikurangi manual) taruh di page product orde
  - qty [float] (2m, 20pcs, uom nyesuaiin component_id, bisa diganti sesuai kebutuhan saat itu)
  - vendor_id (vendor yg dipakai) milih
  - price_calculation (dihitung auto pake normal pricenya component id x kebutuhan)
+       untuk sementara aja, nnt nek mau dibuatin tabel price pengeluarannya
  - state (draft, approve, ready, done)

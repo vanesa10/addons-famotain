@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="mrp_famotain.component_search">
+            <field name="name">Component Search</field>
+            <field name="model">mrp_famotain.component</field>
+            <field name="arch" type="xml">
+                <search string="Search Component">
+                    <field name="name"/>
+                    <field name="customer_display_name"/>
+                    <field name="component_type"/>
+                    <field name="vendor_id"/>
+                    <field name="width"/>
+                    <separator/>
+                    <group>
+                        <filter string="Fabric" name="fabric" domain="[('component_type', '=', 'fabric')]"/>
+                        <filter string="Accessories" name="accessories" domain="[('component_type', '=', 'accessories')]"/>
+                        <filter string="Webbing" name="webbing" domain="[('component_type', '=', 'webbing')]"/>
+                        <filter string="Print" name="print" domain="[('component_type', '=', 'print')]"/>
+                        <filter string="Embroidery" name="embroidery" domain="[('component_type', '=', 'embroidery')]"/>
+                        <filter string="Others" name="others" domain="[('component_type', '=', 'others')]"/>
+                    </group>
+                    <separator/>
+                    <group string="Group By">
+                        <filter string="Vendor" name="group_vendor" domain="[]" context="{'group_by':'vendor_id'}"/>
+                        <filter string="Component Type" name="group_component_type" domain="[]" context="{'group_by':'component_type'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="mrp_famotain.component_tree">
+            <field name="name">Component Tree</field>
+            <field name="model">mrp_famotain.component</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="component_type"/>
+                    <field name="name"/>
+                    <field name="customer_display_name"/>
+                    <field name="vendor_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="mrp_famotain.component_form">
+            <field name="name">Component Form</field>
+            <field name="model">mrp_famotain.component</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object"
+                                    class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button"
+                                    options='{"terminology": "archive"}'/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="component_type"/>
+                                <field name="customer_display_name"/>
+                                <field name="vendor_id" />
+                                <field name="uom_id" />
+                            </group>
+                            <group>
+                                <field name="width"/>
+                                <field name="margin_top_bottom" />
+                                <field name="margin_left_right" />
+                                <field name="max_print_area" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Colors">
+                                <field name="component_color_ids" context="{'default_component_id': id}">
+                                    <tree editable="bottom" delete="1">
+                                        <field name="component_id"/>
+                                        <field name="color"/>
+                                        <field name="stock"/>
+                                        <field name="requirement"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Vendors">
+                                <field name="component_vendor_ids" context="{'default_component_id': id}">
+                                    <tree editable="bottom" delete="1">
+                                        <field name="vendor_id"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="price"/>
+                                        <field name="gross_price"/>
+                                        <field name="gross_qty"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                        <group string="Notes">
+                            <field name="notes"/>
+                        </group>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" widget="mail_followers"/>
+                            <field name="activity_ids" widget="mail_activity"/>
+                            <field name="message_ids" widget="mail_thread"/>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

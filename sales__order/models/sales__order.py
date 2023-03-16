@@ -2,7 +2,7 @@
 import base64
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
-from odoo import tools
+from ...tools import image as tools
 from datetime import datetime, timedelta
 from ...famotain.models.telegram_bot import send_telegram_message
 from ...famotain.models.encryption import encrypt
@@ -26,6 +26,7 @@ class SalesOrder(models.Model):
     _name = 'sales__order.sales__order'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'deadline'
+    _desc = 'Sales Order'
 
     image = fields.Binary("Image", attachment=True, readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]})
     image_medium = fields.Binary("Medium-sized Image", attachment=True, readonly=True)
@@ -96,6 +97,8 @@ class SalesOrder(models.Model):
         sequences = self.env['ir.sequence'].search([('prefix', '=', 'F%(range_year)s%(range_month)s%(range_day)s')], limit=1)
         sequences.write({'number_next_actual': 1})
         sequences = self.env['ir.sequence'].search([('prefix', '=', 'INV/%(range_year)s%(range_month)s%(range_day)s/')], limit=1)
+        sequences.write({'number_next_actual': 1})
+        sequences = self.env['ir.sequence'].search([('prefix', '=', 'MRP/%(range_year)s%(range_month)s%(range_day)s/')], limit=1)
         sequences.write({'number_next_actual': 1})
 
     def monthly_report_notification(self):

@@ -2,9 +2,9 @@
 import base64
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
-from odoo import tools
 from odoo.modules.module import get_module_resource
 from ...famotain.models.product import PRODUCT_TYPE_LIST
+from ...tools import image as tools
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -34,7 +34,7 @@ class ProductOrder(models.Model):
     # product_description = fields.Char('Description', related="product_id.description")
 
     qty = fields.Integer('Qty', default=1, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
-    fabric_color = fields.Char('Description', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
+    fabric_color = fields.Char('Color Notes', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
     ribbon_color = fields.Char('Ribbon Color', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
     design_image = fields.Binary('Design Image', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
     design_image_small = fields.Binary("Small-sized Design Image", attachment=True, readonly=True)
@@ -47,7 +47,8 @@ class ProductOrder(models.Model):
     currency_id = fields.Many2one('res.currency', 'Currency', readonly=True, default=lambda self: self.env.user.company_id.currency_id)
 
     state = fields.Selection([('draft', 'Draft'), ('confirm', 'Confirmed'), ('approve','Approved'), ('on_progress', 'On Progress'), ('done', 'Done'), ('sent', 'Sent'), ('cancel', 'Cancelled')], 'State', required=True, default='draft', readonly=True, track_visibility='onchange')
-    notes = fields.Text('Notes', compute='_compute_notes', store=True)
+    product_description = fields.Char('Product Description', compute='_compute_product_description', store=True)
+    notes = fields.Text('Notes', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
 
     approve_uid = fields.Many2one('res.users', 'Approved By', readonly=True)
     approve_date = fields.Datetime('Approved On', readonly=True)
@@ -197,9 +198,9 @@ class ProductOrder(models.Model):
     @api.multi
     @api.onchange('product_id')
     @api.depends('product_id')
-    def _compute_notes(self):
+    def _compute_product_description(self):
         for rec in self:
-            rec.notes = rec.product_id.description
+            rec.product_description = rec.product_id.description
 
     @api.multi
     @api.onchange('sales_order_id')

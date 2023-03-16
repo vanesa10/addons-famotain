@@ -82,70 +82,60 @@
                     <sheet>
                         <field name="design_image" widget="image" class="oe_avatar oe_left" options='{"preview_image": "design_image_small"}'/>
                         <div class="oe_title">
-                            <field name="product_type" widget='radio' options="{'horizontal': true}" class="oe_edit_only"/>
-                            <h2>
+                            <field name="product_type" widget='radio' options="{'horizontal': true}"/>
+                            <h1>
                                 <field name="product_id"/>
-                            </h2>
-                            <h3>
-                                <field name="sales_order_id"/>
-                            </h3>
+                            </h1>
                         </div>
-                        <notebook colspan="3">
-                            <page string="General Information" name="general_information">
-                                <group>
-                                    <group>
-                                        <field name="deadline" />
-                                        <field name="fabric_color"/>
-                                        <field name="ribbon_color"/>
-                                    </group>
-                                    <group>
-                                        <field name="currency_id" invisible="1"/>
-                                        <field name="qty"/>
-                                        <field name="product_price"/>
-                                        <field name="price" groups="famotain.famotain_manager"/>
-                                        <field name="total"/>
-                                    </group>
-                                </group>
-                            </page>
-                            <page string="Design" name="design">
-                                <group>
-                                    <group>
-                                        <field name="design_image_2" widget="image" class="oe_avatar"/>
-                                    </group>
-                                    <group>
-                                        <field name="design_image_3" widget="image" class="oe_avatar"/>
-                                    </group>
-                                </group>
-                            </page>
-                            <page string="Additional Information" name="additional_information">
-                                <group>
-                                    <field name="price_line_id"/>
-                                    <label for="create_uid" string="Created By" attrs="{'invisible': [('create_date', '=', False)]}"/>
-                                    <div attrs="{'invisible': [('create_date', '=', False)]}">
-                                        <field name="create_uid" class="oe_inline"/> -
-                                        <field name="create_date" class="oe_inline"/>
-                                    </div>
-                                    <label for="approve_uid" string="Approved By" attrs="{'invisible': [('approve_date', '=', False)]}"/>
-                                    <div attrs="{'invisible': [('approve_date', '=', False)]}">
-                                        <field name="approve_uid" class="oe_inline"/> -
-                                        <field name="approve_date" class="oe_inline"/>
-                                    </div>
-                                    <label for="send_uid" string="Sent By" attrs="{'invisible': [('send_date', '=', False)]}"/>
-                                    <div attrs="{'invisible': [('send_date', '=', False)]}">
-                                        <field name="send_uid" class="oe_inline"/> -
-                                        <field name="send_date" class="oe_inline"/>
-                                    </div>
-                                    <label for="cancel_uid" string="Cancelled By" attrs="{'invisible': [('cancel_date', '=', False)]}"/>
-                                    <div attrs="{'invisible': [('cancel_date', '=', False)]}">
-                                        <field name="cancel_uid" class="oe_inline"/> -
-                                        <field name="cancel_date" class="oe_inline"/>
-                                    </div>
-                                </group>
-                            </page>
-                        </notebook>
+                        <group>
+                            <group>
+                                <field name="currency_id" invisible="1"/>
+                                <field name="sales_order_id"/>
+                                <field name="deadline" />
+                                <field name="qty"/>
+                                <field name="fabric_color"/>
+                                <field name="ribbon_color"/>
+                                <field name="product_price"/>
+                                <field name="total"/>
+                            </group>
+                            <group>
+                                <field name="price" groups="famotain.famotain_manager"/>
+                                <field name="design_image_2" widget="image" class="oe_avatar"/>
+                                <field name="design_image_3" widget="image" class="oe_avatar"/>
+                                <field name="price_line_id"/>
+                                <label for="create_uid" string="Created By" attrs="{'invisible': [('create_date', '=', False)]}"/>
+                                <div attrs="{'invisible': [('create_date', '=', False)]}">
+                                    <field name="create_uid" class="oe_inline"/> -
+                                    <field name="create_date" class="oe_inline"/>
+                                </div>
+                                <label for="approve_uid" string="Approved By" attrs="{'invisible': [('approve_date', '=', False)]}"/>
+                                <div attrs="{'invisible': [('approve_date', '=', False)]}">
+                                    <field name="approve_uid" class="oe_inline"/> -
+                                    <field name="approve_date" class="oe_inline"/>
+                                </div>
+                                <label for="send_uid" string="Sent By" attrs="{'invisible': [('send_date', '=', False)]}"/>
+                                <div attrs="{'invisible': [('send_date', '=', False)]}">
+                                    <field name="send_uid" class="oe_inline"/> -
+                                    <field name="send_date" class="oe_inline"/>
+                                </div>
+                                <label for="cancel_uid" string="Cancelled By" attrs="{'invisible': [('cancel_date', '=', False)]}"/>
+                                <div attrs="{'invisible': [('cancel_date', '=', False)]}">
+                                    <field name="cancel_uid" class="oe_inline"/> -
+                                    <field name="cancel_date" class="oe_inline"/>
+                                </div>
+                            </group>
+                        </group>
                         <group string="Notes">
+                            <field name="product_description"/>
                             <field name="notes"/>
                         </group>
+<!--                        <notebook colspan="3">-->
+<!--                            <page string="Additional Information" name="additional_information">-->
+<!--                                <group>-->
+
+<!--                                </group>-->
+<!--                            </page>-->
+<!--                        </notebook>-->
                         <div class="oe_chatter">
                             <field name="message_follower_ids" widget="mail_followers"/>
                             <field name="activity_ids" widget="mail_activity"/>

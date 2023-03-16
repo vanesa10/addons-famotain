@@ -68,13 +68,13 @@
           <field name="model">famotain.product</field>
           <field name="arch" type="xml">
             <tree>
-                <field name="image"  widget="image" class="oe_avatar oe_left" options='{"preview_image": "image_medium"}'/>
+<!--                <field name="image"  widget="image" class="oe_avatar oe_left" options='{"preview_image": "image_medium"}'/>-->
                 <field name="code"/>
                 <field name="name"/>
                 <field name="description"/>
                 <field name="price"/>
                 <field name="currency_id" invisible="1"/>
-                <field name="notes"/>
+<!--                <field name="notes"/>-->
             </tree>
           </field>
         </record>

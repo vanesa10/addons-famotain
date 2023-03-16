@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import base64
-from odoo import models, fields, api
-from odoo import tools, _
+from odoo import models, fields, api, _
 from odoo.modules.module import get_module_resource
+from ...tools import image as tools
 
 
 class Customer(models.Model):
