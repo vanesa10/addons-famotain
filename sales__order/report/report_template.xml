@@ -688,12 +688,12 @@
                                             <span t-field="product_order.fabric_color"/>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <th>Ribbon</th>
-                                        <td t-foreach="o.product_order_ids" t-as="product_order">
-                                            <span t-field="product_order.ribbon_color"/>
-                                        </td>
-                                    </tr>
+<!--                                    <tr>-->
+<!--                                        <th>Ribbon</th>-->
+<!--                                        <td t-foreach="o.product_order_ids" t-as="product_order">-->
+<!--                                            <span t-field="product_order.ribbon_color"/>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
                                     <tr>
                                         <th>Design</th>
                                         <td t-foreach="o.product_order_ids" t-as="product_order">

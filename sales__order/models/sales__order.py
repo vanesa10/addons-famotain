@@ -168,7 +168,7 @@ Charge: Rp. {amount_charge:,.0f}
 <b>PAID: Rp. {paid:,.0f}</b>
 <b>REMAIN: Rp. {remaining:,.0f}</b>
 """.format(**data)
-        send_telegram_message(msg, 'famotain')
+        send_telegram_message(msg, 'famotain_report_group')
 
     def weekly_report_notification(self):
         # Report minggu ini dpt brp order
@@ -192,7 +192,7 @@ Charge: Rp. {amount_charge:,.0f}
 Qty : {new_qty_total}pcs
 Total : Rp. {new_amount_total:,.0f}
 """.format(**data)
-        send_telegram_message(msg, 'famotain')
+        send_telegram_message(msg, 'famotain_report_group')
 
     def daily_report_notification(self):
         # Report order yang belum terkirim total brp pcs sama amount brp
@@ -232,30 +232,30 @@ Remain : Rp. {remaining:,.0f}
 Qty : {new_qty_total}pcs
 Total : Rp. {new_amount_total:,.0f}
 """.format(**data)
-        send_telegram_message(msg, 'famotain')
+        send_telegram_message(msg, 'famotain_report_group')
 
-    def design_notification(self):
-        # buat design
-        sales_order = self.env['sales__order.sales__order'].search([
-            ('state', '=', 'confirm'), ('image', '=', False)
-        ], order="deadline")
-        notif = "<b>Need tobe designed:</b>\n========================\n"
-        for rec in sales_order:
-            url = '%s/order/%s' % (self.env['ir.config_parameter'].sudo().get_param('web.base.url'), rec.encryption)
-            msg_data = {'url': url, 'deadline': rec.deadline.strftime('%d-%b'), 'name': rec.name,
-                        'theme': rec.theme, 'qty': rec.qty_total, 'product': rec.product}
-            if rec.deadline < fields.Date.today() + relativedelta(days=10):
-                notif += """<a href="{url}"><b>{deadline} - {name}</b></a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data)
-            else:
-                notif += """<a href="{url}">{deadline} - {name}</a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data)
-        send_telegram_message(notif, 'design')
+    # def design_notification(self):
+    #     # buat design
+    #     sales_order = self.env['sales__order.sales__order'].search([
+    #         ('state', '=', 'confirm'), ('image', '=', False)
+    #     ], order="deadline")
+    #     notif = "<b>Need tobe designed:</b>\n========================\n"
+    #     for rec in sales_order:
+    #         url = '%s/order/%s' % (self.env['ir.config_parameter'].sudo().get_param('web.base.url'), rec.encryption)
+    #         msg_data = {'url': url, 'deadline': rec.deadline.strftime('%d-%b'), 'name': rec.name,
+    #                     'theme': rec.theme, 'qty': rec.qty_total, 'product': rec.product}
+    #         if rec.deadline < fields.Date.today() + relativedelta(days=10):
+    #             notif += """<a href="{url}"><b>{deadline} - {name}</b></a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data)
+    #         else:
+    #             notif += """<a href="{url}">{deadline} - {name}</a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data)
+    #     send_telegram_message(notif, 'design')
 
     def deadline_notification(self):
         # 1. Deadline hari ini blm dikirim
         # 2. Deadline minggu ini blm dikirim
         # 3. URGENT: deadline minggu ini blm di proses
         sales_order = self.env['sales__order.sales__order'].search([
-            ('deadline', '>=', fields.Date.today()), ('deadline', '<', fields.Date.today() + relativedelta(days=10)),
+            ('deadline', '>=', fields.Date.today()), ('deadline', '<', fields.Date.today() + relativedelta(days=2)),
             ('state', '!=', 'cancel'), ('state', '!=', 'send')
         ], order="deadline")
         msg = {'today': "", 'urgent': "", 'this_week': "", 'late': "", 'need_clearance': ""}
@@ -284,32 +284,42 @@ Total : Rp. {new_amount_total:,.0f}
             else:
                 msg['late'] += """<a href="{url}"><b>{deadline} - {name}</b></a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data) if rec.state == 'draft' \
                     else """<a href="{url}">{deadline} - {name}</a>\n{qty}pcs - {product} - {theme}\n""".format(**msg_data)
-        notif = """
+
+        if msg['today']:
+            notif = """
 <b>Deadline Today</b>
 ========================
 {today}
-<b>This Week</b>
-========================
-{this_week}
 """.format(**msg)
-        send_telegram_message(notif)
-        if msg['late'] or msg['need_clearance']:
+        send_telegram_message(notif, 'deadline_today_group')
+        if msg['late']:
             notif = """
 <b>Late</b>
 ========================
 {late}
+""".format(**msg)
+            send_telegram_message(notif, 'late_delivery_group')
+        if msg['need_clearance']:
+            notif = """
 <b>Need Clearance</b>
 ========================
 {need_clearance}
 """.format(**msg)
             send_telegram_message(notif)
+        if msg['this_week']:
+            notif = """
+<b>Deadline in 3 days</b>
+========================
+{this_week}
+""".format(**msg)
+            send_telegram_message(notif, 'urgent_group')
         if msg['urgent']:
             notif = """
-<b>Urgent</b>
+<b>Not Progress</b>
 ========================
 {urgent}
 """.format(**msg)
-            send_telegram_message(notif, 'famotain')
+            send_telegram_message(notif, 'urgent_group')
 
     @api.model
     def create(self, vals_list):
@@ -622,7 +632,7 @@ Deadline : {deadline}
 ========================
 {qty_total}pcs - {product} - {theme}
 """.format(**msg_data)
-                send_telegram_message(msg, 'design')
+                send_telegram_message(msg, 'design_group')
             else:
                 raise UserError(_('You can only confirm a draft sales order'))
 
@@ -652,7 +662,7 @@ Deadline : {deadline}
 ========================
 {qty_total}pcs - {product} - {theme}
 """.format(**msg_data)
-                send_telegram_message(msg, 'famotain')
+                send_telegram_message(msg, 'manufacturing_group')
             else:
                 raise UserError(_('You can only approve a confirmed sales order'))
 

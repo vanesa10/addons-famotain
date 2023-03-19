@@ -6,7 +6,6 @@ from odoo import http
 from odoo.addons.web.controllers.main import Home
 from odoo.http import request, content_disposition, serialize_exception as _serialize_exception
 from ...famotain.models.encryption import decrypt
-from ...famotain.models.telegram_bot import send_telegram_message
 
 import logging
 formatter = '%(asctime)s | %(levelname)s | %(funcName)s | %(lineno)d | %(message)s'

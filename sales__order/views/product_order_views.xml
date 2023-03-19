@@ -94,7 +94,7 @@
                                 <field name="deadline" />
                                 <field name="qty"/>
                                 <field name="fabric_color"/>
-                                <field name="ribbon_color"/>
+<!--                                <field name="ribbon_color"/>-->
                                 <field name="product_price"/>
                                 <field name="total"/>
                             </group>

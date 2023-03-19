@@ -35,7 +35,7 @@ class ProductOrder(models.Model):
 
     qty = fields.Integer('Qty', default=1, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
     fabric_color = fields.Char('Color Notes', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
-    ribbon_color = fields.Char('Ribbon Color', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
+    # ribbon_color = fields.Char('Ribbon Color', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
     design_image = fields.Binary('Design Image', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
     design_image_small = fields.Binary("Small-sized Design Image", attachment=True, readonly=True)
     design_image_2 = fields.Binary('Design Image 2', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
