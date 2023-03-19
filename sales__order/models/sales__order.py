@@ -291,7 +291,7 @@ Total : Rp. {new_amount_total:,.0f}
 ========================
 {today}
 """.format(**msg)
-        send_telegram_message(notif, 'deadline_today_group')
+            send_telegram_message(notif, 'deadline_today_group')
         if msg['late']:
             notif = """
 <b>Late</b>
