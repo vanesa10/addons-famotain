@@ -118,7 +118,7 @@ class SalesOrder(models.Model):
         data = {'count': 0, 'qty_total': 0, 'qty_product': 0, 'qty_label': 0, 'qty_package': 0, 'qty_addons': 0,
                 'amount_total': 0, 'amount_product': 0, 'amount_label': 0, 'amount_package': 0, 'amount_addons': 0,
                 'amount_shipment': 0, 'amount_discount': 0, 'amount_charge': 0, 'remaining': 0, 'paid': 0,
-                'date': last_month.strftime('%b-%Y'), 'to_date': to_date[:10], 'from_date': from_date[:10]}
+                'date': last_month.strftime('%b-%Y')}
         data.update({'from_date': from_date, 'to_date': to_date})
         for rec in sales_order:
             data['count'] += 1
@@ -141,6 +141,7 @@ class SalesOrder(models.Model):
             data['count_open'] += 1
             data['qty_total_open'] += rec.qty_total
             data['total_open'] += rec.total_price
+        data.update({'from_date': from_date[:10], 'to_date': to_date[:10]})
         msg = """
 <b>Monthly Report ({date})</b>
 ({from_date} - {to_date})
