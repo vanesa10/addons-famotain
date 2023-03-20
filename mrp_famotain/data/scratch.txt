@@ -146,3 +146,42 @@ Manufacturing Order: (bisa ditambah/dikurangi manual) taruh di page product orde
  - price_calculation (dihitung auto pake normal pricenya component id x kebutuhan)
        untuk sementara aja, nnt nek mau dibuatin tabel price pengeluarannya
  - state (draft, approve, ready, done)
+
+
+Phase 3:
+Bom yang sekarang itu bom default line di product
+
+buat class baru bom line. copy dari bom defualt, tp bisa diganti2 sesuai Po SAAT ITU
+contoh data:
+27x20 dop depan
+28x21 D410 depan
+
+Manufacturing Order itu jadi BoM
+ - manufacturing_order_id
+ - component_id
+ - component_color_id
+ - qty. qty of the product produced
+ - product_id
+ - unit_qty
+ - uom copy dari component_id
+ - vendor_id = beli bahane dimana
+ - unit_cost = harga barang itu di vendor saat itu
+ - cost = total pengeluaran buat component itu
+contoh data:
+5m Dop Hitam
+3m D420 Krem
+
+Buat manufacturing order baru isinya:
+ - produced_by: vendor yg produksi barang. contoh: penjahit, grafera, Imej, c yeti) berarti vendor kasi 1 variable bedain dia vendor jualan bahan/produksi
+ - qty: copy dari product order
+ - product: copy dr product order
+ - product order
+
+component color:
+ - ada pilihan is_stockable
+
+vendor:
+ - ada pilihan is_material_vendor, is_product_vendor
+
+next todo: buat stock dari component color
+ - component_color nnt punya table stock? dipake brp, beli brp, kapan
