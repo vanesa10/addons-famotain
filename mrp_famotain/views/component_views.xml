@@ -75,11 +75,11 @@
                             </group>
                         </group>
                         <notebook>
-                            <page string="Colors">
-                                <field name="component_color_ids" context="{'default_component_id': id}">
+                            <page string="Details">
+                                <field name="component_detail_ids" context="{'default_component_id': id}">
                                     <tree delete="1">
                                         <field name="component_id"/>
-                                        <field name="color"/>
+                                        <field name="detail"/>
                                         <field name="stock"/>
                                         <field name="requirement"/>
                                     </tree>

@@ -12,6 +12,7 @@ PRICES_LIST = [('product', 'Product'), ('package', 'Package'), ('addons', 'Add-o
 
 class PriceLine(models.Model):
     _name = 'sales__order.price_line'
+    _description = 'Price Line'
     _order = 'prices_type desc'
 
     prices_type = fields.Selection(PRICES_LIST, 'Prices Type', required=True, readonly=True, states={'draft': [('readonly', False)]})

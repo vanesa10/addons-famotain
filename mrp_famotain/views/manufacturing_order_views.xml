@@ -98,7 +98,7 @@
                                         <field name="is_calculated" invisible="1"/>
                                         <field name="unit_qty" attrs="{'readonly': [('is_calculated', '=', True)]}"/>
                                         <field name="component_id"/>
-                                        <field name="component_color_id"/>
+                                        <field name="component_detail_id"/>
                                         <field name="component_vendor_id"/>
                                         <field name="currency_id" invisible="1"/>
                                         <field name="unit_cost" groups="famotain.famotain_manager"/>

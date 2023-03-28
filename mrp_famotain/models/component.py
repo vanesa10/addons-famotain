@@ -15,13 +15,13 @@ COMPONENT_TYPE_LIST = [('fabric', 'Fabric'),
 class Component(models.Model):
     _name = 'mrp_famotain.component'
     _order = 'sequence, component_type, name'
-    _description = 'Component of a product'
+    _description = 'Component of Product'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char('Component Name', required=True, index=True, track_visibility='onchange')
     component_type = fields.Selection(COMPONENT_TYPE_LIST, 'Component Type', required=True, track_visibility='onchange')
 
-    component_color_ids = fields.One2many('mrp_famotain.component_color', 'component_id', 'Colors', track_visibility='onchange')
+    component_detail_ids = fields.One2many('mrp_famotain.component_detail', 'component_id', 'Details', track_visibility='onchange')
     component_vendor_ids = fields.One2many('mrp_famotain.component_vendor', 'component_id', 'Vendors', track_visibility='onchange')
 
     customer_display_name = fields.Char('Display Name', track_visibility='onchange')

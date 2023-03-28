@@ -5,7 +5,7 @@ access_mrp_famotain_component,mrp_famotain.component,model_mrp_famotain_componen
 
 access_mrp_famotain_vendor,mrp_famotain.vendor,model_mrp_famotain_vendor,famotain.famotain_user,1,1,1,1
 
-access_mrp_famotain_component_color,mrp_famotain.component_color,model_mrp_famotain_component_color,famotain.famotain_user,1,1,1,1
+access_mrp_famotain_component_detail,mrp_famotain.component_detail,model_mrp_famotain_component_detail,famotain.famotain_user,1,1,1,1
 
 access_mrp_famotain_component_vendor,mrp_famotain.component_vendor,model_mrp_famotain_component_vendor,famotain.famotain_user,1,1,1,1
 

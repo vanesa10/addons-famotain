@@ -11,7 +11,7 @@ _logger = logging.getLogger(__name__)
 
 class ProductOrder(models.Model):
     _name = 'sales__order.product_order'
-    _desc = 'Product Order'
+    _description = 'Product Order'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'deadline'
 

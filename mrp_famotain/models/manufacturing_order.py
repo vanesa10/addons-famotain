@@ -22,7 +22,7 @@ _logger = logging.getLogger(__name__)
 class ManufacturingOrder(models.Model):
     _name = 'mrp_famotain.manufacturing_order'
     _order = 'product_order_id asc'
-    _desc = 'Manufacturing Order'
+    _description = 'Manufacturing Order'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char('Manufacturing Order', default='New', readonly=True, index=True, tracking=True)

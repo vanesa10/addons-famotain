@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record model="ir.ui.view" id="mrp_famotain.component_color_search">
-            <field name="name">Component Color Search</field>
-            <field name="model">mrp_famotain.component_color</field>
+        <record model="ir.ui.view" id="mrp_famotain.component_detail_search">
+            <field name="name">Component Detail Search</field>
+            <field name="model">mrp_famotain.component_detail</field>
             <field name="arch" type="xml">
-                <search string="Search Component Color">
+                <search string="Search Component Detail">
                     <field name="name"/>
                     <field name="component_id"/>
-                    <field name="color"/>
+                    <field name="detail"/>
                     <separator/>
                     <group string="Group By">
-                        <filter string="Color" name="group_color" domain="[]" context="{'group_by':'color'}"/>
+                        <filter string="Detail" name="group_detail" domain="[]" context="{'group_by':'detail'}"/>
                         <filter string="Component" name="group_component_id" domain="[]" context="{'group_by':'component_id'}"/>
                     </group>
                 </search>
             </field>
         </record>
 
-        <record model="ir.ui.view" id="mrp_famotain.component_color_tree">
-            <field name="name">Component Color Tree</field>
-            <field name="model">mrp_famotain.component_color</field>
+        <record model="ir.ui.view" id="mrp_famotain.component_detail_tree">
+            <field name="name">Component Detail Tree</field>
+            <field name="model">mrp_famotain.component_detail</field>
             <field name="arch" type="xml">
                 <tree>
                     <field name="component_id"/>
-                    <field name="color"/>
+                    <field name="detail"/>
                     <field name="stock"/>
                     <field name="requirement"/>
                 </tree>
             </field>
         </record>
 
-        <record model="ir.ui.view" id="mrp_famotain.component_color_form">
-            <field name="name">Component Color Form</field>
-            <field name="model">mrp_famotain.component_color</field>
+        <record model="ir.ui.view" id="mrp_famotain.component_detail_form">
+            <field name="name">Component Detail Form</field>
+            <field name="model">mrp_famotain.component_detail</field>
             <field name="arch" type="xml">
                 <form>
                     <header>
@@ -55,7 +55,7 @@
                         <group>
                             <group>
                                 <field name="component_id"/>
-                                <field name="color"/>
+                                <field name="detail"/>
                                 <field name="stock"/>
                                 <field name="requirement"/>
                             </group>

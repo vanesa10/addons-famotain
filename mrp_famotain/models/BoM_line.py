@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 class BoMLineDefault(models.Model):
     _name = 'mrp_famotain.bom_line_default'
     _order = 'sequence, name asc'
-    _desc = 'BoM Line Default'
+    _description = 'BoM Line Default'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char('Name', readonly=True, compute="_compute_name", store=True)
@@ -48,7 +48,7 @@ class Product(models.Model):
 class BoMLine(models.Model):
     _name = 'mrp_famotain.bom_line'
     _order = 'name asc'
-    _desc = 'BoM Line'
+    _description = 'BoM Line'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char('Name', readonly=True, compute="_compute_name", store=True)

@@ -26,7 +26,7 @@ class SalesOrder(models.Model):
     _name = 'sales__order.sales__order'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'deadline'
-    _desc = 'Sales Order'
+    _description = 'Sales Order'
 
     image = fields.Binary("Image", attachment=True, readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]})
     image_medium = fields.Binary("Medium-sized Image", attachment=True, readonly=True)

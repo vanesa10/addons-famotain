@@ -9,6 +9,7 @@ _logger = logging.getLogger(__name__)
 
 class InvoiceLine(models.Model):
     _name = 'sales__order.invoice_line'
+    _description = 'Invoice Line'
     _order = 'id asc'
 
     invoice_id = fields.Many2one('sales__order.invoice', 'Invoice', required=True, readonly=True)

@@ -9,7 +9,7 @@
                     <field name="name"/>
                     <field name="manufacturing_order_id"/>
                     <field name="component_id"/>
-                    <field name="component_color_id"/>
+                    <field name="component_detail_id"/>
                     <field name="product_order_id"/>
                     <field name="product_id"/>
                     <field name="component_vendor_id"/>
@@ -27,7 +27,7 @@
                     <group string="Group By">
                         <filter string="Manufacturing Order" name="group_manufacturing_order" domain="[]" context="{'group_by':'manufacturing_order_id'}"/>
                         <filter string="Component" name="group_component" domain="[]" context="{'group_by':'component_id'}"/>
-                        <filter string="Component Color " name="group_component_color" domain="[]" context="{'group_by':'component_color_id'}"/>
+                        <filter string="Component Detail " name="group_component_detail" domain="[]" context="{'group_by':'component_detail_id'}"/>
                         <filter string="Component Vendor " name="group_component_vendor" domain="[]" context="{'group_by':'component_vendor_id'}"/>
                         <filter string="State" name="group_state" domain="[]" context="{'group_by':'state'}"/>
                     </group>
@@ -52,7 +52,7 @@
                     <field name="product_id"/>
                     <field name="unit_qty"/>
                     <field name="component_id"/>
-                    <field name="component_color_id"/>
+                    <field name="component_detail_id"/>
                     <field name="component_vendor_id"/>
                     <field name="currency_id" invisible="1"/>
                     <field name="cost" sum="Total Cost" string="Total Cost" groups="famotain.famotain_manager"/>
@@ -87,7 +87,7 @@
                                     <field name="uom_id" class="oe_inline"/>
                                 </div>
                                 <field name="component_id"/>
-                                <field name="component_color_id"/>
+                                <field name="component_detail_id"/>
                                 <field name="unit_cost" groups="famotain.famotain_manager"/>
                                 <field name="cost" groups="famotain.famotain_manager"/>
                                 <field name="component_vendor_id"/>

@@ -7,6 +7,7 @@ from ...tools import image as tools
 
 class Customer(models.Model):
     _name = 'sales__order.customer'
+    _description = 'Customer'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name asc'
 

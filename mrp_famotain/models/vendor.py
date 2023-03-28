@@ -13,6 +13,7 @@ class Vendor(models.Model):
     _name = 'mrp_famotain.vendor'
     _order = 'name asc'
     _inherit = ['mail.thread', 'mail.activity.mixin']
+    _description = 'Vendor'
 
     name = fields.Char('Name', required=True, track_visibility='onchange')
     email = fields.Char('Email')
@@ -24,7 +25,7 @@ class Vendor(models.Model):
     is_retailer = fields.Boolean('Retailer', track_visibility='onchange', default=False)
     is_manufacturer = fields.Boolean('Manufacturer', track_visibility='onchange', default=False)
 
-    component_color_ids = fields.One2many('mrp_famotain.component_color', 'vendor_id', 'Component Colors', track_visibility='onchange')
+    component_detail_ids = fields.One2many('mrp_famotain.component_detail', 'vendor_id', 'Component Details', track_visibility='onchange')
     component_vendor_ids = fields.One2many('mrp_famotain.component_vendor', 'vendor_id', 'Components', track_visibility='onchange')
 
     active = fields.Boolean(default=True)

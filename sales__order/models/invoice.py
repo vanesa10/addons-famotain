@@ -14,6 +14,7 @@ INVOICE_LIST = [('down_payment', 'Down Payment'), ('clearance', 'Clearance')]
 
 class Invoice(models.Model):
     _name = 'sales__order.invoice'
+    _description = 'Invoice'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'id desc'
 

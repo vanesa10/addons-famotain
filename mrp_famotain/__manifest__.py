@@ -17,7 +17,7 @@
 
         'views/vendor_views.xml',
         'views/component_views.xml',
-        'views/component_color_views.xml',
+        'views/component_detail_views.xml',
         'views/component_vendor_views.xml',
         'views/bom_line_views.xml',
         'views/bom_line_default_views.xml',

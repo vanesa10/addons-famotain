@@ -9,6 +9,7 @@ class ComponentVendor(models.Model):
     _name = 'mrp_famotain.component_vendor'
     _order = 'name'
     _inherit = ['mail.thread', 'mail.activity.mixin']
+    _description = 'Vendor of a Component'
 
     name = fields.Char('Name', readonly=True, index=True, compute="_compute_name")
     component_id = fields.Many2one('mrp_famotain.component', 'Component', required=True, domain=[('active', '=', True)], track_visibility='onchange')

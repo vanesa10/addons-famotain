@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
-import math
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -22,13 +21,13 @@ _logger = logging.getLogger(__name__)
 class BillOfMaterials(models.Model):
     _name = 'mrp_famotain.bom'
     _order = 'sequence, component_id asc'
-    _desc = 'Bill of Materials'
+    _description = 'Bill of Materials'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char('Bill of Materials', default='New', readonly=True, index=True, tracking=True)
     component_id = fields.Many2one('mrp_famotain.component', 'Component', required=True, domain=[('active', '=', True)], track_visibility='onchange')
-    component_color_id = fields.Many2one('mrp_famotain.component_color', 'Component Color', domain="[('active', '=', True), ('component_id', '=', component_id)]",
-                                         track_visibility='onchange', readonly=False, compute="_compute_component_color", store=True)
+    component_detail_id = fields.Many2one('mrp_famotain.component_detail', 'Component Detail', domain="[('active', '=', True), ('component_id', '=', component_id)]",
+                                         track_visibility='onchange', readonly=False, compute="_compute_component_detail", store=True)
     manufacturing_order_id = fields.Many2one('mrp_famotain.manufacturing_order', 'Manufacturing Order', required=True, track_visibility='onchange', readonly=True, states={'draft': [('readonly', False)]})
 
     product_order_id = fields.Many2one('sales__order.product_order', 'Product Order', related="manufacturing_order_id.product_order_id")
@@ -93,17 +92,17 @@ class BillOfMaterials(models.Model):
     @api.multi
     @api.onchange('component_id')
     @api.depends('component_id')
-    def _compute_component_color(self):
+    def _compute_component_detail(self):
         for rec in self:
-            if len(rec.component_id.component_color_ids) == 1:
-                rec.component_color_id = rec.component_id.component_color_ids[0]
+            if len(rec.component_id.component_detail_ids) == 1:
+                rec.component_detail_id = rec.component_id.component_detail_ids[0]
 
     @api.multi
-    @api.onchange('component_color_id', 'component_vendor_id')
-    @api.depends('component_color_id', 'component_vendor_id')
+    @api.onchange('component_detail_id', 'component_vendor_id')
+    @api.depends('component_detail_id', 'component_vendor_id')
     def _compute_unit_cost(self):
         for rec in self:
-            rec.unit_cost = rec.component_color_id.price if rec.component_color_id.price else rec.component_vendor_id.price
+            rec.unit_cost = rec.component_detail_id.price if rec.component_detail_id.price else rec.component_vendor_id.price
 
     @api.multi
     @api.onchange('unit_qty', 'unit_cost')
