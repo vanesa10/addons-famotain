@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="mrp_famotain.bom_line_search">
+            <field name="name">BoM Line Search</field>
+            <field name="model">mrp_famotain.bom_line</field>
+            <field name="arch" type="xml">
+                <search string="Search BoM Line">
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="component_id"/>
+                    <field name="description"/>
+                    <field name="product_order_id"/>
+                    <field name="manufacturing_order_id"/>
+                    <separator/>
+                    <group string="Group By">
+                        <filter string="Product" name="group_product" domain="[]" context="{'group_by':'product_id'}"/>
+                        <filter string="Component" name="group_component" domain="[]" context="{'group_by':'component_id'}"/>
+                        <filter string="Product Order" name="group_product_order" domain="[]" context="{'group_by':'product_order_id'}"/>
+                        <filter string="Manufacturing Order" name="group_manufacturing_order" domain="[]" context="{'group_by':'manufacturing_order_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="mrp_famotain.bom_line_tree">
+            <field name="name">BoM Line Tree</field>
+            <field name="model">mrp_famotain.bom_line</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="component_id"/>
+                    <field name="description"/>
+                    <field name="qty"/>
+                    <field name="width"/>
+                    <field name="height"/>
+                    <field name="length"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="mrp_famotain.bom_line_form">
+            <field name="name">BoM Line Form</field>
+            <field name="model">mrp_famotain.bom_line</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object"
+                                    class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button"
+                                    options='{"terminology": "archive"}'/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="product_id"/>
+                                <field name="component_id"/>
+                                <field name="component_type" invisible="1"/>
+                                <field name="description"/>
+                                <field name="qty"/>
+                                <field name="width" attrs="{'invisible': [('component_type', 'in', ['accessories', 'webbing'])]}"/>
+                                <field name="height" attrs="{'invisible': [('component_type', 'in', ['accessories', 'webbing'])]}"/>
+                                <field name="length" attrs="{'invisible': [('component_type', 'in', ['fabric', 'print', 'accessories', 'embroidery'])]}"/>
+                            </group>
+                            <group>
+                                <field name="product_order_id"/>
+                                <field name="bom_id"/>
+                                <field name="manufacturing_order_id"/>
+                            </group>
+                        </group>
+                        <group string="Notes">
+                            <field name="notes"/>
+                        </group>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" widget="mail_followers"/>
+                            <field name="activity_ids" widget="mail_activity"/>
+                            <field name="message_ids" widget="mail_thread"/>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

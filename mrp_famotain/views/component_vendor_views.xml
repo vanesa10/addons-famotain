@@ -8,10 +8,12 @@
                 <search string="Search Component Vendor">
                     <field name="component_id"/>
                     <field name="vendor_id"/>
+                    <field name="notes"/>
                     <separator/>
                     <group string="Group By">
                         <filter string="Component" name="group_component" domain="[]" context="{'group_by':'component_id'}"/>
                         <filter string="Vendor" name="group_vendor" domain="[]" context="{'group_by':'vendor_id'}"/>
+                        <filter string="Main Vendor" name="group_main_vendor" domain="[]" context="{'group_by':'is_main_vendor'}"/>
                     </group>
                 </search>
             </field>
@@ -27,6 +29,7 @@
                     <field name="currency_id" invisible="1"/>
                     <field name="price"/>
                     <field name="gross_price"/>
+                    <field name="is_main_vendor"/>
                 </tree>
             </field>
         </record>
@@ -57,9 +60,10 @@
                                 <field name="currency_id" invisible="1"/>
                                 <field name="component_id"/>
                                 <field name="vendor_id"/>
-                                <field name="price"/>
+                                <field name="is_main_vendor"/>
                             </group>
                             <group>
+                                <field name="price"/>
                                 <field name="gross_price"/>
                                 <field name="gross_qty"/>
                             </group>

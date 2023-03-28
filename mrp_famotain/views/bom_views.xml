@@ -2,53 +2,75 @@
 <odoo>
     <data>
         <record model="ir.ui.view" id="mrp_famotain.bom_search">
-            <field name="name">BoM Search</field>
+            <field name="name">Bill of Materials Search</field>
             <field name="model">mrp_famotain.bom</field>
             <field name="arch" type="xml">
-                <search string="Search BoM">
+                <search string="Search Bill of Materials">
+                    <field name="name"/>
+                    <field name="manufacturing_order_id"/>
                     <field name="component_id"/>
+                    <field name="component_color_id"/>
+                    <field name="product_order_id"/>
                     <field name="product_id"/>
-                    <field name="description"/>
+                    <field name="component_vendor_id"/>
+                    <field name="notes"/>
+                    <separator/>
+                    <group>
+                        <filter string="All" name="all"/>
+                        <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                        <filter string="Approved" name="approve" domain="[('state','=','approve')]"/>
+                        <filter string="Ready" name="ready" domain="[('state','=','ready')]"/>
+                        <filter string="Done" name="done" domain="[('state','=','done')]"/>
+                        <filter string="Cancelled" name="cancel" domain="[('state','=','cancel')]"/>
+                    </group>
                     <separator/>
                     <group string="Group By">
+                        <filter string="Manufacturing Order" name="group_manufacturing_order" domain="[]" context="{'group_by':'manufacturing_order_id'}"/>
                         <filter string="Component" name="group_component" domain="[]" context="{'group_by':'component_id'}"/>
-                        <filter string="Product" name="group_product" domain="[]" context="{'group_by':'product_id'}"/>
+                        <filter string="Component Color " name="group_component_color" domain="[]" context="{'group_by':'component_color_id'}"/>
+                        <filter string="Component Vendor " name="group_component_vendor" domain="[]" context="{'group_by':'component_vendor_id'}"/>
+                        <filter string="State" name="group_state" domain="[]" context="{'group_by':'state'}"/>
                     </group>
                 </search>
             </field>
         </record>
 
         <record model="ir.ui.view" id="mrp_famotain.bom_tree">
-            <field name="name">BoM Tree</field>
+            <field name="name">Bill of Materials Tree</field>
             <field name="model">mrp_famotain.bom</field>
             <field name="arch" type="xml">
-                <tree>
-                    <field name="component_id"/>
-                    <field name="product_id"/>
-                    <field name="description"/>
+                <tree
+                        decoration-danger="state == 'approve'"
+                        decoration-bf="state == 'ready'"
+                        decoration-success="state=='done'"
+                        decoration-it="state == 'cancel'"
+                >
+                    <field name="name"/>
+                    <field name="manufacturing_order_id"/>
+                    <field name="product_order_id"/>
                     <field name="qty"/>
-                    <field name="width"/>
-                    <field name="height"/>
-                    <field name="length"/>
+                    <field name="product_id"/>
+                    <field name="unit_qty"/>
+                    <field name="component_id"/>
+                    <field name="component_color_id"/>
+                    <field name="component_vendor_id"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="cost" sum="Total Cost" string="Total Cost" groups="famotain.famotain_manager"/>
+                    <field name="state"/>
                 </tree>
             </field>
         </record>
 
         <record model="ir.ui.view" id="mrp_famotain.bom_form">
-            <field name="name">BoM Form</field>
+            <field name="name">Bill of Materials Form</field>
             <field name="model">mrp_famotain.bom</field>
             <field name="arch" type="xml">
                 <form>
                     <header>
-
+                        <field name="state" widget="statusbar" statusbar_visible="draft,approve,ready,done,cancel"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button name="toggle_active" type="object"
-                                    class="oe_stat_button" icon="fa-archive">
-                                <field name="active" widget="boolean_button"
-                                    options='{"terminology": "archive"}'/>
-                            </button>
                         </div>
                         <div class="oe_title">
                             <h1>
@@ -57,17 +79,40 @@
                         </div>
                         <group>
                             <group>
+                                <field name="is_calculated" invisible="1"/>
+                                <field name="manufacturing_order_id"/>
+                                <label for="unit_qty" string="Unit Qty"/>
+                                <div>
+                                    <field name="unit_qty" class="oe_inline" attrs="{'readonly': [('is_calculated', '=', True)]}"/> -
+                                    <field name="uom_id" class="oe_inline"/>
+                                </div>
                                 <field name="component_id"/>
-                                <field name="product_id"/>
-                                <field name="description"/>
+                                <field name="component_color_id"/>
+                                <field name="unit_cost" groups="famotain.famotain_manager"/>
+                                <field name="cost" groups="famotain.famotain_manager"/>
+                                <field name="component_vendor_id"/>
                             </group>
                             <group>
+                                <field name="product_order_id"/>
                                 <field name="qty"/>
-                                <field name="width"/>
-                                <field name="height"/>
-                                <field name="length"/>
+                                <field name="product_id"/>
                             </group>
                         </group>
+                        <notebook>
+                            <page string="BoM Lines">
+                                <field name="bom_line_ids"
+                                       context="{'default_bom_id': id, 'default_component_id': component_id}">
+                                    <tree editable="bottom">
+                                        <field name="name"/>
+                                        <field name="description"/>
+                                        <field name="qty"/>
+                                        <field name="width"/>
+                                        <field name="height"/>
+                                        <field name="length"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
                         <group string="Notes">
                             <field name="notes"/>
                         </group>
@@ -80,7 +125,5 @@
                 </form>
             </field>
         </record>
-
-        <!-- inherit bom views to product -->
     </data>
 </odoo>

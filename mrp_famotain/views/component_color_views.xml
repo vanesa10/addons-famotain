@@ -56,10 +56,14 @@
                             <group>
                                 <field name="component_id"/>
                                 <field name="color"/>
-                            </group>
-                            <group>
                                 <field name="stock"/>
                                 <field name="requirement"/>
+                            </group>
+                            <group>
+                                <field name="price"/>
+                                <field name="gross_price"/>
+                                <field name="gross_qty"/>
+                                <field name="currency_id" invisible="1"/>
                             </group>
                         </group>
                         <group string="Notes">

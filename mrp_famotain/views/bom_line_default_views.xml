@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="mrp_famotain.bom_line_default_search">
+            <field name="name">BoM Line Default Search</field>
+            <field name="model">mrp_famotain.bom_line_default</field>
+            <field name="arch" type="xml">
+                <search string="Search BoM Line">
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="component_id"/>
+                    <field name="description"/>
+                    <separator/>
+                    <group string="Group By">
+                        <filter string="Product" name="group_product" domain="[]" context="{'group_by':'product_id'}"/>
+                        <filter string="Component" name="group_component" domain="[]" context="{'group_by':'component_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="mrp_famotain.bom_line_default_tree">
+            <field name="name">BoM Line Default Tree</field>
+            <field name="model">mrp_famotain.bom_line_default</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="component_id"/>
+                    <field name="description"/>
+                    <field name="qty"/>
+                    <field name="width"/>
+                    <field name="height"/>
+                    <field name="length"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="mrp_famotain.bom_line_default_form">
+            <field name="name">BoM Line Default Form</field>
+            <field name="model">mrp_famotain.bom_line_default</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object"
+                                    class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button"
+                                    options='{"terminology": "archive"}'/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="product_id"/>
+                                <field name="component_id"/>
+                                <field name="component_type" invisible="1"/>
+                                <field name="description"/>
+                            </group>
+                            <group>
+                                <field name="qty"/>
+                                <field name="width" attrs="{'invisible': [('component_type', 'in', ['accessories', 'webbing'])]}"/>
+                                <field name="height" attrs="{'invisible': [('component_type', 'in', ['accessories', 'webbing'])]}"/>
+                                <field name="length" attrs="{'invisible': [('component_type', 'in', ['fabric', 'print', 'accessories', 'embroidery'])]}"/>
+                            </group>
+                        </group>
+                        <group string="Notes">
+                            <field name="notes"/>
+                        </group>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" widget="mail_followers"/>
+                            <field name="activity_ids" widget="mail_activity"/>
+                            <field name="message_ids" widget="mail_thread"/>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="mrp_famotain.bom_line_default_product_inherit_views">
+            <field name="name">BoM Line Default Product Inherit</field>
+            <field name="model">famotain.product</field>
+            <field name="inherit_id" ref="famotain.product_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='design_size']"  position="before">
+                    <page string="BoM Line Default" name="bom_line_default">
+                        <field name="bom_line_default_ids" context="{'default_product_id': id}">
+                            <tree editable="bottom" delete="1">
+                                <field name="sequence" widget="handle" />
+                                <field name="component_id"/>
+                                <field name="description"/>
+                                <field name="component_type" invisible="1"/>
+                                <field name="qty" default="1"/>
+                                <field name="width" attrs="{'invisible': [('component_type', 'in', ['accessories', 'webbing'])]}"/>
+                                <field name="height" attrs="{'invisible': [('component_type', 'in', ['accessories', 'webbing'])]}"/>
+                                <field name="length" attrs="{'invisible': [('component_type', 'in', ['fabric', 'print', 'accessories', 'embroidery'])]}"/>
+<!--                                <button name="open_record" type="object" class="oe_highlight" icon="fa-asterisk text-success"/>-->
+<!--                                <control>-->
+<!--                                    <create string="Add fabric" context="{'default_component_type': 'fabric'}"/>-->
+<!--                                    <create string="Add accessories" context="{'default_component_type': 'accessories'}"/>-->
+<!--                                    <create string="Add webbing" context="{'default_component_type': 'webbing'}"/>-->
+<!--                                    <create string="Add print" context="{'default_component_type': 'print'}"/>-->
+<!--                                    <create string="Add embroidery" context="{'default_component_type': 'embroidery'}"/>-->
+<!--                                    <create string="Add others" context="{'default_component_type': 'others'}"/>-->
+<!--                                </control>-->
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

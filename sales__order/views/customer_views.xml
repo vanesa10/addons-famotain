@@ -142,6 +142,8 @@
           <field name="view_mode">tree,kanban,form</field>
         </record>
 
-        <menuitem name="Customer" id="sales__order.customer_menu" parent="sales__order.menu_root" action="sales__order.customer_action_window" sequence="4"/>
+        <menuitem name="Master Data" id="sales__order.master_data_menu" parent="sales__order.menu_root" sequence="4"/>
+        <menuitem name="Customer" id="sales__order.customer_menu" parent="sales__order.master_data_menu" action="sales__order.customer_action_window" sequence="1"/>
+        <menuitem name="Product" id="sales__order.product_menu" parent="sales__order.master_data_menu" action="famotain.product_action_all" sequence="2"/>
     </data>
 </odoo>

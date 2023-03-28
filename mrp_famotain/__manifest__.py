@@ -11,11 +11,16 @@
     'data': [
         'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
+        'data/ir_cron.xml',
+        'data/vendor.xml',
+        'data/component.xml',
 
         'views/vendor_views.xml',
         'views/component_views.xml',
         'views/component_color_views.xml',
         'views/component_vendor_views.xml',
+        'views/bom_line_views.xml',
+        'views/bom_line_default_views.xml',
         'views/bom_views.xml',
         'views/manufacturing_order_views.xml',
 

@@ -10,3 +10,7 @@ access_mrp_famotain_component_color,mrp_famotain.component_color,model_mrp_famot
 access_mrp_famotain_component_vendor,mrp_famotain.component_vendor,model_mrp_famotain_component_vendor,famotain.famotain_user,1,1,1,1
 
 access_mrp_famotain_bom,mrp_famotain.bom,model_mrp_famotain_bom,famotain.famotain_user,1,1,1,1
+
+access_mrp_famotain_bom_line,mrp_famotain.bom_line,model_mrp_famotain_bom_line,famotain.famotain_user,1,1,1,1
+
+access_mrp_famotain_bom_line_default,mrp_famotain.bom_line_default,model_mrp_famotain_bom_line_default,famotain.famotain_user,1,1,1,1

@@ -1,0 +1,742 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="component_F1" model="mrp_famotain.component">
+            <field name="name">Dop</field>
+            <field name="customer_display_name">Kain Luar Imitasi</field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">5.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">140.0</field>
+            <field name="notes"></field>
+            <field name="sequence">10</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_A19" model="mrp_famotain.component">
+            <field name="name">Buckle 2.5 Putih Plastik</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">accessories</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">11</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_A20" model="mrp_famotain.component">
+            <field name="name">Buckle 3.8 Hitam Plastik</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">accessories</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">12</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_A14" model="mrp_famotain.component">
+            <field name="name">Kait 2.5 Nikel</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">accessories</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">13</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_A15" model="mrp_famotain.component">
+            <field name="name">Kait 3.0 Nikel</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">accessories</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">14</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_A16" model="mrp_famotain.component">
+            <field name="name">Kait 3.8 Nikel</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">accessories</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">15</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_A3" model="mrp_famotain.component">
+            <field name="name">Kepala Ret Jaket Nikel</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">accessories</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">16</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_A2" model="mrp_famotain.component">
+            <field name="name">Kepala Ret Nikel</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">accessories</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">17</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_A1" model="mrp_famotain.component">
+            <field name="name">Kepala Ret YKK</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">accessories</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes">1pack 72k/100pcs 27 Mar 2023</field>
+            <field name="sequence">18</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_A17" model="mrp_famotain.component">
+            <field name="name">Magnet BNK</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">accessories</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">19</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_A18" model="mrp_famotain.component">
+            <field name="name">Mata Ayam V20</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">accessories</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">20</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_A6" model="mrp_famotain.component">
+            <field name="name">Ring D 2.5 Emas</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">accessories</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">21</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_A5" model="mrp_famotain.component">
+            <field name="name">Ring D 2.5 Nikel</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">accessories</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">22</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_A4" model="mrp_famotain.component">
+            <field name="name">Ring D 2.5 Nikel Tebal</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">accessories</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">23</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_A12" model="mrp_famotain.component">
+            <field name="name">Ring Jalan 2.5 Emas</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">accessories</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">24</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_A11" model="mrp_famotain.component">
+            <field name="name">Ring Jalan 2.5 Nikel</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">accessories</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">25</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_A10" model="mrp_famotain.component">
+            <field name="name">Ring Jalan 2.5 Nikel Tebal</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">accessories</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">26</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_A13" model="mrp_famotain.component">
+            <field name="name">Ring Jalan 3.0 Nikel Tebal</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">accessories</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">27</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_A9" model="mrp_famotain.component">
+            <field name="name">Ring Kotak 2.5 Emas</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">accessories</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">28</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_A8" model="mrp_famotain.component">
+            <field name="name">Ring Kotak 2.5 Nikel</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">accessories</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">29</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_A7" model="mrp_famotain.component">
+            <field name="name">Ring Kotak 2.5 Nikel Tebal</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">accessories</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">30</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_E2" model="mrp_famotain.component">
+            <field name="name">Bordir 10x10</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">embroidery</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">31</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_E3" model="mrp_famotain.component">
+            <field name="name">Bordir 12x12</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">embroidery</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">32</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_E4" model="mrp_famotain.component">
+            <field name="name">Bordir 15x15</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">embroidery</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">33</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_E5" model="mrp_famotain.component">
+            <field name="name">Bordir 20x20</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">embroidery</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">34</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_E1" model="mrp_famotain.component">
+            <field name="name">Bordir 7x7</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">embroidery</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">35</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_E6" model="mrp_famotain.component">
+            <field name="name">Bordir Nama Teman</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">embroidery</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">36</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_F2" model="mrp_famotain.component">
+            <field name="name">D420</field>
+            <field name="customer_display_name">Kain Dalam Parasut</field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">5.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">148.0</field>
+            <field name="notes"></field>
+            <field name="sequence">37</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F16" model="mrp_famotain.component">
+            <field name="name">Daphne</field>
+            <field name="customer_display_name">Kain Luar Kanvas Jepang A</field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">5.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">145.0</field>
+            <field name="notes"></field>
+            <field name="sequence">38</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F18" model="mrp_famotain.component">
+            <field name="name">Gail</field>
+            <field name="customer_display_name">Kain Luar</field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">2.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">140.0</field>
+            <field name="notes"></field>
+            <field name="sequence">39</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F17" model="mrp_famotain.component">
+            <field name="name">Kagawa</field>
+            <field name="customer_display_name">Kain Luar Kanvas Jepang B</field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">5.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">145.0</field>
+            <field name="notes"></field>
+            <field name="sequence">40</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F5" model="mrp_famotain.component">
+            <field name="name">Buchery</field>
+            <field name="customer_display_name">Kain Luar Square Texture</field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">5.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">140.0</field>
+            <field name="notes"></field>
+            <field name="sequence">41</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F25" model="mrp_famotain.component">
+            <field name="name">Busa Ati 0.2</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">4.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">110.0</field>
+            <field name="notes"></field>
+            <field name="sequence">42</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F24" model="mrp_famotain.component">
+            <field name="name">Busa Ati 0.4</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">4.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">110.0</field>
+            <field name="notes"></field>
+            <field name="sequence">43</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F8" model="mrp_famotain.component">
+            <field name="name">Busa Foam 0.4</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">5.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">110.0</field>
+            <field name="notes"></field>
+            <field name="sequence">44</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F9" model="mrp_famotain.component">
+            <field name="name">Busa Foam 0.5</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">5.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">110.0</field>
+            <field name="notes"></field>
+            <field name="sequence">45</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F15" model="mrp_famotain.component">
+            <field name="name">Busa Furing Tebal</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">5.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">110.0</field>
+            <field name="notes"></field>
+            <field name="sequence">46</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F14" model="mrp_famotain.component">
+            <field name="name">Busa Furing Tipis</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">5.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">110.0</field>
+            <field name="notes"></field>
+            <field name="sequence">47</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F13" model="mrp_famotain.component">
+            <field name="name">Busa Furing tipis</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">5.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">110.0</field>
+            <field name="notes"></field>
+            <field name="sequence">48</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F4" model="mrp_famotain.component">
+            <field name="name">D300</field>
+            <field name="customer_display_name">Kain Luar</field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">5.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">140.0</field>
+            <field name="notes"></field>
+            <field name="sequence">49</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F3" model="mrp_famotain.component">
+            <field name="name">Dolby</field>
+            <field name="customer_display_name">Kain Luar Diamond Texture</field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">5.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">140.0</field>
+            <field name="notes"></field>
+            <field name="sequence">50</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F26" model="mrp_famotain.component">
+            <field name="name">Foil Bintik</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">4.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">110.0</field>
+            <field name="notes"></field>
+            <field name="sequence">51</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F22" model="mrp_famotain.component">
+            <field name="name">Jaring Tebal</field>
+            <field name="customer_display_name">Jaring Tebal</field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">5.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">140.0</field>
+            <field name="notes"></field>
+            <field name="sequence">52</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F21" model="mrp_famotain.component">
+            <field name="name">Jaring tipis</field>
+            <field name="customer_display_name">Jaring</field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">5.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">140.0</field>
+            <field name="notes"></field>
+            <field name="sequence">53</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F23" model="mrp_famotain.component">
+            <field name="name">Koten</field>
+            <field name="customer_display_name">Kulit</field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">2.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">135.0</field>
+            <field name="notes"></field>
+            <field name="sequence">54</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F10" model="mrp_famotain.component">
+            <field name="name">Mika 0.3</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">5.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">135.0</field>
+            <field name="notes"></field>
+            <field name="sequence">55</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F11" model="mrp_famotain.component">
+            <field name="name">Mika 0.4</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">5.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">110.0</field>
+            <field name="notes"></field>
+            <field name="sequence">56</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F12" model="mrp_famotain.component">
+            <field name="name">Mika 0.5</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">5.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">110.0</field>
+            <field name="notes"></field>
+            <field name="sequence">57</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F6" model="mrp_famotain.component">
+            <field name="name">Peles</field>
+            <field name="customer_display_name">Kain Dalam</field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">5.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">140.0</field>
+            <field name="notes"></field>
+            <field name="sequence">58</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F19" model="mrp_famotain.component">
+            <field name="name">SR10 Kanvas</field>
+            <field name="customer_display_name">Kain Luar Kanvas Polos</field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">2.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">145.0</field>
+            <field name="notes"></field>
+            <field name="sequence">59</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F7" model="mrp_famotain.component">
+            <field name="name">Spunbund pp75</field>
+            <field name="customer_display_name">Kain Dalam Spunbund</field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">5.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">150.0</field>
+            <field name="notes"></field>
+            <field name="sequence">60</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_F20" model="mrp_famotain.component">
+            <field name="name">Vienna</field>
+            <field name="customer_display_name">Kain Luar Kanvas Exclusive</field>
+            <field name="component_type">fabric</field>
+            <field name="margin_left_right">2.0</field>
+            <field name="margin_top_bottom">4.0</field>
+            <field name="width">140.0</field>
+            <field name="notes"></field>
+            <field name="sequence">61</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_O1" model="mrp_famotain.component">
+            <field name="name">Plastik 35cm</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">others</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">62</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_O2" model="mrp_famotain.component">
+            <field name="name">Plastik 40cm</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">others</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">63</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_O3" model="mrp_famotain.component">
+            <field name="name">Plastik 45cm</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">others</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">64</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_O4" model="mrp_famotain.component">
+            <field name="name">Plastik 50cm</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">others</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">65</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_O5" model="mrp_famotain.component">
+            <field name="name">Plastik 60cm</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">others</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">66</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_O6" model="mrp_famotain.component">
+            <field name="name">Tile 25cm</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">others</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">67</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="component_P1" model="mrp_famotain.component">
+            <field name="name">Print Imitasi</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">print</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">68</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_P2" model="mrp_famotain.component">
+            <field name="name">Print Kanvas</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">print</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">69</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+        </record>
+        <record id="component_W3" model="mrp_famotain.component">
+            <field name="name">KT 2.5</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">webbing</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">70</field>
+            <field name="uom_id" ref="uom.product_uom_cm"/>
+        </record>
+        <record id="component_W4" model="mrp_famotain.component">
+            <field name="name">KT 3.0</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">webbing</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">71</field>
+            <field name="uom_id" ref="uom.product_uom_cm"/>
+        </record>
+        <record id="component_W5" model="mrp_famotain.component">
+            <field name="name">KT 3.8</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">webbing</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">72</field>
+            <field name="uom_id" ref="uom.product_uom_cm"/>
+        </record>
+        <record id="component_W6" model="mrp_famotain.component">
+            <field name="name">L22</field>
+            <field name="customer_display_name">List</field>
+            <field name="component_type">webbing</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">73</field>
+            <field name="uom_id" ref="uom.product_uom_cm"/>
+        </record>
+        <record id="component_W1" model="mrp_famotain.component">
+            <field name="name">LT 2.5</field>
+            <field name="customer_display_name">Tali Tas</field>
+            <field name="component_type">webbing</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">74</field>
+            <field name="uom_id" ref="uom.product_uom_cm"/>
+        </record>
+        <record id="component_W2" model="mrp_famotain.component">
+            <field name="name">LT 3.8</field>
+            <field name="customer_display_name"></field>
+            <field name="component_type">webbing</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">75</field>
+            <field name="uom_id" ref="uom.product_uom_cm"/>
+        </record>
+        <record id="component_W7" model="mrp_famotain.component">
+            <field name="name">Resleting</field>
+            <field name="customer_display_name">Resleting</field>
+            <field name="component_type">webbing</field>
+            <field name="margin_left_right">0.0</field>
+            <field name="margin_top_bottom">0.0</field>
+            <field name="width">0.0</field>
+            <field name="notes"></field>
+            <field name="sequence">76</field>
+            <field name="uom_id" ref="uom.product_uom_cm"/>
+        </record>
+    </data>
+</openerp>

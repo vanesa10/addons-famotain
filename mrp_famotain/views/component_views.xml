@@ -9,7 +9,6 @@
                     <field name="name"/>
                     <field name="customer_display_name"/>
                     <field name="component_type"/>
-                    <field name="vendor_id"/>
                     <field name="width"/>
                     <separator/>
                     <group>
@@ -22,7 +21,6 @@
                     </group>
                     <separator/>
                     <group string="Group By">
-                        <filter string="Vendor" name="group_vendor" domain="[]" context="{'group_by':'vendor_id'}"/>
                         <filter string="Component Type" name="group_component_type" domain="[]" context="{'group_by':'component_type'}"/>
                     </group>
                 </search>
@@ -34,10 +32,10 @@
             <field name="model">mrp_famotain.component</field>
             <field name="arch" type="xml">
                 <tree>
+                    <field name="sequence" widget="handle"/>
                     <field name="component_type"/>
                     <field name="name"/>
                     <field name="customer_display_name"/>
-                    <field name="vendor_id"/>
                 </tree>
             </field>
         </record>
@@ -67,20 +65,19 @@
                             <group>
                                 <field name="component_type"/>
                                 <field name="customer_display_name"/>
-                                <field name="vendor_id" />
                                 <field name="uom_id" />
                             </group>
                             <group>
-                                <field name="width"/>
-                                <field name="margin_top_bottom" />
-                                <field name="margin_left_right" />
-                                <field name="max_print_area" />
+                                <field name="width" attrs="{'invisible': [('component_type', 'not in', ['fabric'])]}"/>
+                                <field name="margin_top_bottom" attrs="{'invisible': [('component_type', 'not in', ['fabric'])]}"/>
+                                <field name="margin_left_right" attrs="{'invisible': [('component_type', 'not in', ['fabric'])]}"/>
+                                <field name="max_print_area" attrs="{'invisible': [('component_type', 'not in', ['print'])]}"/>
                             </group>
                         </group>
                         <notebook>
                             <page string="Colors">
                                 <field name="component_color_ids" context="{'default_component_id': id}">
-                                    <tree editable="bottom" delete="1">
+                                    <tree delete="1">
                                         <field name="component_id"/>
                                         <field name="color"/>
                                         <field name="stock"/>
@@ -90,12 +87,13 @@
                             </page>
                             <page string="Vendors">
                                 <field name="component_vendor_ids" context="{'default_component_id': id}">
-                                    <tree editable="bottom" delete="1">
+                                    <tree delete="1">
                                         <field name="vendor_id"/>
                                         <field name="currency_id" invisible="1"/>
                                         <field name="price"/>
                                         <field name="gross_price"/>
                                         <field name="gross_qty"/>
+                                        <field name="is_main_vendor"/>
                                     </tree>
                                 </field>
                             </page>

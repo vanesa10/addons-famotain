@@ -185,3 +185,11 @@ vendor:
 
 next todo: buat stock dari component color
  - component_color nnt punya table stock? dipake brp, beli brp, kapan
+
+
+buat price calculation class. semacam bom tp buat itung aja
+ - punya bom line sendiri
+ - bisa di assign buat ke product id yang mana. 1 calculation class pny 1 product id, dan sebaliknya
+ - dikasi nama product juga tp ga wajib isi
+ - dikasi qty juga default 12pcs
+ - copy to text. nek ga diakali ke telegram.

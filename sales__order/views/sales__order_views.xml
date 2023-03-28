@@ -174,7 +174,7 @@
 <!--                                    <field name="ribbon_color"/>-->
                                     <field name="currency_id" invisible="1"/>
                                     <field name="product_price"/>
-                                    <field name="price" groups="famotain.famotain_manager"/>
+<!--                                    <field name="price" groups="famotain.famotain_manager"/>-->
                                     <field name="total" sum="Total"/>
                                     <field name="state"/>
                                     <button name="open_record" type="object" class="oe_highlight" icon="fa-asterisk text-success"/>

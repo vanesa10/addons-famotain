@@ -11,6 +11,7 @@ _logger = logging.getLogger(__name__)
 
 class ProductOrder(models.Model):
     _name = 'sales__order.product_order'
+    _desc = 'Product Order'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'deadline'
 
@@ -19,7 +20,7 @@ class ProductOrder(models.Model):
         image_path = get_module_resource('web', 'static/src/img', 'placeholder.png')
         return tools.image_resize_image_big(base64.b64encode(open(image_path, 'rb').read()))
 
-    name = fields.Char('Product Order', default='New', readonly=True, compute='_compute_name', store=True)
+    name = fields.Char('Product Order', default='New', readonly=True, tracking=True, index=True)
     sales_order_id = fields.Many2one('sales__order.sales__order', 'Sales Order', readonly=True, required=True)
     price_line_id = fields.Many2one('sales__order.price_line', 'Price Line', readonly=True)
 
@@ -84,6 +85,11 @@ class ProductOrder(models.Model):
 
     @api.model
     def create(self, vals):
+        if vals.get('name') != 'New':
+            vals.update({
+                'name': self.env['ir.sequence'].with_context(
+                    ir_sequence_date=str(fields.Date.today())[:10]).next_by_code('sales__order.product_order'),
+            })
         image = False
         if 'design_image' in vals.keys() and vals['design_image']:
             vals.update({
@@ -181,12 +187,12 @@ class ProductOrder(models.Model):
     def onchange_product_type(self):
         return {'domain': {'product_id': [('product_type', '=', self.product_type)]}}
 
-    @api.multi
-    @api.onchange('product_id', 'qty')
-    @api.depends('product_id', 'qty')
-    def _compute_name(self):
-        for rec in self:
-            rec.name = """{}/{}""".format(rec.qty, rec.product_id.code)
+    # @api.multi
+    # @api.onchange('product_id', 'qty')
+    # @api.depends('product_id', 'qty')
+    # def _compute_name(self):
+    #     for rec in self:
+    #         rec.name = """{}/{}""".format(rec.qty, rec.product_id.name)
 
     @api.multi
     @api.onchange('product_id', 'qty')

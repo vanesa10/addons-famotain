@@ -98,6 +98,8 @@ class SalesOrder(models.Model):
         sequences.write({'number_next_actual': 1})
         sequences = self.env['ir.sequence'].search([('prefix', '=', 'INV/%(range_year)s%(range_month)s%(range_day)s/')], limit=1)
         sequences.write({'number_next_actual': 1})
+        sequences = self.env['ir.sequence'].search([('prefix', '=', 'PO.%(range_year)s%(range_month)s%(range_day)s')], limit=1)
+        sequences.write({'number_next_actual': 1})
         sequences = self.env['ir.sequence'].search([('prefix', '=', 'MRP/%(range_year)s%(range_month)s%(range_day)s/')], limit=1)
         sequences.write({'number_next_actual': 1})
 

@@ -14,6 +14,8 @@
                     <separator/>
                     <group string="Group By">
                         <filter string="City" name="group_city" domain="[]" context="{'group_by':'city'}"/>
+                        <filter string="Retailer" name="group_retailer" domain="[]" context="{'group_by':'is_retailer'}"/>
+                        <filter string="Manufacturer" name="group_manufacturer" domain="[]" context="{'group_by':'is_manufacturer'}"/>
                     </group>
                 </search>
             </field>
@@ -58,10 +60,12 @@
                                 <field name="address"/>
                                 <field name="city"/>
                                 <field name="zip_code"/>
-                            </group>
-                            <group>
                                 <field name="phone"/>
                                 <field name="email"/>
+                            </group>
+                            <group>
+                                <field name="is_retailer"/>
+                                <field name="is_manufacturer"/>
                             </group>
                         </group>
                         <notebook>
@@ -73,6 +77,7 @@
                                         <field name="price"/>
                                         <field name="gross_price"/>
                                         <field name="gross_qty"/>
+                                        <field name="notes"/>
                                     </tree>
                                 </field>
                             </page>

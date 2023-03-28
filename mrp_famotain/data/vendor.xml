@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="vendor_R22" model="mrp_famotain.vendor">
+            <field name="name">Alta Jaya</field>
+            <field name="city">Jogja</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_R6" model="mrp_famotain.vendor">
+            <field name="name">Beta Indah (Baru)</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_R5" model="mrp_famotain.vendor">
+            <field name="name">Beta Jaya (Lama)</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_M5" model="mrp_famotain.vendor">
+            <field name="name">Cik Yeti</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">True</field>
+        </record>
+        <record id="vendor_R14" model="mrp_famotain.vendor">
+            <field name="name">Diantama</field>
+            <field name="city">Jogja</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_M4" model="mrp_famotain.vendor">
+            <field name="name">Djatmiko</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">False</field>
+            <field name="is_manufacturer">True</field>
+        </record>
+        <record id="vendor_M1" model="mrp_famotain.vendor">
+            <field name="name">Grafera</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">False</field>
+            <field name="is_manufacturer">True</field>
+        </record>
+        <record id="vendor_M7" model="mrp_famotain.vendor">
+            <field name="name">Grosir Marketplace</field>
+            <field name="city">Jakarta</field>
+            <field name="is_retailer">False</field>
+            <field name="is_manufacturer">True</field>
+        </record>
+        <record id="vendor_R23" model="mrp_famotain.vendor">
+            <field name="name">Gudang Webbing Tokopedia</field>
+            <field name="city">Bandung</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_M2" model="mrp_famotain.vendor">
+            <field name="name">Imej Pro</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">False</field>
+            <field name="is_manufacturer">True</field>
+        </record>
+        <record id="vendor_R16" model="mrp_famotain.vendor">
+            <field name="name">Kencana Mulia</field>
+            <field name="city">Semarang</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_R21" model="mrp_famotain.vendor">
+            <field name="name">L Porter</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_R11" model="mrp_famotain.vendor">
+            <field name="name">Liman</field>
+            <field name="city">Jogja</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_R10" model="mrp_famotain.vendor">
+            <field name="name">Limolasan</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_R4" model="mrp_famotain.vendor">
+            <field name="name">Makmur</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_P1" model="mrp_famotain.vendor">
+            <field name="name">Mas Arifin</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">False</field>
+            <field name="is_manufacturer">True</field>
+        </record>
+        <record id="vendor_P5" model="mrp_famotain.vendor">
+            <field name="name">Mba Hesti</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">False</field>
+            <field name="is_manufacturer">True</field>
+        </record>
+        <record id="vendor_P4" model="mrp_famotain.vendor">
+            <field name="name">Mba Ninik</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">False</field>
+            <field name="is_manufacturer">True</field>
+        </record>
+        <record id="vendor_P3" model="mrp_famotain.vendor">
+            <field name="name">Mba Rani</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">False</field>
+            <field name="is_manufacturer">True</field>
+        </record>
+        <record id="vendor_P6" model="mrp_famotain.vendor">
+            <field name="name">Mba Yatmi</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">False</field>
+            <field name="is_manufacturer">True</field>
+        </record>
+        <record id="vendor_R12" model="mrp_famotain.vendor">
+            <field name="name">Murni Textile</field>
+            <field name="city">Surabaya</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_R9" model="mrp_famotain.vendor">
+            <field name="name">Niki Murah</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_P2" model="mrp_famotain.vendor">
+            <field name="name">Pak Martin</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">False</field>
+            <field name="is_manufacturer">True</field>
+        </record>
+        <record id="vendor_M3" model="mrp_famotain.vendor">
+            <field name="name">Paperku</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">False</field>
+            <field name="is_manufacturer">True</field>
+        </record>
+        <record id="vendor_M6" model="mrp_famotain.vendor">
+            <field name="name">Pinrio</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">False</field>
+            <field name="is_manufacturer">True</field>
+        </record>
+        <record id="vendor_R20" model="mrp_famotain.vendor">
+            <field name="name">Printex</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_R19" model="mrp_famotain.vendor">
+            <field name="name">Rajawali Bordir</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_R7" model="mrp_famotain.vendor">
+            <field name="name">Santri Nonongan</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_M8" model="mrp_famotain.vendor">
+            <field name="name">Shabat</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">False</field>
+            <field name="is_manufacturer">True</field>
+        </record>
+        <record id="vendor_R1" model="mrp_famotain.vendor">
+            <field name="name">Sinar Jaya</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_R15" model="mrp_famotain.vendor">
+            <field name="name">Soember Sukses</field>
+            <field name="city">Jakarta</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_R17" model="mrp_famotain.vendor">
+            <field name="name">Surya Bordir</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_R24" model="mrp_famotain.vendor">
+            <field name="name">Toko Plastik Damai</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_R8" model="mrp_famotain.vendor">
+            <field name="name">Tokopin</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_R2" model="mrp_famotain.vendor">
+            <field name="name">Yos Kain</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_R3" model="mrp_famotain.vendor">
+            <field name="name">Yos Pita</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+        <record id="vendor_R18" model="mrp_famotain.vendor">
+            <field name="name">Zein Bordir</field>
+            <field name="city">Solo</field>
+            <field name="is_retailer">True</field>
+            <field name="is_manufacturer">False</field>
+        </record>
+    </data>
+</openerp>

@@ -54,6 +54,7 @@
                     decoration-success="state == 'sent' or state=='on_progress' or state=='done'"
                     decoration-it="state == 'cancel'">
                     <field name="deadline"/>
+                    <field name="name"/>
                     <field name="sales_order_id"/>
 <!--                    <field name="product_type"/>-->
                     <field name="qty" sum="qty"/>
@@ -95,11 +96,11 @@
                                 <field name="qty"/>
                                 <field name="fabric_color"/>
 <!--                                <field name="ribbon_color"/>-->
-                                <field name="product_price"/>
+                                <field name="price"/>
                                 <field name="total"/>
                             </group>
                             <group>
-                                <field name="price" groups="famotain.famotain_manager"/>
+                                <field name="product_price" groups="famotain.famotain_manager"/>
                                 <field name="design_image_2" widget="image" class="oe_avatar"/>
                                 <field name="design_image_3" widget="image" class="oe_avatar"/>
                                 <field name="price_line_id"/>
@@ -125,7 +126,7 @@
                                 </div>
                             </group>
                         </group>
-                        <group string="Notes">
+                        <group string="Notes" class="notes">
                             <field name="product_description"/>
                             <field name="notes"/>
                         </group>

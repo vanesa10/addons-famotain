@@ -18,6 +18,8 @@ class ComponentVendor(models.Model):
     gross_price = fields.Monetary('Gross Price', track_visibility='onchange')
     gross_qty = fields.Float('Gross Qty', help="minimum qty for gross price", track_visibility='onchange')
 
+    is_main_vendor = fields.Boolean('Main Vendor', track_visibility='onchange', default=False)
+
     active = fields.Boolean(default=True)
     notes = fields.Text('Notes', track_visibility='onchange')
     currency_id = fields.Many2one('res.currency', 'Currency', readonly=True, default=lambda self: self.env.user.company_id.currency_id)
