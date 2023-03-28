@@ -101,7 +101,8 @@ class SalesOrder(models.Model):
         sequences = self.env['ir.sequence'].search([('prefix', '=', 'PO.%(range_year)s%(range_month)s%(range_day)s')], limit=1)
         sequences.write({'number_next_actual': 1})
         sequences = self.env['ir.sequence'].search([('prefix', '=', 'MRP/%(range_year)s%(range_month)s%(range_day)s/')], limit=1)
-        sequences.write({'number_next_actual': 1})
+        if sequences:
+            sequences.write({'number_next_actual': 1})
 
     def monthly_report_notification(self):
         # Report bulan kemaren dpt order total brp pcs sama amount brp
