@@ -49,7 +49,8 @@
             <field name="name">Product Order tree</field>
             <field name="model">sales__order.product_order</field>
             <field name="arch" type="xml">
-                <tree decoration-danger="state == 'confirm'"
+                <tree
+                      decoration-danger="state == 'confirm'"
                     decoration-bf="state == 'approve'"
                     decoration-success="state == 'sent' or state=='on_progress' or state=='done'"
                     decoration-it="state == 'cancel'">
@@ -60,8 +61,10 @@
                     <field name="qty" sum="qty"/>
                     <field name="product_id"/>
                     <field name="currency_id" invisible="1"/>
-                    <field name="product_price"/>
-                    <field name="price" sum="Total" groups="famotain.famotain_manager"/>
+<!--                    <field name="product_price"/>-->
+                    <field name="price" sum="Price" groups="famotain.famotain_manager"/>
+                    <field name="total" sum="Total" groups="famotain.famotain_manager"/>
+                    <field name="is_customized"/>
                     <field name="state"/>
 <!--                    <button name="open_record" type="object" class="oe_highlight" icon="fa-asterisk text-success"/>-->
                 </tree>
@@ -83,26 +86,29 @@
                     <sheet>
                         <field name="design_image" widget="image" class="oe_avatar oe_left" options='{"preview_image": "design_image_small"}'/>
                         <div class="oe_title">
-                            <field name="product_type" widget='radio' options="{'horizontal': true}"/>
+                            <label for="name" class="oe_edit_only"/>
                             <h1>
-                                <field name="product_id"/>
+                                <field name="name"/>
                             </h1>
                         </div>
                         <group>
                             <group>
                                 <field name="currency_id" invisible="1"/>
                                 <field name="sales_order_id"/>
-                                <field name="deadline" />
                                 <field name="qty"/>
+                                <field name="product_type" />
+                                <field name="product_id"/>
                                 <field name="fabric_color"/>
+                                <field name="is_customized"/>
 <!--                                <field name="ribbon_color"/>-->
-                                <field name="price"/>
-                                <field name="total"/>
                             </group>
                             <group>
+                                <field name="deadline" />
                                 <field name="product_price" groups="famotain.famotain_manager"/>
-                                <field name="design_image_2" widget="image" class="oe_avatar"/>
-                                <field name="design_image_3" widget="image" class="oe_avatar"/>
+                                <field name="price"/>
+                                <field name="total"/>
+<!--                                <field name="design_image_2" widget="image" class="oe_avatar"/>-->
+<!--                                <field name="design_image_3" widget="image" class="oe_avatar"/>-->
                                 <field name="price_line_id"/>
                                 <label for="create_uid" string="Created By" attrs="{'invisible': [('create_date', '=', False)]}"/>
                                 <div attrs="{'invisible': [('create_date', '=', False)]}">
@@ -159,23 +165,27 @@
                     <field name="deadline"/>
                     <field name="product_id"/>
                     <field name="fabric_color"/>
+                    <field name="is_customized"/>
 <!--                    <field name="product_price"/>-->
                     <field name="price"/>
                     <field name="currency_id"/>
                     <field name="state"/>
+                    <field name="activity_state"/>
+
                     <templates>
                         <t t-name="kanban-box">
                             <div t-attf-class="oe_kanban_card oe_kanban_global_click">
                                 <div class="row mt4" style="align-items: center;">
                                     <div class="col-2">
                                         <div class="o_kanban_image">
-                                            <img alt="Avatar" t-att-src="kanban_image('sales__order.product_order', 'design_image_small', record.id.raw_value)"/>
+                                            <img alt="Avatar" t-att-src="kanban_image('sales__order.product_order', 'design_image_small', record.id.raw_value)" height="72" width="72" class="oe_kanban_avatar"/>
                                         </div>
                                     </div>
                                     <div class="col-10" style="padding-left:20px">
                                         <div class="o_kanban_record_top">
                                             <div class="o_kanban_record_headings">
                                                 <strong class="o_kanban_record_title"><span><t t-esc="record.qty.value"/> - <t t-esc="record.product_id.value"/></span></strong>
+                                                <span class="text-warning mb4" t-if="record.is_customized.raw_value"><i class="fa fa-circle" aria-label="Custom" role="img" title="Custom"/></span>
                                             </div>
                                             <strong groups="famotain.famotain_manager"><field name="price" widget="monetary"/></strong>
                                         </div>
@@ -192,6 +202,7 @@
                                                 </span>
                                             </div>
                                             <div class="oe_kanban_bottom_right">
+                                                <field name="activity_ids" widget="kanban_activity"/>
                                                 <field name="state" widget="label_selection" options="{'classes': {'draft': 'warning', 'confirm': 'info', 'on_progress': 'info', 'sent': 'success', 'cancel': 'default'}}"/>
                                             </div>
                                         </div>
@@ -207,7 +218,6 @@
         <record id="act_open_order_count" model="ir.actions.act_window">
             <field name="name">Open Order</field>
             <field name="res_model">sales__order.product_order</field>
-<!--            <field name="view_type">form</field>-->
             <field name="view_mode">tree,form,kanban</field>
             <field name="context">
                 {
@@ -216,6 +226,7 @@
                 }
             </field>
         </record>
+
         <record id="act_fix_order_qty" model="ir.actions.act_window">
             <field name="name">Fix Order</field>
             <field name="res_model">sales__order.product_order</field>
@@ -245,7 +256,7 @@
             <field name="model">famotain.product</field>
             <field name="inherit_id" ref="famotain.product_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//div[@class='oe_button_box']"  position="inside">
+                <xpath expr="//div[hasclass('oe_button_box')]"  position="inside">
                     <button class="oe_stat_button" type="action" name="%(sales__order.act_open_order_count)d" icon="fa-folder-open">
                         <field string="Orders" name="open_order_count" widget="statinfo"/>
                     </button>
@@ -261,14 +272,14 @@
             <field name="model">famotain.product</field>
             <field name="inherit_id" ref="famotain.product_kanban"/>
             <field name="arch" type="xml">
-                <xpath expr="//kanban[@class='o_kanban_mobile']" position="inside">
+                <xpath expr="//kanban[hasclass('o_kanban_mobile')]" position="inside">
                     <field name="fix_order_qty" groups="famotain.famotain_manager"/>
                     <field name="open_order_count"/>
                 </xpath>
-                <xpath expr="//li[@class='inherit1']" position="inside">
+                <xpath expr="//li[hasclass('inherit1')]" position="inside">
                     <span class="badge badge-pill badge-success float-right mt4 mr16" groups="famotain.famotain_manager"><i class="fa fa-fw fa-shopping-cart" aria-label="Sold" role="img" title="Sold"/> <t t-esc="record.fix_order_qty.value"/></span>
                 </xpath>
-                <xpath expr="//li[@class='inherit2']" position="inside">
+                <xpath expr="//li[hasclass('inherit2')]" position="inside">
                     <span t-if="record.open_order_count.value!=0" class="badge badge-pill badge-info float-right mt4 mr16"><i class="fa fa-fw fa-folder-open" aria-label="Sold" role="img" title="Sold"/> <t t-esc="record.open_order_count.value"/></span>
                 </xpath>
             </field>
@@ -282,6 +293,29 @@
                 <xpath expr="//field[@name='currency_id']" position="after">
                     <field name="fix_order_qty" groups="famotain.famotain_manager"/>
                     <field name="open_order_count" groups="famotain.famotain_manager"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="act_product_orders_on_sales_order" model="ir.actions.act_window">
+            <field name="name">Product Orders</field>
+            <field name="res_model">sales__order.product_order</field>
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="context">
+                {
+                    'search_default_open_order': 1,
+                    'search_default_sales_order_id': active_id,
+                }
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="sales__order.product_order_sales_order_inherit_views">
+            <field name="name">Product Order Sales Order Inherit</field>
+            <field name="model">sales__order.sales__order</field>
+            <field name="inherit_id" ref="sales__order.sales__order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('oe_button_box')]"  position="inside">
+                    <button name="%(sales__order.act_product_orders_on_sales_order)d" type="action" class="oe_stat_button" string="Product Orders" icon="fa-folder-open"/>
                 </xpath>
             </field>
         </record>

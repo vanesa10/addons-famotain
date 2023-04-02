@@ -239,6 +239,7 @@ class PayInvoiceWizard(models.TransientModel):
 
 class ReportInvoice(models.AbstractModel):
     _name = 'report.sales__order.report_sales__order_invoice'
+    _description = 'Invoice Report'
 
     @api.model
     def _get_report_values(self, docids, data=None):

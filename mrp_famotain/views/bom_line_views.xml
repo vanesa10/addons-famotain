@@ -44,7 +44,7 @@
             <field name="name">BoM Line Form</field>
             <field name="model">mrp_famotain.bom_line</field>
             <field name="arch" type="xml">
-                <form>
+                <form create="false" edit="false" delete="false">
                     <header>
 
                     </header>
@@ -73,9 +73,9 @@
                                 <field name="length" attrs="{'invisible': [('component_type', 'in', ['fabric', 'print', 'accessories', 'embroidery'])]}"/>
                             </group>
                             <group>
-                                <field name="product_order_id"/>
-                                <field name="bom_id"/>
                                 <field name="manufacturing_order_id"/>
+                                <field name="bom_id"/>
+                                <field name="product_order_id"/>
                             </group>
                         </group>
                         <group string="Notes">

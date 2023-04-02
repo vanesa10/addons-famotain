@@ -77,23 +77,28 @@
                         <notebook>
                             <page string="Details">
                                 <field name="component_detail_ids" context="{'default_component_id': id}">
-                                    <tree delete="1">
-                                        <field name="component_id"/>
+                                    <tree delete="1" editable="bottom">
+                                        <field name="sequence" widget="handle"/>
                                         <field name="detail"/>
-                                        <field name="stock"/>
-                                        <field name="requirement"/>
+                                        <field name="vendor_id"/>
+                                        <field name="price"/>
+                                        <field name="gross_price"/>
+                                        <field name="gross_qty"/>
+                                        <button name="open_record" type="object" class="oe_highlight" icon="fa-asterisk text-success"/>
                                     </tree>
                                 </field>
                             </page>
                             <page string="Vendors">
                                 <field name="component_vendor_ids" context="{'default_component_id': id}">
-                                    <tree delete="1">
+                                    <tree delete="1" editable="bottom">
+                                        <field name="sequence" widget="handle"/>
                                         <field name="vendor_id"/>
                                         <field name="currency_id" invisible="1"/>
                                         <field name="price"/>
                                         <field name="gross_price"/>
                                         <field name="gross_qty"/>
                                         <field name="is_main_vendor"/>
+                                        <button name="open_record" type="object" class="oe_highlight" icon="fa-asterisk text-success"/>
                                     </tree>
                                 </field>
                             </page>

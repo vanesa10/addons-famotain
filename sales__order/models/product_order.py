@@ -13,7 +13,7 @@ class ProductOrder(models.Model):
     _name = 'sales__order.product_order'
     _description = 'Product Order'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'deadline'
+    _order = 'deadline, id'
 
     @api.model
     def _default_image(self):
@@ -27,22 +27,23 @@ class ProductOrder(models.Model):
     deadline = fields.Date('Deadline', readonly=True, compute='_compute_deadline', store=True)
     product_type = fields.Selection(PRODUCT_TYPE_LIST, 'Product Type', readonly=True, required=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)]})
     product_id = fields.Many2one('famotain.product', 'Product', required=True, readonly=True,
-                                 domain=[('active', '=', True)],
+                                 domain="[('active', '=', True), ('product_type', '=', product_type)]",
                                  states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)]},
                                  track_visibility='onchange')
     product_price = fields.Monetary('Product Price', related="product_id.price")
     price = fields.Monetary('Price', related="price_line_id.amount")
     # product_description = fields.Char('Description', related="product_id.description")
 
+    is_customized = fields.Boolean('Custom', track_visibility='onchange', readonly=True, default=False, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]})
     qty = fields.Integer('Qty', default=1, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
     fabric_color = fields.Char('Color Notes', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
     # ribbon_color = fields.Char('Ribbon Color', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
     design_image = fields.Binary('Design Image', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
     design_image_small = fields.Binary("Small-sized Design Image", attachment=True, readonly=True)
-    design_image_2 = fields.Binary('Design Image 2', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
-    design_image_2_small = fields.Binary("Small-sized Design Image 2", attachment=True, readonly=True)
-    design_image_3 = fields.Binary('Design Image 3', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
-    design_image_3_small = fields.Binary("Small-sized Design Image 3", attachment=True, readonly=True)
+    # design_image_2 = fields.Binary('Design Image 2', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
+    # design_image_2_small = fields.Binary("Small-sized Design Image 2", attachment=True, readonly=True)
+    # design_image_3 = fields.Binary('Design Image 3', attachment=True, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
+    # design_image_3_small = fields.Binary("Small-sized Design Image 3", attachment=True, readonly=True)
 
     total = fields.Monetary('Total', readonly=True, compute='_compute_total', store=True)
     currency_id = fields.Many2one('res.currency', 'Currency', readonly=True, default=lambda self: self.env.user.company_id.currency_id)
@@ -96,14 +97,14 @@ class ProductOrder(models.Model):
                 'design_image_small': tools.image_resize_image_medium(vals['design_image'].encode('ascii'))
             })
             image = True
-        if 'design_image_2' in vals.keys() and vals['design_image_2']:
-            vals.update({
-                'design_image_2_small': tools.image_resize_image_medium(vals['design_image_2'].encode('ascii'))
-            })
-        if 'design_image_3' in vals.keys() and vals['design_image_3']:
-            vals.update({
-                'design_image_3_small': tools.image_resize_image_medium(vals['design_image_3'].encode('ascii'))
-            })
+        # if 'design_image_2' in vals.keys() and vals['design_image_2']:
+        #     vals.update({
+        #         'design_image_2_small': tools.image_resize_image_medium(vals['design_image_2'].encode('ascii'))
+        #     })
+        # if 'design_image_3' in vals.keys() and vals['design_image_3']:
+        #     vals.update({
+        #         'design_image_3_small': tools.image_resize_image_medium(vals['design_image_3'].encode('ascii'))
+        #     })
         product_order = super(ProductOrder, self).create(vals)
         product_order.write({
             'deadline': product_order.sales_order_id.deadline,
@@ -129,14 +130,14 @@ class ProductOrder(models.Model):
             })
             if self.product_id.product_type in ['product', 'addons', 'charge'] and not self.sales_order_id.image:
                 self.sales_order_id.image = vals['design_image']
-        if 'design_image_2' in vals.keys() and vals['design_image_2']:
-            vals.update({
-                'design_image_2_small': tools.image_resize_image_medium(vals['design_image_2'].encode('ascii'))
-            })
-        if 'design_image_3' in vals.keys() and vals['design_image_3']:
-            vals.update({
-                'design_image_3_small': tools.image_resize_image_medium(vals['design_image_3'].encode('ascii'))
-            })
+        # if 'design_image_2' in vals.keys() and vals['design_image_2']:
+        #     vals.update({
+        #         'design_image_2_small': tools.image_resize_image_medium(vals['design_image_2'].encode('ascii'))
+        #     })
+        # if 'design_image_3' in vals.keys() and vals['design_image_3']:
+        #     vals.update({
+        #         'design_image_3_small': tools.image_resize_image_medium(vals['design_image_3'].encode('ascii'))
+        #     })
         initial_qty = self.qty
         initial_product_id = self.product_id
         initial_total = self.total
@@ -170,13 +171,14 @@ class ProductOrder(models.Model):
     @api.model
     def unlink(self):
         for rec in self:
-            if rec.state in ['draft', 'confirm', 'approve', 'on_progress']:
+            if rec.state in ['draft', 'confirm', 'approve']:
                 if rec.state != 'draft':
                     rec.product_id.change_open_order_count(-1)
                     rec.product_id.change_fix_order_qty(rec.qty * -1)
                 if rec.price_line_id:
                     rec.price_line_id.product_order_id = None
                     rec.price_line_id.unlink()
+                # kalau ada mo di delete juga monya, kecuali kalau charge.
                 msg = "{}pcs {} Rp. {:,} product order deleted".format(rec.qty, rec.product_id.display_name,
                                                                          rec.total)
                 rec.sales_order_id.message_post(body=msg)
@@ -276,9 +278,6 @@ class ProductOrder(models.Model):
                 rec.state = 'sent'
                 rec.send_date = fields.Datetime.now()
                 rec.send_uid = self.env.user.id
-                # rec.design_image = tools.image_resize_image_big(rec.design_image)
-                # rec.design_image_2 = tools.image_resize_image_big(rec.design_image_2)
-                # rec.design_image_3 = tools.image_resize_image_big(rec.design_image_3)
 
     def open_record(self):
         rec_id = self.id

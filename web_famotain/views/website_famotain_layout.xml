@@ -518,8 +518,8 @@
                                                     <th scope="col">Product</th>
                                                     <th scope="col">Description</th>
                                                     <th scope="col" class="text-center">Design</th>
-                                                    <th scope="col" t-if="design_2" class="text-center">Design Side A</th>
-                                                    <th scope="col" t-if="design_3" class="text-center">Design Side B</th>
+<!--                                                    <th scope="col" t-if="design_2" class="text-center">Design Side A</th>-->
+<!--                                                    <th scope="col" t-if="design_3" class="text-center">Design Side B</th>-->
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -532,16 +532,16 @@
                                                             <img t-attf-src="data:image/*;base64,{{product_order.design_image_small}}" style="max-width:200px; max-height: 150px"/>
                                                         </a>
                                                     </td>
-                                                    <td t-if="design_2"  class="text-center">
-                                                        <a class="chocolat-image" t-attf-href="data:image/*;base64,{{product_order.design_image_2}}" title="Design Side A" t-if="product_order.design_image_2">
-                                                            <img t-attf-src="data:image/*;base64,{{product_order.design_image_2_small}}" style="max-width:200px; max-height: 150px"/>
-                                                        </a>
-                                                    </td>
-                                                    <td t-if="design_3"  class="text-center">
-                                                        <a class="chocolat-image" t-attf-href="data:image/*;base64,{{product_order.design_image_3}}" title="Design Side B" t-if="product_order.design_image_3">
-                                                            <img t-attf-src="data:image/*;base64,{{product_order.design_image_3_small}}" style="max-width:200px; max-height: 150px"/>
-                                                        </a>
-                                                    </td>
+<!--                                                    <td t-if="design_2"  class="text-center">-->
+<!--                                                        <a class="chocolat-image" t-attf-href="data:image/*;base64,{{product_order.design_image_2}}" title="Design Side A" t-if="product_order.design_image_2">-->
+<!--                                                            <img t-attf-src="data:image/*;base64,{{product_order.design_image_2_small}}" style="max-width:200px; max-height: 150px"/>-->
+<!--                                                        </a>-->
+<!--                                                    </td>-->
+<!--                                                    <td t-if="design_3"  class="text-center">-->
+<!--                                                        <a class="chocolat-image" t-attf-href="data:image/*;base64,{{product_order.design_image_3}}" title="Design Side B" t-if="product_order.design_image_3">-->
+<!--                                                            <img t-attf-src="data:image/*;base64,{{product_order.design_image_3_small}}" style="max-width:200px; max-height: 150px"/>-->
+<!--                                                        </a>-->
+<!--                                                    </td>-->
                                                 </tr>
                                             </tbody>
                                         </table>

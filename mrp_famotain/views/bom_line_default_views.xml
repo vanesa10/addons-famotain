@@ -101,15 +101,7 @@
                                 <field name="width" attrs="{'invisible': [('component_type', 'in', ['accessories', 'webbing'])]}"/>
                                 <field name="height" attrs="{'invisible': [('component_type', 'in', ['accessories', 'webbing'])]}"/>
                                 <field name="length" attrs="{'invisible': [('component_type', 'in', ['fabric', 'print', 'accessories', 'embroidery'])]}"/>
-<!--                                <button name="open_record" type="object" class="oe_highlight" icon="fa-asterisk text-success"/>-->
-<!--                                <control>-->
-<!--                                    <create string="Add fabric" context="{'default_component_type': 'fabric'}"/>-->
-<!--                                    <create string="Add accessories" context="{'default_component_type': 'accessories'}"/>-->
-<!--                                    <create string="Add webbing" context="{'default_component_type': 'webbing'}"/>-->
-<!--                                    <create string="Add print" context="{'default_component_type': 'print'}"/>-->
-<!--                                    <create string="Add embroidery" context="{'default_component_type': 'embroidery'}"/>-->
-<!--                                    <create string="Add others" context="{'default_component_type': 'others'}"/>-->
-<!--                                </control>-->
+                                <button name="open_record" type="object" class="oe_highlight" icon="fa-asterisk text-success"/>
                             </tree>
                         </field>
                     </page>

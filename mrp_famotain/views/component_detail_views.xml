@@ -25,8 +25,6 @@
                 <tree>
                     <field name="component_id"/>
                     <field name="detail"/>
-                    <field name="stock"/>
-                    <field name="requirement"/>
                 </tree>
             </field>
         </record>
@@ -56,10 +54,9 @@
                             <group>
                                 <field name="component_id"/>
                                 <field name="detail"/>
-                                <field name="stock"/>
-                                <field name="requirement"/>
                             </group>
                             <group>
+                                <field name="vendor_id"/>
                                 <field name="price"/>
                                 <field name="gross_price"/>
                                 <field name="gross_qty"/>

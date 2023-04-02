@@ -7,7 +7,7 @@ _logger = logging.getLogger(__name__)
 
 class ComponentDetail(models.Model):
     _name = 'mrp_famotain.component_detail'
-    _order = 'name asc'
+    _order = 'sequence, name'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Detail of a Component'
 
@@ -21,10 +21,8 @@ class ComponentDetail(models.Model):
     gross_qty = fields.Float('Gross Qty', help="minimum qty for gross price", track_visibility='onchange')
     currency_id = fields.Many2one('res.currency', 'Currency', readonly=True, default=lambda self: self.env.user.company_id.currency_id)
 
-    stock = fields.Float('Stock')
-    requirement = fields.Float('Requirement')
-
-    active = fields.Boolean(default=True)
+    sequence = fields.Integer(required=True, default=10)
+    active = fields.Boolean(default=True, track_visibility='onchange')
     notes = fields.Text('Notes', track_visibility='onchange')
 
     @api.multi
@@ -33,3 +31,19 @@ class ComponentDetail(models.Model):
     def _compute_name(self):
         for rec in self:
             rec.name = "{} - {}".format(rec.component_id.name, rec.detail) if rec.detail not in ['.', '-', ' '] else rec.component_id.name
+
+    def open_record(self):
+        rec_id = self.id
+        form_id = self.env.ref('mrp_famotain.component_detail_form')
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Component Detail Form',
+            'res_model': 'mrp_famotain.component_detail',
+            'res_id': rec_id,
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': form_id.id,
+            'context': {},
+            'target': 'current',
+        }

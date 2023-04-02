@@ -20,9 +20,14 @@
         </record>
 
         <record model="ir.actions.act_window" id="mrp_famotain.manufacturing_order_action_window">
-          <field name="name">Manufacturing Order</field>
-          <field name="res_model">mrp_famotain.manufacturing_order</field>
-          <field name="view_mode">tree,form</field>
+            <field name="name">Manufacturing Order</field>
+            <field name="res_model">mrp_famotain.manufacturing_order</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">
+                {
+                    'search_default_need_progress': 1,
+                }
+            </field>
         </record>
 
         <record model="ir.actions.act_window" id="mrp_famotain.vendor_action_window">
@@ -41,6 +46,14 @@
             <menuitem name="Product" id="mrp_famotain.product_menu" parent="mrp_famotain.master_data_menu" action="famotain.product_action_all" sequence="1"/>
             <menuitem name="Component" id="mrp_famotain.component_menu" parent="mrp_famotain.master_data_menu" sequence="2" action="mrp_famotain.component_action_window"/>
             <menuitem name="Vendor" id="mrp_famotain.vendor_menu" parent="mrp_famotain.master_data_menu" sequence="3" action="mrp_famotain.vendor_action_window"/>
+
+        <record model="ir.actions.act_window" id="mrp_famotain.bom_line_action_window">
+          <field name="name">BoM Line</field>
+          <field name="res_model">mrp_famotain.bom_line</field>
+          <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem name="BoM" id="mrp_famotain.bom_line_menu" parent="mrp_famotain.menu_root" sequence="4" action="mrp_famotain.bom_line_action_window"/>
+
 <!--            <menuitem name="Component Color" id="mrp_famotain.component_color_menu" parent="mrp_famotain.master_data_menu" sequence="5" action="mrp_famotain.component_color_action_window"/>-->
 <!--            <menuitem name="Component Vendor" id="mrp_famotain.component_vendor_menu" parent="mrp_famotain.master_data_menu" sequence="6" action="mrp_famotain.component_vendor_action_window"/>-->
     </data>

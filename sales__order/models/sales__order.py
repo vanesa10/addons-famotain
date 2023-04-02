@@ -67,7 +67,7 @@ class SalesOrder(models.Model):
     shipment_receipt_number = fields.Char('Shipment Receipt Number', readonly=False, states={'send': [('readonly', True)], 'cancel': [('readonly', True)]})
 
     total_price = fields.Monetary('Total Amount', compute='_compute_total_price', readonly=True, store=True, track_visibility='onchange')
-    total_price_without_shipment = fields.Monetary('Total without Shipment', compute='_compute_total_price', readonly=True, store=True, track_visibility='onchange')
+    total_price_without_shipment = fields.Monetary('Total without Shipment', compute='_compute_total_price', readonly=True, store=True)
     paid = fields.Monetary('Paid', readonly=True, track_visibility='onchange')
     remaining = fields.Monetary('Remaining', compute='_compute_remaining', readonly=True, store=True, track_visibility='onchange')
 
@@ -100,9 +100,6 @@ class SalesOrder(models.Model):
         sequences.write({'number_next_actual': 1})
         sequences = self.env['ir.sequence'].search([('prefix', '=', 'PO.%(range_year)s%(range_month)s%(range_day)s')], limit=1)
         sequences.write({'number_next_actual': 1})
-        sequences = self.env['ir.sequence'].search([('prefix', '=', 'MRP/%(range_year)s%(range_month)s%(range_day)s/')], limit=1)
-        if sequences:
-            sequences.write({'number_next_actual': 1})
 
     def monthly_report_notification(self):
         # Report bulan kemaren dpt order total brp pcs sama amount brp
@@ -118,15 +115,15 @@ class SalesOrder(models.Model):
             ('confirm_date', '<', to_date),
             ('confirm_date', '>=', from_date)
         ])
-        data = {'count': 0, 'qty_total': 0, 'qty_product': 0, 'qty_label': 0, 'qty_package': 0, 'qty_addons': 0,
+        data = {'count': 0, 'qty_total': 0, 'qty_product': 0, 'qty_package': 0, 'qty_addons': 0, 'qty_charge': 0,
                 'amount_total': 0, 'amount_product': 0, 'amount_label': 0, 'amount_package': 0, 'amount_addons': 0,
-                'amount_shipment': 0, 'amount_discount': 0, 'amount_charge': 0, 'remaining': 0, 'paid': 0,
+                'amount_shipment': 0, 'amount_discount': 0, 'amount_charge': 0, 'amount_charge_so': 0, 'remaining': 0, 'paid': 0,
                 'date': last_month.strftime('%b-%Y')}
         data.update({'from_date': from_date, 'to_date': to_date})
         for rec in sales_order:
             data['count'] += 1
             data['qty_total'] += rec.qty_total
-            data['amount_total'] += rec.total_price
+            data['amount_total'] += rec.total_price_without_shipment
             data['remaining'] += rec.remaining
             data['paid'] += rec.paid
             for product in rec.product_order_ids:
@@ -134,7 +131,10 @@ class SalesOrder(models.Model):
                     data['qty_{}'.format(product.product_type)] += product.qty
             for price in rec.price_line_ids:
                 if price.prices_type:
-                    data['amount_{}'.format(price.prices_type)] += price.balance
+                    if not price.product_order_id and price.prices_type == 'charge':
+                        data['amount_charge_so'] += price.balance
+                    else:
+                        data['amount_{}'.format(price.prices_type)] += price.balance
         sales_order = self.env['sales__order.sales__order'].search([
             ('state', '!=', 'draft'), ('state', '!=', 'cancel'), ('state', '!=', 'send'),
             ('confirm_date', '<', to_date),('confirm_date', '>=', from_date)
@@ -153,7 +153,7 @@ class SalesOrder(models.Model):
 Total: {qty_total}pcs
 Product: {qty_product}pcs
 Package: {qty_package}pcs
-Label: {qty_label}pcs
+Charge: {qty_charge}pcs
 Addons: {qty_addons}pcs
 ========================
 <b>{count_open} Open Order</b>
@@ -162,17 +162,18 @@ Total : Rp. {total_open:,.0f}
 ========================
 Product: Rp. {amount_product:,.0f}
 Package: Rp. {amount_package:,.0f}
-Label: Rp. {amount_label:,.0f} 
+Charge: Rp. {amount_charge:,.0f} 
 Addons: Rp. {amount_addons:,.0f} 
 ========================
-Shipment: Rp. {amount_shipment:,.0f}
 Discount: Rp. {amount_discount:,.0f}
-Charge: Rp. {amount_charge:,.0f}
+Charge: Rp. {amount_charge_so:,.0f}
 ========================
 <b>TOTAL: Rp. {amount_total:,.0f}</b>
-<b>PAID: Rp. {paid:,.0f}</b>
+Shipment: Rp. {amount_shipment:,.0f}
+Paid: Rp. {paid:,.0f}
 <b>REMAIN: Rp. {remaining:,.0f}</b>
 """.format(**data)
+        print(msg)
         send_telegram_message(msg, 'famotain_report_group')
 
     def weekly_report_notification(self):
@@ -338,7 +339,8 @@ Total : Rp. {new_amount_total:,.0f}
         sales_order = super(SalesOrder, self).create(vals_list)
         # DONE: auto create product order with same name as product
         product = self.env['famotain.product'].search(
-            [('name', '=ilike', sales_order.product), ('product_type', '=', 'product'), ('active', '=', True)], limit=1)
+            ['|', ('name', '=ilike', sales_order.product), ('code', '=ilike', sales_order.product), ('product_type', '=', 'product'), ('active', '=', True)], limit=1)
+
         if product:
             product_order_vals = self.env['sales__order.product_order'].prepare_vals_list(
                 sales_order_id=sales_order.id, qty=sales_order.qty_total, product_id=product)
@@ -356,6 +358,13 @@ Total : Rp. {new_amount_total:,.0f}
                                                                 limit=1)
             product_order_vals = self.env['sales__order.product_order'].prepare_vals_list(
                 sales_order_id=sales_order.id, qty=sales_order.qty_total, product_id=product_label)
+            self.env['sales__order.product_order'].sudo().create(product_order_vals)
+
+        if sales_order.packing == 'pack':
+            charge_pack = self.env['famotain.product'].search([('code', '=', 'CP'), ('active', '=', True)],
+                                                                limit=1)
+            product_order_vals = self.env['sales__order.product_order'].prepare_vals_list(
+                sales_order_id=sales_order.id, qty=sales_order.qty_total, product_id=charge_pack)
             self.env['sales__order.product_order'].sudo().create(product_order_vals)
 
         # create charge price line if qty < settings
@@ -660,7 +669,7 @@ Deadline : {deadline}
                     'qty_total': rec.qty_total,
                     'product': rec.product,
                     'theme': rec.theme,
-                    'url':'%s/order/%s' % (self.env['ir.config_parameter'].sudo().get_param('web.base.url'), rec.encryption)
+                    'url': '%s/order/%s' % (self.env['ir.config_parameter'].sudo().get_param('web.base.url'), rec.encryption)
                 }
                 msg = """
 <a href="{url}"><b>{name} APPROVED</b></a>
