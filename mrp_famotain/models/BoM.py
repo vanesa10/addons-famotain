@@ -21,8 +21,10 @@ class BillOfMaterials(models.Model):
                                           states={'draft': [('readonly', False)], 'approve': [('readonly', False), ('required', True)]})
     manufacturing_order_id = fields.Many2one('mrp_famotain.manufacturing_order', 'Manufacturing Order', required=True, track_visibility='onchange', readonly=True, states={'draft': [('readonly', False)]})
 
-    product_order_id = fields.Many2one('sales__order.product_order', 'Product Order', domain="[('manufacturing_order_id', '=', manufacturing_order_id)]")
+    product_order_id = fields.Many2one('sales__order.product_order', 'Product Order', domain="[('manufacturing_order_id', '=', manufacturing_order_id)]", readonly=True)
     product_id = fields.Many2one('famotain.product', 'Product', related="product_order_id.product_id")
+    sales_order_id = fields.Many2one('sales__order.sales__order', 'Sales Order', related="product_order_id.sales_order_id")
+    color_notes = fields.Char('Color Notes', related="product_order_id.fabric_color")
     qty = fields.Integer('Qty', related="manufacturing_order_id.product_qty") #TODO: bisa dijadiin 1pcs, kalau kurangan bahan
 
     bom_line_ids = fields.One2many('mrp_famotain.bom_line', 'bom_id', 'BoM Lines', readonly=True,
@@ -32,7 +34,7 @@ class BillOfMaterials(models.Model):
     uom_id = fields.Many2one('uom.uom', 'Unit of Measure', related="component_id.uom_id")
     component_vendor_id = fields.Many2one('mrp_famotain.component_vendor', 'Vendor Material', domain="[('active', '=', True), ('component_id', '=', component_id)]",
                                           track_visibility='onchange', compute="_compute_main_vendor", store=True, readonly=True,
-                                          states={'draft': [('readonly', False)], 'approve': [('readonly', False)], 'ready': [('readonly', False)]})
+                                          states={'draft': [('readonly', False)], 'approve': [('readonly', False)], 'ready': [('readonly', False), ('required', True)]})
 
     unit_cost = fields.Monetary('Unit Cost', readonly=True, compute="_compute_unit_cost", store=True)
     cost = fields.Monetary('Cost', readonly=True, compute="_compute_cost", store=True)
@@ -169,15 +171,18 @@ class BillOfMaterials(models.Model):
                 if rec.component_detail_id:
                     rec.state = 'ready'
                 else:
-                    raise UserError(_("Please fill component detail first. Can't set bill of materials with no detail to be ready."))
+                    raise UserError(_("Please fill component detail first. Can't process bill of materials with no detail"))
 
     @api.multi
     def action_done(self):
         for rec in self:
-            if rec.state in ['ready']:
-                rec.state = 'done'
-                rec.done_date = fields.Datetime.now()
-                rec.done_uid = self.env.user.id
+            if rec.state in ['approve', 'ready']:
+                if rec.component_detail_id and rec.component_vendor_id:
+                    rec.state = 'done'
+                    rec.done_date = fields.Datetime.now()
+                    rec.done_uid = self.env.user.id
+                else:
+                    raise UserError(_("Please fill component detail or vendor first. Can't process bill of materials with no detail"))
 
     def open_record(self):
         rec_id = self.id
@@ -195,5 +200,101 @@ class BillOfMaterials(models.Model):
             'target': 'current',
         }
 
-    #action ready. harus check qty sama ga mbe product order qty
-    #button recalculate
+
+# class BillOfMaterialsCalculation(models.Model):
+#     _name = 'mrp_famotain.bom_calculation'
+#     _order = 'sequence, component_id asc'
+#     _description = 'Bill of Materials Calculation'
+#     _inherit = ['mail.thread', 'mail.activity.mixin']
+#
+#     name = fields.Char('BoM Calculation', default='New', readonly=True, index=True, tracking=True)
+#     price_calculation_id = fields.Many2one('mrp_famotain.price_calculation', 'Price Calculation', track_visibility='onchange', readonly=True)
+#     component_id = fields.Many2one('mrp_famotain.component', 'Component', required=True, domain=[('active', '=', True)], track_visibility='onchange', readonly=True)
+#     component_vendor_id = fields.Many2one('mrp_famotain.component_vendor', 'Vendor Material',
+#                                           domain="[('active', '=', True), ('component_id', '=', component_id)]",
+#                                           track_visibility='onchange', compute="_compute_main_vendor", store=True)
+#     qty = fields.Integer('Qty', related="price_calculation_id.product_qty")
+#
+#     bom_line_calculation_ids = fields.One2many('mrp_famotain.bom_line_calculation', 'bom_id', 'BoM Lines')
+#
+#     unit_qty = fields.Float('Unit Qty', readonly=True, track_visibility='onchange')
+#     uom_id = fields.Many2one('uom.uom', 'Unit of Measure', related="component_id.uom_id")
+#
+#     unit_cost = fields.Monetary('Unit Cost', readonly=True, compute="_compute_unit_cost", store=True)
+#     cost = fields.Monetary('Cost', readonly=True, compute="_compute_cost", store=True)
+#     sequence = fields.Integer(required=True, default=10)
+#
+#     notes = fields.Text('Notes', track_visibility='onchange')
+#     currency_id = fields.Many2one('res.currency', 'Currency', readonly=True, default=lambda self: self.env.user.company_id.currency_id)
+#
+#     @api.model
+#     def create(self, vals_list):
+#         if vals_list.get('name') != 'New':
+#             vals_list.update({
+#                 'name': self.env['ir.sequence'].with_context(
+#                     ir_sequence_date=str(fields.Date.today())[:10]).next_by_code('mrp_famotain.bom'),
+#             })
+#         bom = super(BillOfMaterialsCalculation, self).create(vals_list)
+#         return bom
+#
+#     @api.multi
+#     def write(self, vals):
+#         bom = super(BillOfMaterialsCalculation, self).write(vals)
+#         return bom
+#
+#     @api.multi
+#     @api.model
+#     def unlink(self):
+#         for rec in self:
+#             for bom_line in rec.bom_line_calculation_ids:
+#                 bom_line.unlink()
+#             return super(BillOfMaterialsCalculation, self).unlink()
+#
+#     @api.multi
+#     def auto_calculate(self):
+#         for rec in self:
+#             unit_qty = 0
+#             for bom_line in rec.bom_line_ids:
+#                 unit_qty += bom_line.calculate(rec.qty)
+#             rec.write({
+#                 'unit_qty': math.ceil(unit_qty) if rec.component_id.component_type in ['fabric', 'webbing'] else unit_qty
+#             })
+#     @api.multi
+#     @api.onchange('component_id')
+#     @api.depends('component_id')
+#     def _compute_main_vendor(self):
+#         for rec in self:
+#             for vendor in rec.component_id.component_vendor_ids:
+#                 if vendor.is_main_vendor:
+#                     rec.component_vendor_id = vendor.id
+#                     break
+#
+#     @api.multi
+#     @api.onchange('component_vendor_id')
+#     @api.depends('component_vendor_id')
+#     def _compute_unit_cost(self):
+#         for rec in self:
+#             rec.unit_cost = rec.component_vendor_id.price
+#
+#     @api.multi
+#     @api.onchange('unit_qty', 'unit_cost')
+#     @api.depends('unit_qty', 'unit_cost')
+#     def _compute_cost(self):
+#         for rec in self:
+#             rec.cost = rec.unit_qty * rec.unit_cost
+#
+#     def open_record(self):
+#         rec_id = self.id
+#         form_id = self.env.ref('mrp_famotain.bom_calculation_form')
+#
+#         return {
+#             'type': 'ir.actions.act_window',
+#             'name': 'BoM Calculation Form',
+#             'res_model': 'mrp_famotain.bom_calculation',
+#             'res_id': rec_id,
+#             'view_type': 'form',
+#             'view_mode': 'form',
+#             'view_id': form_id.id,
+#             'context': {},
+#             'target': 'current',
+#         }

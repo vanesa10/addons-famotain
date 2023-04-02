@@ -143,14 +143,13 @@ class SalesOrder(models.Model):
         for rec in sales_order:
             data['count_open'] += 1
             data['qty_total_open'] += rec.qty_total
-            data['total_open'] += rec.total_price
+            data['total_open'] += rec.total_price_without_shipment
         data.update({'from_date': from_date[:10], 'to_date': to_date[:10]})
         msg = """
 <b>Monthly Report ({date})</b>
 ({from_date} - {to_date})
 ========================
 <b>{count} Orders</b>
-Total: {qty_total}pcs
 Product: {qty_product}pcs
 Package: {qty_package}pcs
 Charge: {qty_charge}pcs
@@ -190,7 +189,7 @@ Paid: Rp. {paid:,.0f}
         for rec in sales_order:
             data['new_qty_total'] += rec.qty_total
             data['count'] += 1
-            data['new_amount_total'] += rec.total_price
+            data['new_amount_total'] += rec.total_price_without_shipment
         msg = """
 <b>Weekly Report ({date})</b>
 ========================
@@ -224,7 +223,7 @@ Total : Rp. {new_amount_total:,.0f}
         for rec in sales_order:
             data['new_qty_total'] += rec.qty_total
             data['count'] += 1
-            data['new_amount_total'] += rec.total_price
+            data['new_amount_total'] += rec.total_price_without_shipment
         msg = """
 <b>Daily Report ({date})</b>
 ========================

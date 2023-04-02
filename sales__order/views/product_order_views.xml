@@ -185,9 +185,9 @@
                                         <div class="o_kanban_record_top">
                                             <div class="o_kanban_record_headings">
                                                 <strong class="o_kanban_record_title"><span><t t-esc="record.qty.value"/> - <t t-esc="record.product_id.value"/></span></strong>
-                                                <span class="text-warning mb4" t-if="record.is_customized.raw_value"><i class="fa fa-circle" aria-label="Custom" role="img" title="Custom"/></span>
                                             </div>
-                                            <strong groups="famotain.famotain_manager"><field name="price" widget="monetary"/></strong>
+                                            <strong groups="famotain.famotain_manager"><field name="price" widget="monetary"/> </strong>
+                                            <span class="text-warning mb4" t-if="record.is_customized.raw_value"><i class="fa fa-circle" aria-label="Custom" role="img" title="Custom"/></span>
                                         </div>
                                         <div class="text-muted o_kanban_record_subtitle">
                                             <span>Desc: <t t-esc="record.fabric_color.value"/></span>
@@ -303,7 +303,6 @@
             <field name="view_mode">tree,form,kanban</field>
             <field name="context">
                 {
-                    'search_default_open_order': 1,
                     'search_default_sales_order_id': active_id,
                 }
             </field>

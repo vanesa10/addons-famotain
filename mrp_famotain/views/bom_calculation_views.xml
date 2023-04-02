@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="mrp_famotain.bom_calculation_search">
+            <field name="name">Bill of Materials Calculation Search</field>
+            <field name="model">mrp_famotain.bom_calculation</field>
+            <field name="arch" type="xml">
+                <search string="Search Bill of Materials Calculation">
+                    <field name="name"/>
+                    <field name="price_calculation_id"/>
+                    <field name="component_id"/>
+                    <field name="component_vendor_id"/>
+                    <field name="notes"/>
+                    <separator/>
+                    <separator/>
+                    <group string="Group By">
+                        <filter string="Component" name="group_component" domain="[]" context="{'group_by':'component_id'}"/>
+                        <filter string="Component Vendor " name="group_component_vendor" domain="[]" context="{'group_by':'component_vendor_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="mrp_famotain.bom_calculation_tree">
+            <field name="name">Bill of Materials Calculation Tree</field>
+            <field name="model">mrp_famotain.bom_calculation</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="qty"/>
+                    <field name="unit_qty"/>
+                    <field name="component_id"/>
+                    <field name="component_vendor_id"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="cost" sum="Total Cost" string="Total Cost" groups="famotain.famotain_manager"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="mrp_famotain.bom_calculation_form">
+            <field name="name">Bill of Materials Calculation Form</field>
+            <field name="model">mrp_famotain.bom_calculation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="price_calculation_id"/>
+                                <label for="unit_qty" string="Unit Qty"/>
+                                <div>
+                                    <field name="unit_qty" class="oe_inline"/> -
+                                    <field name="uom_id" class="oe_inline"/>
+                                </div>
+                                <field name="component_id">
+                                <field name="unit_cost" groups="famotain.famotain_manager"/>
+                                <field name="cost" groups="famotain.famotain_manager"/>
+                                <field name="component_vendor_id"/>
+                            </group>
+                            <group>
+                                <field name="qty"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="BoM Lines">
+                                <field name="bom_line_calculation_ids">
+                                    <tree>
+                                        <field name="component_id" invisible="1"/>
+                                        <field name="name"/>
+                                        <field name="description"/>
+                                        <field name="component_type" invisible="1"/>
+                                        <field name="qty"/>
+                                        <field name="width" attrs="{'readonly': [('component_type', 'in', ['accessories', 'webbing'])]}"/>
+                                        <field name="height" attrs="{'readonly': [('component_type', 'in', ['accessories', 'webbing'])]}"/>
+                                        <field name="length" attrs="{'readonly': [('component_type', 'in', ['fabric', 'print', 'accessories', 'embroidery'])]}"/>
+                                        <button name="open_record" type="object" class="oe_highlight" icon="fa-asterisk text-success"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                        <group string="Notes">
+                            <field name="notes"/>
+                        </group>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" widget="mail_followers"/>
+                            <field name="activity_ids" widget="mail_activity"/>
+                            <field name="message_ids" widget="mail_thread"/>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

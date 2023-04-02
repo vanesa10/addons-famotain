@@ -30,7 +30,10 @@ class ComponentDetail(models.Model):
     @api.depends('component_id', 'detail')
     def _compute_name(self):
         for rec in self:
-            rec.name = "{} - {}".format(rec.component_id.name, rec.detail) if rec.detail not in ['.', '-', ' '] else rec.component_id.name
+            if rec.detail in ['.', '-', ' ']:
+                rec.name = 'None'
+            else:
+                rec.name = "{} - {}".format(rec.component_id.name, rec.detail)
 
     def open_record(self):
         rec_id = self.id

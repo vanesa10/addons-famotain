@@ -6,7 +6,6 @@ import math
 import logging
 _logger = logging.getLogger(__name__)
 
-#TODO: ubah semua vannn. haruse 1 MO punya banyak PO.
 
 class ManufacturingOrder(models.Model):
     _name = 'mrp_famotain.manufacturing_order'
@@ -16,16 +15,19 @@ class ManufacturingOrder(models.Model):
 
     name = fields.Char('Manufacturing Order', default='New', readonly=True, index=True, tracking=True)
 
-    sales_order_id = fields.Many2one('sales__order.sales__order', 'Sales Order', readonly=True, states={'draft': [('readonly', False)]})
+    sales_order_id = fields.Many2one('sales__order.sales__order', 'Sales Order', readonly=True, states={'draft': [('readonly', False)]}, required=True,
+                                     domain=[('state', 'not in', ['on_progress', 'done', 'send', 'cancel'])])
     product_order_ids = fields.One2many('sales__order.product_order', 'manufacturing_order_id', 'Product Orders', readonly=True,
-                                        states={'draft': [('readonly', False)], 'approve': [('readonly', False)]},
-                                        domain="[('sales_order_id', '=', sales_order_id)]")
+                                        states={'draft': [('readonly', False)], 'approve': [('readonly', False)]})
+    product_order_id = fields.Many2one('sales__order.product_order', 'Main Product Order', readonly=True)
+
     bom_ids = fields.One2many('mrp_famotain.bom', 'manufacturing_order_id', 'Bill of Materials', readonly=True,
                          states={'draft': [('readonly', False)], 'approve': [('readonly', False)], 'ready': [('readonly', False)], 'on_progress': [('readonly', False)]})
     bom_line_ids = fields.One2many('mrp_famotain.bom_line', 'manufacturing_order_id', 'BoM Lines', readonly=True,
                          states={'draft': [('readonly', False)], 'approve': [('readonly', False)], 'ready': [('readonly', False)], 'on_progress': [('readonly', False)]})
 
     deadline = fields.Date('Deadline', related="sales_order_id.deadline")
+    unit_production_cost = fields.Monetary('Unit Production Cost', related="product_order_id.product_id.production_cost")
     manufactured_by = fields.Many2one('mrp_famotain.vendor', 'Manufactured By', track_visibility='onchange', readonly=True,
                                       domain=[('active', '=', True), ('is_manufacturer', '=', True)],
                                       states={'draft': [('readonly', False)], 'approve': [('readonly', False)], 'ready': [('readonly', False)], 'on_progress': [('readonly', False)]})
@@ -72,20 +74,21 @@ class ManufacturingOrder(models.Model):
         manufacturing_order = super(ManufacturingOrder, self).create(vals_list)
         # auto create BoM, BoM line copas dari product order
         manufacturing_order.auto_calculate_all_bom()
+        manufacturing_order.set_main_product_order()
         return manufacturing_order
 
     @api.multi
     def write(self, vals):
         mo = super(ManufacturingOrder, self).write(vals)
-        auto_calculate = False
+        force_calculate = False
         if vals.get('sales_order_id'):
-            for bom in self.bom_ids:
-                bom.force_unlink()
-            self.auto_calculate_all_bom()
-            auto_calculate = True
+            self.force_auto_calculate_all_bom()
+            force_calculate = True
         if vals.get('product_qty'):
-            if not auto_calculate:
+            if not force_calculate:
                 self.auto_calculate_all_bom()
+        if vals.get('bom_ids'):
+            self._compute_material_cost()
         return mo
 
     @api.multi
@@ -95,10 +98,19 @@ class ManufacturingOrder(models.Model):
             if rec.state in ['draft']:
                 for bom in rec.bom_ids:
                     bom.unlink()
-                msg = "{} deleted ({}pcs {})".format(rec.name, rec.qty, rec.product_id.name)
+                for po in rec.product_order_ids:
+                    po.manufacturing_order_id = None
+                msg = "{} deleted".format(rec.name)
                 rec.sales_order_id.message_post(body=msg)
                 return super(ManufacturingOrder, self).unlink()
             raise UserError(_("You can only delete a draft record"))
+
+    @api.one
+    def set_main_product_order(self):
+        for po in self.product_order_ids:
+            if po.product_type == 'product':
+                self.product_order_id = po.id
+                break
 
     @api.one
     def auto_calculate_all_bom(self):
@@ -121,6 +133,7 @@ class ManufacturingOrder(models.Model):
                         'product_order_id': po.id,
                         'unit_qty': pre_bom_unit,
                         'is_calculated': True,
+                        'sequence': bom_line_def.sequence
                     })
                 bom_line_vals = {
                     'component_id': bom_line_def.component_id.id,
@@ -154,8 +167,16 @@ class ManufacturingOrder(models.Model):
                 if bom.component_id.component_type in ['fabric', 'webbing']:
                     bom.unit_qty = math.ceil(bom.unit_qty)
             self._compute_material_cost()
-            msg = "{}pcs - {} BoM auto calculated".format(self.qty, self.product_id.name)
+            msg = "{}pcs - {} BoM auto calculated".format(po.qty, po.product_id.name)
             self.message_post(body=msg)
+
+    @api.one
+    def force_auto_calculate_all_bom(self):
+        for bom in self.bom_ids:
+            bom.force_unlink()
+        self.auto_calculate_all_bom()
+        self._compute_sales()
+        self.set_main_product_order()
 
     @api.multi
     @api.onchange('product_order_ids')
@@ -171,11 +192,13 @@ class ManufacturingOrder(models.Model):
                 unit_sales += product_order.price
                 if product_order.product_type == 'product':
                     qty += product_order.qty
-                    production_cost += product_order.product_id.production_cost
+                    production_cost += product_order.product_id.production_cost * product_order.qty
             rec.net_sales = net_sales
             rec.product_unit_sales = unit_sales
             rec.product_qty = qty
             rec.production_cost = production_cost
+            rec.compute_cost()
+            rec.compute_profit()
             # rec.write({
             #     'net_sales': net_sales,
             #     'product_unit_sales': unit_sales,
@@ -192,18 +215,21 @@ class ManufacturingOrder(models.Model):
             for bom in rec.bom_ids:
                 material_cost += bom.cost
             rec.material_cost = material_cost
+            rec.compute_cost()
+            rec.compute_profit()
             # rec.write({
             #     'material_cost': material_cost
             # })
 
     @api.multi
-    @api.onchange('net_sales', 'total_cost', 'product_qty')
-    @api.depends('net_sales', 'total_cost', 'product_qty')
-    def _compute_profit(self):
+    @api.onchange('product_qty')
+    @api.depends('product_qty')
+    def compute_profit(self):
         for rec in self:
             gross_profit = rec.net_sales - rec.total_cost
             rec.gross_profit = gross_profit
-            rec.unit_profit = gross_profit / rec.product_qty
+            if rec.product_qty:
+                rec.unit_profit = gross_profit / rec.product_qty
             # rec.write({
             #     'gross_profit': gross_profit,
             #     'unit_profit': gross_profit / rec.product_qty,
@@ -220,13 +246,14 @@ class ManufacturingOrder(models.Model):
     #             })
 
     @api.multi
-    @api.onchange('material_cost', 'production_cost', 'product_qty')
-    @api.depends('material_cost', 'production_cost', 'product_qty')
+    @api.onchange('product_qty')
+    @api.depends('product_qty')
     def compute_cost(self):
         for rec in self:
             total_cost = rec.material_cost + rec.production_cost
             rec.total_cost = total_cost
-            rec.unit_cost = total_cost / rec.product_qty
+            if rec.product_qty:
+                rec.unit_cost = total_cost / rec.product_qty
             # rec.write({
             #     'total_cost': total_cost,
             #     'unit_cost': total_cost / rec.product_qty,
@@ -304,6 +331,9 @@ class ManufacturingOrder(models.Model):
                 for bom in rec.bom_ids:
                     bom.action_done()
                 rec.state = 'on_progress'
+                for po in rec.product_order_ids:
+                    if po.state in ['confirm', 'approve']:
+                        po.action_on_progress()
 
     @api.multi
     def action_done(self):
@@ -312,6 +342,9 @@ class ManufacturingOrder(models.Model):
                 rec.state = 'done'
                 rec.done_date = fields.Datetime.now()
                 rec.done_uid = self.env.user.id
+                for po in rec.product_order_ids:
+                    if po.state in ['on_progress']:
+                        po.action_done()
 
     def open_record(self):
         rec_id = self.id
@@ -333,7 +366,20 @@ class ManufacturingOrder(models.Model):
 class ProductOrder(models.Model):
     _inherit = 'sales__order.product_order'
 
-    manufacturing_order_id = fields.Many2one('mrp_famotain.manufacturing_order', 'Manufacturing Orders', readonly=True)
+    manufacturing_order_id = fields.Many2one('mrp_famotain.manufacturing_order', 'Manufacturing Orders', readonly=True,
+                                              states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)]})
+
+    @api.multi
+    def write(self, vals):
+        product_order = super(ProductOrder, self).write(vals)
+        if 'manufacturing_order_id' in vals.keys() and vals['manufacturing_order_id']:
+            self.manufacturing_order_id.auto_calculate_all_bom()
+        if self.manufacturing_order_id:
+            if 'product_id' in vals.keys():
+                self.manufacturing_order_id.force_auto_calculate_all_bom()
+            elif 'qty' in vals.keys():
+                self.manufacturing_order_id._compute_sales()
+        return product_order
 
     @api.multi
     def action_confirm(self):
@@ -341,16 +387,36 @@ class ProductOrder(models.Model):
             super(ProductOrder, self).action_confirm()
             if not rec.manufacturing_order_id and rec.product_type != 'charge':
                 if rec.product_id.bom_line_default_ids:
-                    mo = self.env['mrp_famotain.manufacturing_order'].sudo().create({'product_order_id': rec.id})
+                    mo = self.env['mrp_famotain.manufacturing_order'].sudo().create({'sales_order_id': rec.sales_order_id.id, 'product_order_id': rec.id})
                     rec.manufacturing_order_id = mo.id
+                    mo.auto_calculate_all_bom()
 
     @api.multi
     def action_approve(self):
         for rec in self:
             super(ProductOrder, self).action_approve()
+            if not rec.manufacturing_order_id and rec.product_type != 'charge':
+                if rec.product_id.bom_line_default_ids:
+                    mo = self.env['mrp_famotain.manufacturing_order'].sudo().create({'sales_order_id': rec.sales_order_id.id, 'product_order_id': rec.id})
+                    rec.manufacturing_order_id = mo.id
+                    mo.auto_calculate_all_bom()
             rec.manufacturing_order_id.action_approve()
-            # for mo in rec.manufacturing_order_ids:
-            #     mo.action_approve()
+
+    @api.multi
+    def action_on_progress(self):
+        for rec in self:
+            super(ProductOrder, self).action_on_progress()
+            if rec.product_type != 'charge' and rec.manufacturing_order_id:
+                if rec.manufacturing_order_id.state in ['ready', 'approve']:
+                    rec.manufacturing_order_id.action_on_progress()
+
+    @api.multi
+    def action_done(self):
+        for rec in self:
+            super(ProductOrder, self).action_done()
+            if rec.product_type != 'charge' and rec.manufacturing_order_id:
+                if rec.manufacturing_order_id.state in ['ready', 'on_progress']:
+                    rec.manufacturing_order_id.action_done()
 
 
 class SalesOrder(models.Model):
@@ -358,6 +424,8 @@ class SalesOrder(models.Model):
 
     manufacturing_order_ids = fields.One2many('mrp_famotain.manufacturing_order', 'sales_order_id', 'Manufacturing Orders', readonly=True,
                                               states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)]})
+    bom_ids = fields.One2many('mrp_famotain.bom', 'sales_order_id', 'Bill of Materials', readonly=True,
+                              states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)]})
 
 
 class Product(models.Model):
@@ -368,8 +436,10 @@ class Product(models.Model):
     @api.multi
     def write(self, vals):
         product = super(Product, self).write(vals)
-        # if vals.get('production_cost'):
-        #     mo = self.env['mrp_famotain.manufacturing_order'].search([('product_id', '=', self.id), ('state', 'in', ['draft', 'approve', 'ready', 'on_progress'])])
-        #     if mo:
-        #         mo._compute_qty_production_cost()
+        if vals.get('production_cost'):
+            product_orders = self.env['sales__order.product_order'].search([('product_id', '=', self.id), ('state', 'in', ['draft', 'approve', 'confirm', 'on_progress']),
+                                                                ('manufacturing_order_id', '!=', None)])
+            for po in product_orders:
+                if po.manufacturing_order_id:
+                    po.manufacturing_order_id._compute_sales()
         return product

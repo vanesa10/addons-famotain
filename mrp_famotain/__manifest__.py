@@ -21,7 +21,9 @@
         'views/component_vendor_views.xml',
         'views/bom_line_views.xml',
         'views/bom_line_default_views.xml',
+        # 'views/bom_line_calculation_views.xml',
         'views/bom_views.xml',
+        # 'views/bom_calculation_views.xml',
         'views/manufacturing_order_views.xml',
 
         'views/mrp_famotain_views.xml',
