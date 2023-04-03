@@ -13,7 +13,7 @@ class ProductOrder(models.Model):
     _name = 'sales__order.product_order'
     _description = 'Product Order'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'deadline, id'
+    _order = 'deadline, sequence'
 
     @api.model
     def _default_image(self):
@@ -51,7 +51,7 @@ class ProductOrder(models.Model):
     state = fields.Selection([('draft', 'Draft'), ('confirm', 'Confirmed'), ('approve','Approved'), ('on_progress', 'On Progress'), ('done', 'Done'), ('sent', 'Sent'), ('cancel', 'Cancelled')], 'State', required=True, default='draft', readonly=True, track_visibility='onchange')
     product_description = fields.Char('Product Description', compute='_compute_product_description', store=True)
     notes = fields.Text('Notes', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
-
+    sequence = fields.Integer(required=True, default=10)
     approve_uid = fields.Many2one('res.users', 'Approved By', readonly=True)
     approve_date = fields.Datetime('Approved On', readonly=True)
     cancel_uid = fields.Many2one('res.users', 'Cancelled By', readonly=True)

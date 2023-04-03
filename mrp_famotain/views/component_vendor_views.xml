@@ -27,8 +27,8 @@
                     <field name="component_id"/>
                     <field name="vendor_id"/>
                     <field name="currency_id" invisible="1"/>
-                    <field name="price"/>
-                    <field name="gross_price"/>
+                    <field name="price" groups="famotain.famotain_manager"/>
+                    <field name="gross_price" groups="famotain.famotain_manager"/>
                     <field name="is_main_vendor"/>
                 </tree>
             </field>
@@ -63,9 +63,9 @@
                                 <field name="is_main_vendor"/>
                             </group>
                             <group>
-                                <field name="price"/>
-                                <field name="gross_price"/>
-                                <field name="gross_qty"/>
+                                <field name="price" groups="famotain.famotain_manager"/>
+                                <field name="gross_price" groups="famotain.famotain_manager"/>
+                                <field name="gross_qty" groups="famotain.famotain_manager"/>
                             </group>
                         </group>
                         <group string="Notes">

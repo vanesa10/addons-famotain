@@ -164,7 +164,8 @@
                             <field name="product_order_ids"
                                    mode="tree,kanban"
                                    context="{'default_qty': qty_total, 'default_sales_order_id': id}">
-                                <tree default_order="product_type desc" editable="bottom" delete="1">
+                                <tree editable="bottom" delete="1">
+                                    <field name="sequence" widget="handle"/>
                                     <field name="product_type" invisible="1"/>
                                     <field name="name"/>
                                     <field name="qty"/>

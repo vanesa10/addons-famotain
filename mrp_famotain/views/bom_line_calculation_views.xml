@@ -1,41 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record model="ir.ui.view" id="mrp_famotain.bom_line_calculation_search">
-            <field name="name">BoM Line Calculation Search</field>
-            <field name="model">mrp_famotain.bom_line_calculation</field>
-            <field name="arch" type="xml">
-                <search string="Search BoM Line">
-                    <field name="name"/>
-                    <field name="product_id"/>
-                    <field name="component_id"/>
-                    <field name="description"/>
-                    <separator/>
-                    <group string="Group By">
-                        <filter string="Product" name="group_product" domain="[]" context="{'group_by':'product_id'}"/>
-                        <filter string="Component" name="group_component" domain="[]" context="{'group_by':'component_id'}"/>
-                    </group>
-                </search>
-            </field>
-        </record>
-
-        <record model="ir.ui.view" id="mrp_famotain.bom_line_calculation_tree">
-            <field name="name">BoM Line Calculation Tree</field>
-            <field name="model">mrp_famotain.bom_line_calculation</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <field name="name"/>
-                    <field name="product_id"/>
-                    <field name="component_id"/>
-                    <field name="description"/>
-                    <field name="qty"/>
-                    <field name="width"/>
-                    <field name="height"/>
-                    <field name="length"/>
-                </tree>
-            </field>
-        </record>
-
         <record model="ir.ui.view" id="mrp_famotain.bom_line_calculation_form">
             <field name="name">BoM Line Calculation Form</field>
             <field name="model">mrp_famotain.bom_line_calculation</field>
@@ -55,6 +20,7 @@
                         </div>
                         <group>
                             <group>
+                                <field name="price_calculation_id"/>
                                 <field name="component_id"/>
                                 <field name="component_type" invisible="1"/>
                                 <field name="description"/>

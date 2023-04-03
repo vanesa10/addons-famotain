@@ -3,6 +3,7 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 import math
+from ...famotain.models.product import PRODUCT_TYPE_LIST
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -62,6 +63,8 @@ class ManufacturingOrder(models.Model):
         sequences = self.env['ir.sequence'].search([('prefix', '=', 'MRP/%(range_year)s%(range_month)s%(range_day)s/')], limit=1)
         sequences.write({'number_next_actual': 1})
         sequences = self.env['ir.sequence'].search([('prefix', '=', 'BOM.%(range_year)s%(range_month)s%(range_day)s')], limit=1)
+        sequences.write({'number_next_actual': 1})
+        sequences = self.env['ir.sequence'].search([('prefix', '=', 'PC/%(range_year)s%(range_month)s%(range_day)s/')], limit=1)
         sequences.write({'number_next_actual': 1})
 
     @api.model
@@ -346,6 +349,39 @@ class ManufacturingOrder(models.Model):
                     if po.state in ['on_progress']:
                         po.action_done()
 
+    @api.multi
+    def action_add_product_order(self):
+        #DONE: dibuat wizard isi amount sama payment date
+        for rec in self:
+            if rec.state in ['draft', 'approve', 'ready']:
+                wizard_form = self.env.ref('mrp_famotain.add_product_order_wizard_form', False)
+                view_id = self.env['mrp_famotain.add_product_order_wizard']
+                new = view_id.create({
+                    'sales_order_id': rec.sales_order_id.id,
+                })
+                return {
+                    'name': 'Add Product Order',
+                    'type': 'ir.actions.act_window',
+                    'res_model': 'mrp_famotain.add_product_order_wizard',
+                    'res_id': new.id,
+                    'view_id': wizard_form.id,
+                    'view_type': 'form',
+                    'view_mode': 'form',
+                    'target': 'new'
+                }
+            else:
+                raise UserError(_("You can add product order to an open manufacturing order"))
+
+    @api.one
+    def add_product_order(self, product_order):
+        if self.state in ['draft', 'approve', 'ready']:
+            if product_order.product_id.bom_line_default_ids or product_order.product_type == 'charge':
+                product_order.manufacturing_order_id = self.id
+            else:
+                raise UserError(_("Default Bill of Materials is not set"))
+        else:
+            raise UserError(_("You can add product order to an open manufacturing order"))
+
     def open_record(self):
         rec_id = self.id
         form_id = self.env.ref('mrp_famotain.manufacturing_order_form')
@@ -361,6 +397,28 @@ class ManufacturingOrder(models.Model):
             'context': {},
             'target': 'current',
         }
+
+
+class AddProductOrderToManufacturingOrderWizard(models.TransientModel):
+    _name = 'mrp_famotain.add_product_order_wizard'
+    _description = "Wizard: Add Product Order to Manufacturing Order, choose product order"
+
+    def _default_session(self):
+        return self.env['mrp_famotain.manufacturing_order'].browse(self._context.get('active_id'))
+
+    sales_order_id = fields.Many2one('sales__order.sales__order', 'Sales Order', readonly=True)
+    product_order_id = fields.Many2one('sales__order.product_order', 'Product Order', domain="[('sales_order_id', '=', sales_order_id), ('state', 'in', ['draft', 'confirm', 'approve'])]")
+    product_type = fields.Selection(PRODUCT_TYPE_LIST, 'Product Type', related='product_order_id.product_type')
+    product_id = fields.Many2one('famotain.product', 'Product', related='product_order_id.product_id')
+    is_customized = fields.Boolean('Custom', related='product_order_id.is_customized')
+    qty = fields.Integer('Qty', related='product_order_id.qty')
+    fabric_color = fields.Char('Color Notes', related='product_order_id.fabric_color')
+
+    def action_add(self):
+        if self.product_order_id:
+            self._default_session().add_product_order(self.product_order_id)
+        else:
+            raise UserError(_("Choose product order first"))
 
 
 class ProductOrder(models.Model):
@@ -380,6 +438,25 @@ class ProductOrder(models.Model):
             elif 'qty' in vals.keys():
                 self.manufacturing_order_id._compute_sales()
         return product_order
+
+    @api.multi
+    def create_manufacturing_order(self):
+        for rec in self:
+            if not rec.manufacturing_order_id and rec.product_type != 'charge':
+                if rec.product_id.bom_line_default_ids:
+                    mo = self.env['mrp_famotain.manufacturing_order'].sudo().create({'sales_order_id': rec.sales_order_id.id, 'product_order_id': rec.id})
+                    rec.manufacturing_order_id = mo.id
+                    mo.auto_calculate_all_bom()
+                else:
+                    raise UserError(_("Default Bill of Materials is not set"))
+
+    @api.multi
+    def force_create_manufacturing_order(self):
+        for rec in self:
+            if rec.product_id.bom_line_default_ids:
+                mo = self.env['mrp_famotain.manufacturing_order'].sudo().create({'sales_order_id': rec.sales_order_id.id, 'product_order_id': rec.id})
+                rec.manufacturing_order_id = mo.id
+                mo.auto_calculate_all_bom()
 
     @api.multi
     def action_confirm(self):

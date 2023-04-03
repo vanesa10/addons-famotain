@@ -36,6 +36,12 @@
           <field name="view_mode">tree,form</field>
         </record>
 
+        <record model="ir.actions.act_window" id="mrp_famotain.price_calculation_action_window">
+          <field name="name">Price Calculation</field>
+          <field name="res_model">mrp_famotain.price_calculation</field>
+          <field name="view_mode">tree,form</field>
+        </record>
+
 
         <!-- Top menu item -->
         <menuitem name="MRP" id="mrp_famotain.menu_root" sequence="1" web_icon="mrp_famotain,static/img/mrp.png"/>
@@ -52,7 +58,8 @@
           <field name="res_model">mrp_famotain.bom_line</field>
           <field name="view_mode">tree,form</field>
         </record>
-        <menuitem name="BoM" id="mrp_famotain.bom_line_menu" parent="mrp_famotain.menu_root" sequence="4" action="mrp_famotain.bom_line_action_window"/>
+        <menuitem name="Price Calculation" id="mrp_famotain.price_calculation_menu" parent="mrp_famotain.menu_root" sequence="4" action="mrp_famotain.price_calculation_action_window"/>
+        <menuitem name="BoM Line" id="mrp_famotain.bom_line_menu" parent="mrp_famotain.menu_root" sequence="5" action="mrp_famotain.bom_line_action_window"/>
 
 <!--            <menuitem name="Component Color" id="mrp_famotain.component_color_menu" parent="mrp_famotain.master_data_menu" sequence="5" action="mrp_famotain.component_color_action_window"/>-->
 <!--            <menuitem name="Component Vendor" id="mrp_famotain.component_vendor_menu" parent="mrp_famotain.master_data_menu" sequence="6" action="mrp_famotain.component_vendor_action_window"/>-->

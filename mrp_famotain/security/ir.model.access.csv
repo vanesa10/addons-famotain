@@ -14,3 +14,8 @@ access_mrp_famotain_bom,mrp_famotain.bom,model_mrp_famotain_bom,famotain.famotai
 access_mrp_famotain_bom_line,mrp_famotain.bom_line,model_mrp_famotain_bom_line,famotain.famotain_user,1,1,1,1
 
 access_mrp_famotain_bom_line_default,mrp_famotain.bom_line_default,model_mrp_famotain_bom_line_default,famotain.famotain_user,1,1,1,1
+
+
+access_mrp_famotain_bom_line_calculation,mrp_famotain.bom_line_calculation,model_mrp_famotain_bom_line_calculation,famotain.famotain_user,1,1,1,1
+access_mrp_famotain_bom_calculation,mrp_famotain.bom_calculation,model_mrp_famotain_bom_calculation,famotain.famotain_user,1,1,1,1
+access_mrp_famotain_price_calculation,mrp_famotain.price_calculation,model_mrp_famotain_price_calculation,famotain.famotain_user,1,1,1,1

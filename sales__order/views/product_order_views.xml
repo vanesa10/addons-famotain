@@ -54,6 +54,7 @@
                     decoration-bf="state == 'approve'"
                     decoration-success="state == 'sent' or state=='on_progress' or state=='done'"
                     decoration-it="state == 'cancel'">
+                    <field name="sequence" widget="handle"/>
                     <field name="deadline"/>
                     <field name="name"/>
                     <field name="sales_order_id"/>

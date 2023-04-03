@@ -49,6 +49,7 @@
                         decoration-success="state=='on_progress' or state=='done'"
                         decoration-it="state == 'cancel'"
                 >
+                    <field name="deadline"/>
                     <field name="name"/>
                     <field name="product_qty"/>
 <!--                    <field name="product_order_id"/>-->
@@ -69,6 +70,7 @@
                 <form>
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,approve,ready,on_progress,done"/>
+                        <button string="Add Product Order" name="action_add_product_order" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['draft', 'approve', 'ready'])]}"/>
                         <button string="Approve" name="action_approve" confirm="Are you sure you want to approve this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['draft'])]}"/>
                         <button string="Set to ready" name="action_force_ready" confirm="Are you sure you want to set this order to ready?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['draft', 'approve'])]}"/>
                         <button string="Produce" name="action_on_progress" confirm="Are you sure you want to process this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['ready'])]}"/>
@@ -191,10 +193,10 @@
                                         <field name="component_type" invisible="1"/>
                                         <field name="component_id"/>
                                         <field name="description"/>
-                                        <field name="qty"/>
-                                        <field name="width" attrs="{'readonly': [('component_type', 'in', ['accessories', 'webbing'])]}"/>
-                                        <field name="height" attrs="{'readonly': [('component_type', 'in', ['accessories', 'webbing'])]}"/>
-                                        <field name="length" attrs="{'readonly': [('component_type', 'in', ['fabric', 'print', 'accessories', 'embroidery'])]}"/>
+                                        <field name="qty" required="1"/>
+                                        <field name="width" attrs="{'readonly': [('component_type', 'in', ['accessories', 'webbing'])], 'required': [('component_type', 'not in', ['accessories', 'webbing'])]}"/>
+                                        <field name="height" attrs="{'readonly': [('component_type', 'in', ['accessories', 'webbing'])], 'required': [('component_type', 'not in', ['accessories', 'webbing'])]}"/>
+                                        <field name="length" attrs="{'readonly': [('component_type', 'in', ['fabric', 'print', 'accessories', 'embroidery'])], 'required': [('component_type', 'not in', ['fabric', 'print', 'accessories', 'embroidery'])]}"/>
                                         <button name="open_record" type="object" class="oe_highlight" icon="fa-asterisk text-success"/>
                                     </tree>
                                 </field>
@@ -222,11 +224,42 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="mrp_famotain.add_product_order_wizard_form">
+            <field name="name">Add Product Order</field>
+            <field name="model">mrp_famotain.add_product_order_wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="sales_order_id"/>
+                            <field name="product_order_id"/>
+                        </group>
+                        <group>
+                            <field name="product_type"/>
+                            <field name="product_id"/>
+                            <field name="qty"/>
+                            <field name="is_customized"/>
+                            <field name="fabric_color"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="action_add" string="Add" type="object" class="oe_right oe_highlight"/>
+                        <button string="Cancel" special="cancel" class="oe_right"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="mrp_famotain.manufacturing_order_product_order_inherit_views">
             <field name="name">Manufacturing Order - Product Order Inherit</field>
             <field name="model">sales__order.product_order</field>
             <field name="inherit_id" ref="sales__order.product_order_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']"  position="before">
+                    <button string="Produce" name="create_manufacturing_order" confirm="Are you sure you want to produce this order?" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'confirm', 'approve']), ('manufacturing_order_id', '!=', False)]}"/>
+                    <button string="Force Produce" name="force_create_manufacturing_order" confirm="Are you sure you want to force produce this order?" type="object" attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'confirm', 'approve']), ('manufacturing_order_id', '!=', False)]}" groups="famotain.famotain_manager"/>
+                </xpath>
                 <xpath expr="//field[@name='sales_order_id']"  position="after">
                     <field name="manufacturing_order_id" />
                 </xpath>

@@ -67,10 +67,10 @@
                                 <field name="component_id"/>
                                 <field name="component_type" invisible="1"/>
                                 <field name="description"/>
-                                <field name="qty"/>
-                                <field name="width" attrs="{'invisible': [('component_type', 'in', ['accessories', 'webbing'])]}"/>
-                                <field name="height" attrs="{'invisible': [('component_type', 'in', ['accessories', 'webbing'])]}"/>
-                                <field name="length" attrs="{'invisible': [('component_type', 'in', ['fabric', 'print', 'accessories', 'embroidery'])]}"/>
+                                <field name="qty" required="1"/>
+                                <field name="width" attrs="{'readonly': [('component_type', 'in', ['accessories', 'webbing'])], 'required': [('component_type', 'not in', ['accessories', 'webbing'])]}"/>
+                                <field name="height" attrs="{'readonly': [('component_type', 'in', ['accessories', 'webbing'])], 'required': [('component_type', 'not in', ['accessories', 'webbing'])]}"/>
+                                <field name="length" attrs="{'readonly': [('component_type', 'in', ['fabric', 'print', 'accessories', 'embroidery'])], 'required': [('component_type', 'not in', ['fabric', 'print', 'accessories', 'embroidery'])]}"/>
                             </group>
                             <group>
                                 <field name="manufacturing_order_id"/>
