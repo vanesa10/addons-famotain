@@ -21,6 +21,7 @@ class ManufacturingOrder(models.Model):
     product_order_ids = fields.One2many('sales__order.product_order', 'manufacturing_order_id', 'Product Orders', readonly=True,
                                         states={'draft': [('readonly', False)], 'approve': [('readonly', False)]})
     product_order_id = fields.Many2one('sales__order.product_order', 'Main Product Order', readonly=True)
+    product_id = fields.Many2one('famotain.product', 'Product', related='product_order_id.product_id')
 
     bom_ids = fields.One2many('mrp_famotain.bom', 'manufacturing_order_id', 'Bill of Materials', readonly=True,
                          states={'draft': [('readonly', False)], 'approve': [('readonly', False)], 'ready': [('readonly', False)], 'on_progress': [('readonly', False)]})
@@ -509,6 +510,7 @@ class Product(models.Model):
     _inherit = 'famotain.product'
 
     production_cost = fields.Monetary('Production Cost', track_visibility='onchange')
+    manufacturing_order_ids = fields.One2many('mrp_famotain.manufacturing_order', 'product_id', 'Manufacturing Orders', readonly=True)
 
     @api.multi
     def write(self, vals):

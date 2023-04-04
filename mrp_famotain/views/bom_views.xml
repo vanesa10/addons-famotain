@@ -9,6 +9,7 @@
                     <field name="name"/>
                     <field name="manufacturing_order_id"/>
                     <field name="component_id"/>
+                    <field name="component_type"/>
                     <field name="component_detail_id"/>
                     <field name="product_order_id"/>
                     <field name="product_id"/>
@@ -16,9 +17,24 @@
                     <field name="notes"/>
                     <separator/>
                     <group>
-                        <filter string="All" name="all"/>
+                        <filter string="Need Progress" name="need_progress"  domain="[('state', 'in', ['draft', 'approve'])]" />
+                        <filter string="Open" name="open_bom" domain="[('state', 'in', ['approve', 'ready', 'on_vendor'])]"/>
+                        <filter string="Fix" name="fix_bom" domain="[('state', 'in', ['approve', 'ready', 'on_vendor', 'done'])]"/>
+                    </group>
+                    <separator/>
+                    <group>
+                        <filter string="Fabric" name="fabric" domain="[('component_type','=','fabric')]"/>
+                        <filter string="Accessories" name="accessories" domain="[('component_type','=','accessories')]"/>
+                        <filter string="Webbing" name="webbing" domain="[('component_type','=','webbing')]"/>
+                        <filter string="Print" name="print" domain="[('component_type','=','print')]"/>
+                        <filter string="Embroidery" name="embroidery" domain="[('component_type','=','embroidery')]"/>
+                        <filter string="Others" name="others" domain="[('component_type','=','others')]"/>
+                    </group>
+                    <separator/>
+                    <group>
                         <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
                         <filter string="Approved" name="approve" domain="[('state','=','approve')]"/>
+                        <filter string="On Vendor" name="ready" domain="[('state','=','on_vendor')]"/>
                         <filter string="Ready" name="ready" domain="[('state','=','ready')]"/>
                         <filter string="Done" name="done" domain="[('state','=','done')]"/>
                         <filter string="Cancelled" name="cancel" domain="[('state','=','cancel')]"/>
@@ -41,19 +57,21 @@
             <field name="arch" type="xml">
                 <tree  default_order="manufacturing_order_id desc"
                         decoration-danger="state == 'approve'"
-                        decoration-bf="state == 'ready'"
+                        decoration-bf="state == 'ready' or state == 'on_vendor'"
                         decoration-success="state=='done'"
                         decoration-it="state == 'cancel'"
                 >
+                    <field name="deadline"/>
                     <field name="name"/>
-                    <field name="manufacturing_order_id"/>
+                    <field name="unit_qty" sum="Total Unit Qty"/>
+                    <field name="component_id"/>
+                    <field name="component_type"/>
+                    <field name="component_detail_id"/>
+                    <field name="component_vendor_id"/>
                     <field name="product_order_id"/>
                     <field name="qty"/>
                     <field name="product_id"/>
-                    <field name="unit_qty"/>
-                    <field name="component_id"/>
-                    <field name="component_detail_id"/>
-                    <field name="component_vendor_id"/>
+                    <field name="manufacturing_order_id"/>
                     <field name="currency_id" invisible="1"/>
                     <field name="cost" sum="Total Cost" string="Total Cost" groups="famotain.famotain_manager"/>
                     <field name="state"/>
@@ -69,11 +87,12 @@
                     <header>
                         <button string="Calculate" name="auto_calculate" type="object" attrs="{'invisible': [('state', 'not in', ['draft', 'approve'])]}"/>
                         <button string="Approve" name="action_approve" confirm="Are you sure you want to approve this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['draft'])]}"/>
-                        <button string="Set to ready" name="action_ready" confirm="Are you sure you want to set this order to ready?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['draft', 'approve'])]}"/>
-                        <button string="Done" name="action_done" confirm="Are you sure you want to process this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['ready'])]}"/>
+                        <button string="Send to vendor" name="action_send_to_vendor" confirm="Are you sure you want to send this order to vendor?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['draft', 'approve'])]}"/>
+                        <button string="Set to ready" name="action_ready" confirm="Are you sure you want to set this order to ready?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['draft', 'approve', 'on_vendor'])]}"/>
+                        <button string="Done" name="action_done" confirm="Are you sure you want to process this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['ready', 'on_vendor'])]}"/>
                         <button string="Cancel" name="action_cancel" type="object" confirm="Are you sure you want to cancel this record?" attrs="{'invisible': [('state', 'not in', ['draft', 'approve'])]}" groups="famotain.famotain_manager"/>
                         <button string="Force Cancel" name="action_force_cancel" type="object" confirm="Are you sure you want to cancel this record?" attrs="{'invisible': [('state', 'in', ['cancel', 'draft', 'done'])]}" groups="famotain.famotain_manager"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,approve,ready,done"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,approve,on_vendor,ready,done"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">

@@ -66,6 +66,7 @@
                                 <field name="component_type"/>
                                 <field name="customer_display_name"/>
                                 <field name="uom_id" />
+                                <field name="price_calculation" />
                             </group>
                             <group>
                                 <field name="width" attrs="{'invisible': [('component_type', 'not in', ['fabric'])]}"/>

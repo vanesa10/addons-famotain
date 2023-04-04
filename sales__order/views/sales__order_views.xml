@@ -46,7 +46,6 @@
                                 ]"/>
                     <filter string="This Month" name="thismonth" domain="[('create_date','&gt;=',time.strftime('%%Y-%%m-01'))]"/>
                     <filter string="This Year" name="thisyear" domain="[('create_date','&gt;=',time.strftime('%%Y-01-01'))]"/>
-
                     <separator/>
                     <filter name="today" string="Deadline Today" domain="[('deadline','=',time.strftime('%%Y-%%m-%%d'))]"/>
                     <filter name="yesterday" string="Deadline Yesterday"
@@ -218,7 +217,7 @@
                                                                 <span>Total: <field name="total" widget="monetary"/></span>
                                                             </div>
                                                             <div class="oe_kanban_bottom_right">
-                                                                <field name="state" widget="label_selection" options="{'classes': {'draft': 'warning', 'confirm': 'info', 'on_progress': 'info', 'sent': 'success', 'cancel': 'default'}}"/>
+                                                                <field name="state" widget="label_selection" options="{'classes': {'draft': 'warning', 'confirm': 'warning', 'on_progress': 'info', 'sent': 'success', 'cancel': 'default'}}"/>
                                                             </div>
                                                         </div>
                                                     </div>

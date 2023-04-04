@@ -204,7 +204,7 @@
                                             </div>
                                             <div class="oe_kanban_bottom_right">
                                                 <field name="activity_ids" widget="kanban_activity"/>
-                                                <field name="state" widget="label_selection" options="{'classes': {'draft': 'warning', 'confirm': 'info', 'on_progress': 'info', 'sent': 'success', 'cancel': 'default'}}"/>
+                                                <field name="state" widget="label_selection" options="{'classes': {'draft': 'warning', 'confirm': 'warning', 'on_progress': 'info', 'sent': 'success', 'cancel': 'default'}}"/>
                                             </div>
                                         </div>
                                     </div>

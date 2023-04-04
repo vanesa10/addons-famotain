@@ -1,9 +1,14 @@
 <odoo>
     <data>
         <record model="ir.actions.act_window" id="mrp_famotain.bom_action_window">
-          <field name="name">BoM</field>
-          <field name="res_model">mrp_famotain.bom</field>
-          <field name="view_mode">tree,form</field>
+            <field name="name">BoM</field>
+            <field name="res_model">mrp_famotain.bom</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">
+                {
+                    'search_default_open_bom': 1,
+                }
+            </field>
         </record>
 
         <record model="ir.actions.act_window" id="mrp_famotain.component_action_window">

@@ -30,6 +30,9 @@ class Component(models.Model):
     margin_left_right = fields.Float('Margin Cutting Left Right (cm)', track_visibility='onchange') #only for fabric
     max_print_area = fields.Float('Max Print Area (cm)', track_visibility='onchange') #only for printing
 
+    price_calculation = fields.Monetary('Price Calculation', track_visibility='onchange')
+    currency_id = fields.Many2one('res.currency', 'Currency', readonly=True, default=lambda self: self.env.user.company_id.currency_id)
+
     sequence = fields.Integer(required=True, default=10)
 
     uom_id = fields.Many2one('uom.uom', 'Unit of Measure', required=True, track_visibility='onchange')

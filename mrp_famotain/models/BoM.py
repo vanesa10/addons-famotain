@@ -3,6 +3,7 @@ import math
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+from .component import COMPONENT_TYPE_LIST
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -16,6 +17,7 @@ class BillOfMaterials(models.Model):
     name = fields.Char('Bill of Materials', default='New', readonly=True, index=True, tracking=True)
     component_id = fields.Many2one('mrp_famotain.component', 'Component', required=True, domain=[('active', '=', True)], track_visibility='onchange', readonly=True,
                          states={'draft': [('readonly', False)], 'approve': [('readonly', False)]})
+    component_type = fields.Selection(COMPONENT_TYPE_LIST, 'Component Type', related='component_id.component_type')
     component_detail_id = fields.Many2one('mrp_famotain.component_detail', 'Component Detail', domain="[('active', '=', True), ('component_id', '=', component_id)]",
                                          track_visibility='onchange', compute="_compute_component_detail", store=True, readonly=True,
                                           states={'draft': [('readonly', False)], 'approve': [('readonly', False), ('required', True)]})
@@ -41,7 +43,7 @@ class BillOfMaterials(models.Model):
     is_calculated = fields.Boolean('Calculated by System', track_visibility='onchange', readonly=True, default=False)
     sequence = fields.Integer(required=True, default=10)
 
-    state = fields.Selection([('draft', 'Draft'), ('approve','Approved'), ('ready', 'Ready'), ('done', 'Done'), ('cancel', 'Cancelled')], 'State', required=True, default='draft', readonly=True, track_visibility='onchange')
+    state = fields.Selection([('draft', 'Draft'), ('approve','Approved'), ('on_vendor', 'On Vendor'), ('ready', 'Ready'), ('done', 'Done'), ('cancel', 'Cancelled')], 'State', required=True, default='draft', readonly=True, track_visibility='onchange')
     notes = fields.Text('Notes', track_visibility='onchange')
     currency_id = fields.Many2one('res.currency', 'Currency', readonly=True, default=lambda self: self.env.user.company_id.currency_id)
 
@@ -179,9 +181,18 @@ class BillOfMaterials(models.Model):
                 rec.cancel_uid = self.env.user.id
 
     @api.multi
-    def action_ready(self):
+    def action_send_to_vendor(self):
         for rec in self:
             if rec.state in ['approve', 'draft']:
+                if rec.component_detail_id:
+                    rec.state = 'on_vendor'
+                else:
+                    raise UserError(_("Please fill component detail first. Can't process bill of materials with no detail"))
+
+    @api.multi
+    def action_ready(self):
+        for rec in self:
+            if rec.state in ['approve', 'draft', 'on_vendor']:
                 if rec.component_detail_id:
                     rec.state = 'ready'
                 else:
@@ -190,7 +201,7 @@ class BillOfMaterials(models.Model):
     @api.multi
     def action_done(self):
         for rec in self:
-            if rec.state in ['approve', 'ready']:
+            if rec.state in ['approve', 'ready', 'on_vendor']:
                 if rec.component_detail_id and rec.component_vendor_id:
                     rec.state = 'done'
                     rec.done_date = fields.Datetime.now()
