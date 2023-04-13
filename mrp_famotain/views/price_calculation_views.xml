@@ -96,5 +96,16 @@
                 </form>
             </field>
         </record>
+
+<!--        <record model="ir.ui.view" id="mrp_famotain.price_calculation_product_inherit_views">-->
+<!--            <field name="name">Price Calculation - Product Inherit</field>-->
+<!--            <field name="model">famotain.product</field>-->
+<!--            <field name="inherit_id" ref="famotain.product_form"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//header" position="inside">-->
+<!--                    <button string="Create Price Calculation" name="copy_to_price_calculation" type="object"/>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
     </data>
 </odoo>

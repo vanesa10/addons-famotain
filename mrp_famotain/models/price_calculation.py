@@ -105,14 +105,12 @@ class PriceCalculation(models.Model):
         msg_data = {
             'name': self.name,
             'qty': self.qty,
-            'description': self.description
+            'description': self.description if self.description else " "
         }
         msg = """
 <b>{name}</b>
 ========================
-{qty}pcs - {description}
-
-""".format(**msg_data)
+{qty}pcs - {description}""".format(**msg_data)
         for bom in self.bom_ids:
             msg_data = {
                 'unit_qty': bom.unit_qty,
@@ -120,29 +118,26 @@ class PriceCalculation(models.Model):
                 'component': bom.component_id.name
             }
             msg += """
-<b>{component} {unit_qty}{uom}</b>
-""".format(**msg_data)
-            bom_line_ids = self.env['mrp_famotain.bom_line_calculation'].search([('price_calculation_id', "=", self.id), ('component_id', '=', bom.component_id)])
+
+<b>{component} {unit_qty}{uom}</b>""".format(**msg_data)
+            bom_line_ids = self.env['mrp_famotain.bom_line_calculation'].search([('price_calculation_id', "=", self.id), ('component_id', '=', bom.component_id.id)])
             for bom_line in bom_line_ids:
                 msg_data = {
                     'qty': bom_line.qty,
-                    'description': bom_line.description,
+                    'description': bom_line.description if bom_line.description else " ",
                     'width': bom_line.width,
                     'height': bom_line.height,
                     'length': bom_line.length,
                 }
                 if msg_data['width']:
                     msg += """
-{width}x{height}x{qty}pcs {description}
-""".format(**msg_data)
+{width}x{height}x{qty}pcs {description}""".format(**msg_data)
                 elif msg_data['length']:
                     msg += """
-{length}x{qty}pcs {description}
-""".format(**msg_data)
+{length}x{qty}pcs {description}""".format(**msg_data)
                 else:
                     msg += """
-{qty}pcs {description}
-""".format(**msg_data)
+{qty}pcs {description}""".format(**msg_data)
         msg_data = {
             'unit_production_cost': self.production_cost,
             'material_cost': self.material_cost,
@@ -151,10 +146,10 @@ class PriceCalculation(models.Model):
         }
         msg += """
 ========================
-Production Cost: {unit_production_cost}
-Material Cost  : {material_cost}
-Total Cost     : {total_cost}
-<b>Unit Cost      : {unit_cost}</b>
+Production Cost: Rp. {unit_production_cost:,.0f}
+Material Cost: Rp. {material_cost:,.0f}
+Total Cost : Rp. {total_cost:,.0f}
+<b>Unit Cost: Rp. {unit_cost:,.0f}</b>
 """.format(**msg_data)
         send_telegram_message(msg, 'manufacturing_group')
 
