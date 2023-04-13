@@ -92,7 +92,7 @@ class Product(models.Model):
 
 class BoMLine(models.Model):
     _name = 'mrp_famotain.bom_line'
-    _order = 'name asc'
+    _order = 'sequence, name asc'
     _description = 'BoM Line'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
@@ -112,7 +112,7 @@ class BoMLine(models.Model):
     qty = fields.Integer('Qty', help="for fabric, printing, webbing, accessories", default=1, track_visibility='onchange')
 
     description = fields.Char('Description', track_visibility='onchange')
-
+    sequence = fields.Integer(required=True, default=10)
     active = fields.Boolean(default=True, track_visibility='onchange')
     notes = fields.Text('Notes', track_visibility='onchange')
 

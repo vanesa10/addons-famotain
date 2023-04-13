@@ -47,24 +47,26 @@
           <field name="view_mode">tree,form</field>
         </record>
 
+        <record model="ir.actions.act_window" id="mrp_famotain.bom_line_action_window">
+          <field name="name">BoM Line</field>
+          <field name="res_model">mrp_famotain.bom_line</field>
+          <field name="view_mode">tree,form</field>
+        </record>
+
 
         <!-- Top menu item -->
         <menuitem name="MRP" id="mrp_famotain.menu_root" sequence="1" web_icon="mrp_famotain,static/img/mrp.png"/>
         <!-- menu categories -->
         <menuitem name="Manufacturing Order" id="mrp_famotain.manufacturing_order_menu" parent="mrp_famotain.menu_root" sequence="1" action="mrp_famotain.manufacturing_order_action_window"/>
         <menuitem name="BoM" id="mrp_famotain.bom_menu" parent="mrp_famotain.menu_root" sequence="2" action="mrp_famotain.bom_action_window"/>
-        <menuitem name="Master Data" id="mrp_famotain.master_data_menu" parent="mrp_famotain.menu_root" sequence="3"/>
+        <menuitem name="Price Calculation" id="mrp_famotain.price_calculation_menu" parent="mrp_famotain.menu_root" sequence="3" action="mrp_famotain.price_calculation_action_window"/>
+        <menuitem name="Master Data" id="mrp_famotain.master_data_menu" parent="mrp_famotain.menu_root" sequence="4"/>
             <menuitem name="Product" id="mrp_famotain.product_menu" parent="mrp_famotain.master_data_menu" action="famotain.product_action_all" sequence="1"/>
             <menuitem name="Component" id="mrp_famotain.component_menu" parent="mrp_famotain.master_data_menu" sequence="2" action="mrp_famotain.component_action_window"/>
             <menuitem name="Vendor" id="mrp_famotain.vendor_menu" parent="mrp_famotain.master_data_menu" sequence="3" action="mrp_famotain.vendor_action_window"/>
 
-        <record model="ir.actions.act_window" id="mrp_famotain.bom_line_action_window">
-          <field name="name">BoM Line</field>
-          <field name="res_model">mrp_famotain.bom_line</field>
-          <field name="view_mode">tree,form</field>
-        </record>
-        <menuitem name="Price Calculation" id="mrp_famotain.price_calculation_menu" parent="mrp_famotain.menu_root" sequence="4" action="mrp_famotain.price_calculation_action_window"/>
-        <menuitem name="BoM Line" id="mrp_famotain.bom_line_menu" parent="mrp_famotain.menu_root" sequence="5" action="mrp_famotain.bom_line_action_window"/>
+
+<!--        <menuitem name="BoM Line" id="mrp_famotain.bom_line_menu" parent="mrp_famotain.menu_root" sequence="5" action="mrp_famotain.bom_line_action_window"/>-->
 
 <!--            <menuitem name="Component Color" id="mrp_famotain.component_color_menu" parent="mrp_famotain.master_data_menu" sequence="5" action="mrp_famotain.component_color_action_window"/>-->
 <!--            <menuitem name="Component Vendor" id="mrp_famotain.component_vendor_menu" parent="mrp_famotain.master_data_menu" sequence="6" action="mrp_famotain.component_vendor_action_window"/>-->

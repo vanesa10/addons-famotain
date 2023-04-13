@@ -37,6 +37,7 @@ class BillOfMaterials(models.Model):
     component_vendor_id = fields.Many2one('mrp_famotain.component_vendor', 'Vendor Material', domain="[('active', '=', True), ('component_id', '=', component_id)]",
                                           track_visibility='onchange', compute="_compute_main_vendor", store=True, readonly=True,
                                           states={'draft': [('readonly', False)], 'approve': [('readonly', False)], 'ready': [('readonly', False), ('required', True)]})
+    vendor_id = fields.Many2one('mrp_famotain.vendor', 'Vendor', readonly=True, compute="_compute_vendor", store=True)
 
     unit_cost = fields.Monetary('Unit Cost', readonly=True, compute="_compute_unit_cost", store=True)
     cost = fields.Monetary('Cost', readonly=True, compute="_compute_cost", store=True)
@@ -117,6 +118,13 @@ class BillOfMaterials(models.Model):
                 if vendor.is_main_vendor:
                     rec.component_vendor_id = vendor.id
                     break
+
+    @api.multi
+    @api.onchange('component_vendor_id')
+    @api.depends('component_vendor_id')
+    def _compute_vendor(self):
+        for rec in self:
+            rec.vendor_id = rec.component_vendor_id.vendor_id.id
 
     @api.multi
     @api.onchange('component_id')

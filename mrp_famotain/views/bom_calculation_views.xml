@@ -25,7 +25,7 @@
                                     <field name="uom_id" class="oe_inline"/>
                                 </div>
                                 <field name="component_id"/>
-                                <field name="component_vendor_id"/>
+<!--                                <field name="component_vendor_id"/>-->
                             </group>
                             <group>
                                 <field name="qty"/>

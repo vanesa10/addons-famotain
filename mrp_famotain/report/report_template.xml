@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="mrp_famotain.report_manufacturing_order">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="famotain.internal_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <div class="row">
+                            <div class="col-7 mt24">
+                                <strong><h4><span t-field="o.name"/></h4></strong>
+                            </div>
+                            <div class="col-5 text-right mt24">
+                                <span t-if="o.state=='draft' or o.state=='confirm'" class="text-warning" t-field="o.state"/>
+                                <span t-if="o.state=='approve'" class="text-primary" t-field="o.state"/>
+                                <span t-if="o.state=='ready' or o.state=='on_progress' or o.state=='done'" class="text-success" t-field="o.state"/>
+                                <span t-if="o.state=='cancel'" class="text-danger" t-field="o.state"/>
+                                 - <span class="text-danger"><strong>Deadline: </strong><span t-esc="o.deadline.strftime('%a, %d-%b-%Y')"/></span>
+                            </div>
+                        </div>
+                        <div class="oe_structure"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+<!--    <template id="sales__order.report_sales__order_quotation">-->
+<!--        <t t-foreach="docs" t-as="o">-->
+<!--            <t t-call="sales__order.report_sales__order_quotation_template"/>-->
+<!--        </t>-->
+<!--    </template>-->
+</odoo>

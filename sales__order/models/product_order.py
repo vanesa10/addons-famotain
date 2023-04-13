@@ -89,7 +89,7 @@ class ProductOrder(models.Model):
         if vals.get('name') != 'New':
             vals.update({
                 'name': self.env['ir.sequence'].with_context(
-                    ir_sequence_date=str(fields.Date.today())[:10]).next_by_code('sales__order.product_order'),
+                    ir_sequence_date=str(fields.Date.today())[:10]).next_by_code('sales__order.product_order_{}'.format(vals.get('product_type') if vals.get('product_type') else 'product')),
             })
         image = False
         if 'design_image' in vals.keys() and vals['design_image']:

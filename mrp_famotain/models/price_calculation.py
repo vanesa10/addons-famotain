@@ -4,6 +4,7 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 import math
 from .component import COMPONENT_TYPE_LIST
+from ...famotain.models.telegram_bot import send_telegram_message
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -19,6 +20,7 @@ class PriceCalculation(models.Model):
     bom_ids = fields.One2many('mrp_famotain.bom_calculation', 'price_calculation_id', 'Bill of Materials')
     bom_line_ids = fields.One2many('mrp_famotain.bom_line_calculation', 'price_calculation_id', 'Bill of Materials Line')
 
+    description = fields.Char('Description', track_visibility='onchange')
     production_cost = fields.Monetary('Unit Production Cost', track_visibility='onchange')
     material_cost = fields.Monetary('Material Cost', readonly=True, store=True, compute='_compute_material_cost')
     total_cost = fields.Monetary('Total Cost', readonly=True, store=True, compute='compute_cost')
@@ -100,6 +102,61 @@ class PriceCalculation(models.Model):
             if bom.component_id.component_type in ['fabric', 'webbing']:
                 bom.unit_qty = math.ceil(bom.unit_qty)
         self._compute_material_cost()
+        msg_data = {
+            'name': self.name,
+            'qty': self.qty,
+            'description': self.description
+        }
+        msg = """
+<b>{name}</b>
+========================
+{qty}pcs - {description}
+
+""".format(**msg_data)
+        for bom in self.bom_ids:
+            msg_data = {
+                'unit_qty': bom.unit_qty,
+                'uom': bom.uom_id.name,
+                'component': bom.component_id.name
+            }
+            msg += """
+<b>{component} {unit_qty}{uom}</b>
+""".format(**msg_data)
+            bom_line_ids = self.env['mrp_famotain.bom_line_calculation'].search([('price_calculation_id', "=", self.id), ('component_id', '=', bom.component_id)])
+            for bom_line in bom_line_ids:
+                msg_data = {
+                    'qty': bom_line.qty,
+                    'description': bom_line.description,
+                    'width': bom_line.width,
+                    'height': bom_line.height,
+                    'length': bom_line.length,
+                }
+                if msg_data['width']:
+                    msg += """
+{width}x{height}x{qty}pcs {description}
+""".format(**msg_data)
+                elif msg_data['length']:
+                    msg += """
+{length}x{qty}pcs {description}
+""".format(**msg_data)
+                else:
+                    msg += """
+{qty}pcs {description}
+""".format(**msg_data)
+        msg_data = {
+            'unit_production_cost': self.production_cost,
+            'material_cost': self.material_cost,
+            'total_cost': self.total_cost,
+            'unit_cost': self.unit_cost,
+        }
+        msg += """
+========================
+Production Cost: {unit_production_cost}
+Material Cost  : {material_cost}
+Total Cost     : {total_cost}
+<b>Unit Cost      : {unit_cost}</b>
+""".format(**msg_data)
+        send_telegram_message(msg, 'manufacturing_group')
 
 
 class BoMLineCalculation(models.Model):
@@ -188,9 +245,9 @@ class BillOfMaterialsCalculation(models.Model):
     name = fields.Char('Name', readonly=True, compute="_compute_name", store=True)
     price_calculation_id = fields.Many2one('mrp_famotain.price_calculation', 'Price Calculation', readonly=True)
     component_id = fields.Many2one('mrp_famotain.component', 'Component', required=True, domain=[('active', '=', True)], readonly=True)
-    component_vendor_id = fields.Many2one('mrp_famotain.component_vendor', 'Vendor Material',
-                                          domain="[('active', '=', True), ('component_id', '=', component_id)]",
-                                          track_visibility='onchange', compute="_compute_main_vendor", store=True, readonly=False)
+    # component_vendor_id = fields.Many2one('mrp_famotain.component_vendor', 'Vendor Material',
+    #                                       domain="[('active', '=', True), ('component_id', '=', component_id)]",
+    #                                       track_visibility='onchange', compute="_compute_main_vendor", store=True, readonly=False)
     qty = fields.Integer('Qty', related="price_calculation_id.qty")
 
     # bom_line_calculation_ids = fields.One2many('mrp_famotain.bom_line_calculation', 'bom_id', 'BoM Lines')
@@ -232,22 +289,22 @@ class BillOfMaterialsCalculation(models.Model):
                 'unit_qty': math.ceil(unit_qty) if rec.component_id.component_type in ['fabric', 'webbing'] else unit_qty
             })
 
+    # @api.multi
+    # @api.onchange('component_id')
+    # @api.depends('component_id')
+    # def _compute_main_vendor(self):
+    #     for rec in self:
+    #         for vendor in rec.component_id.component_vendor_ids:
+    #             if vendor.is_main_vendor:
+    #                 rec.component_vendor_id = vendor.id
+    #                 break
+
     @api.multi
     @api.onchange('component_id')
     @api.depends('component_id')
-    def _compute_main_vendor(self):
-        for rec in self:
-            for vendor in rec.component_id.component_vendor_ids:
-                if vendor.is_main_vendor:
-                    rec.component_vendor_id = vendor.id
-                    break
-
-    @api.multi
-    @api.onchange('component_vendor_id')
-    @api.depends('component_vendor_id')
     def _compute_unit_cost(self):
         for rec in self:
-            rec.unit_cost = rec.component_vendor_id.price
+            rec.unit_cost = rec.component_id.price_calculation
 
     @api.multi
     @api.onchange('unit_qty', 'unit_cost')
@@ -271,3 +328,33 @@ class BillOfMaterialsCalculation(models.Model):
             'context': {},
             'target': 'current',
         }
+
+
+class Product(models.Model):
+    _inherit = 'famotain.product'
+
+    @api.one
+    def copy_to_price_calculation(self):
+        price_calculation = self.env['mrp_famotain.price_calculation'].sudo().create({
+            'unit_sales': self.price,
+            'production_cost': self.production_cost,
+        })
+        for bom_line_def in self.bom_line_default_ids:
+            bom_line_vals = {
+                'component_id': bom_line_def.component_id.id,
+                'description': bom_line_def.description,
+                'qty': bom_line_def.qty,
+                'price_calculation_id': price_calculation.id,
+                'sequence': bom_line_def.sequence
+            }
+            if bom_line_def.component_id.component_type in ['fabric', 'print']:
+                bom_line_vals.update({
+                    'width': bom_line_def.width,
+                    'height': bom_line_def.height,
+                })
+            elif bom_line_def.component_id.component_type in ['webbing', 'others']:
+                if bom_line_def.length:
+                    bom_line_vals.update({
+                        'length': bom_line_def.length,
+                    })
+            self.env['mrp_famotain.bom_line_calculation'].sudo().create(bom_line_vals)

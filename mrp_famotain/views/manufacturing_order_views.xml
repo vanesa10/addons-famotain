@@ -83,7 +83,7 @@
             <field name="name">Manufacturing Order Form</field>
             <field name="model">mrp_famotain.manufacturing_order</field>
             <field name="arch" type="xml">
-                <form>
+                <form delete="0" duplicate="0">
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,approve,ready,on_progress,done"/>
                         <button string="Add Product Order" name="action_add_product_order" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['draft', 'approve', 'ready'])]}"/>
@@ -108,6 +108,7 @@
                                 <field name="deadline"/>
                                 <field name="product_order_id"/>
                                 <field name="product_id"/>
+                                <field name="color_notes"/>
                                 <field name="manufactured_by"/>
                             </group>
                             <group>
@@ -191,7 +192,7 @@
                                     >
                                         <field name="sequence" widget="handle"/>
                                         <field name="name"/>
-                                        <field name="color_notes"/>
+<!--                                        <field name="color_notes"/>-->
                                         <field name="is_calculated" invisible="1"/>
                                         <field name="unit_qty" attrs="{'readonly': [('is_calculated', '=', True)]}"/>
                                         <field name="component_id" attrs="{'readonly': [('is_calculated', '=', True)]}"/>

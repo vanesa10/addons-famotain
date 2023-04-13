@@ -22,6 +22,7 @@ class ManufacturingOrder(models.Model):
                                         states={'draft': [('readonly', False)], 'approve': [('readonly', False)]})
     product_order_id = fields.Many2one('sales__order.product_order', 'Main Product Order', readonly=True)
     product_id = fields.Many2one('famotain.product', 'Product', related='product_order_id.product_id')
+    color_notes = fields.Char('Color Notes', related='product_order_id.fabric_color')
 
     bom_ids = fields.One2many('mrp_famotain.bom', 'manufacturing_order_id', 'Bill of Materials', readonly=True,
                          states={'draft': [('readonly', False)], 'approve': [('readonly', False)], 'ready': [('readonly', False)], 'on_progress': [('readonly', False)]})
@@ -147,7 +148,8 @@ class ManufacturingOrder(models.Model):
                     'manufacturing_order_id': self.id,
                     'bom_line_default_id': bom_line_def.id,
                     'bom_id': pre_bom.id,
-                    'dont_auto_calculate': True
+                    'dont_auto_calculate': True,
+                    'sequence': bom_line_def.sequence
                 }
                 if bom_line_def.component_id.component_type in ['fabric', 'print']:
                     bom_line_vals.update({

@@ -11,9 +11,11 @@
                     <field name="component_id"/>
                     <field name="component_type"/>
                     <field name="component_detail_id"/>
+                    <field name="vendor_id"/>
                     <field name="product_order_id"/>
                     <field name="product_id"/>
                     <field name="component_vendor_id"/>
+                    <field name="sales_order_id"/>
                     <field name="notes"/>
                     <separator/>
                     <group>
@@ -44,7 +46,7 @@
                         <filter string="Manufacturing Order" name="group_manufacturing_order" domain="[]" context="{'group_by':'manufacturing_order_id'}"/>
                         <filter string="Component" name="group_component" domain="[]" context="{'group_by':'component_id'}"/>
                         <filter string="Component Detail " name="group_component_detail" domain="[]" context="{'group_by':'component_detail_id'}"/>
-                        <filter string="Component Vendor " name="group_component_vendor" domain="[]" context="{'group_by':'component_vendor_id'}"/>
+                        <filter string="Vendor" name="group_vendor" domain="[]" context="{'group_by':'vendor_id'}"/>
                         <filter string="State" name="group_state" domain="[]" context="{'group_by':'state'}"/>
                     </group>
                 </search>
@@ -67,7 +69,7 @@
                     <field name="component_id"/>
                     <field name="component_type"/>
                     <field name="component_detail_id"/>
-                    <field name="component_vendor_id"/>
+                    <field name="vendor_id"/>
                     <field name="product_order_id"/>
                     <field name="qty"/>
                     <field name="product_id"/>
@@ -152,6 +154,51 @@
                         </div>
                     </sheet>
                 </form>
+            </field>
+        </record>
+
+        <record id="act_bill_of_materials_manufacturing_order" model="ir.actions.act_window">
+            <field name="name">Bill of Materials</field>
+            <field name="res_model">mrp_famotain.bom</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">
+                {
+                    'search_default_manufacturing_order_id': active_id,
+                }
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="mrp_famotain.bom_manufacturing_order_inherit_views">
+            <field name="name">Bill of Materials - Manufacturing Order Inherit</field>
+            <field name="model">mrp_famotain.manufacturing_order</field>
+            <field name="inherit_id" ref="mrp_famotain.manufacturing_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('oe_button_box')]"  position="inside">
+                    <button name="%(mrp_famotain.act_bill_of_materials_manufacturing_order)d" type="action" class="oe_stat_button" string="BOM" icon="fa-tasks"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="act_bill_of_materials_sales_order" model="ir.actions.act_window">
+            <field name="name">Bill of Materials</field>
+            <field name="res_model">mrp_famotain.bom</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">
+                {
+                    'search_default_sales_order_id': active_id,
+                }
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="mrp_famotain.bom_sales_order_inherit_views">
+            <field name="name">Bill of Materials - Sales Order Inherit</field>
+            <field name="model">sales__order.sales__order</field>
+            <field name="inherit_id" ref="sales__order.sales__order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('oe_button_box')]"  position="inside">
+                    <button name="%(mrp_famotain.act_bill_of_materials_sales_order)d" type="action" class="oe_stat_button" string="BOM" icon="fa-tasks"/>
+                </xpath>
             </field>
         </record>
     </data>

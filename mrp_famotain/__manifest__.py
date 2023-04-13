@@ -28,5 +28,8 @@
         'views/manufacturing_order_views.xml',
 
         'views/mrp_famotain_views.xml',
+
+        'report/report_template.xml',
+        'report/manufacturing_order_report.xml',
     ],
 }
