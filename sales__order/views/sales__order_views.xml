@@ -121,6 +121,7 @@
                     <button string="Send" name="action_send" confirm="Are you sure you want to close this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'in', ['cancel', 'draft', 'send', 'confirm'])]}"/>
                     <button string="Cancel" name="action_cancel" type="object" confirm="Are you sure you want to cancel this record?" attrs="{'invisible': [('state', 'not in', ['draft'])]}"/>
                     <button string="Force Cancel" name="action_force_cancel" type="object" confirm="Are you sure you want to cancel this record?" attrs="{'invisible': [('state', 'in', ['cancel', 'draft', 'send'])]}" groups="famotain.famotain_manager"/>
+                    <button string="Force Balance" name="action_force_balance" type="object" confirm="Are you sure you want to balance this record?" attrs="{'invisible': [('state', 'not in', ['send'])]}" groups="famotain.famotain_manager"/>
                     <button string="Order Again" name="action_order_again_web" type="object"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirm,approve,send,cancel"/>
                 </header>
@@ -440,29 +441,42 @@
           </field>
         </record>
 
+        <record model="ir.ui.view" id="sales__order.sales__order_graph">
+           <field name="name">Sales Order Graph</field>
+           <field name="model">sales__order.sales__order</field>
+           <field name="arch" type="xml">
+                <graph string="Sales Revenue Per Month" stacked="True">
+                    <field name="confirm_date" type="row"/>
+                    <field name="total_price_without_shipment" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
         <record model="ir.actions.act_window" id="sales__order.sales__order_action_all">
             <field name="name">Sales Order</field>
             <field name="res_model">sales__order.sales__order</field>
-            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_mode">tree,kanban,form,graph</field>
             <field name="search_view_id" ref="sales__order.sales__order_search"/>
             <field name="context">
                 {
                     'form_view_ref': 'sales__order.sales__order_form',
                     'tree_view_ref': 'sales__order.sales__order_tree',
                     'kanban_view_ref': 'sales__order.sales__order_kanban',
+                    'graph_view_ref': 'sales__order.sales__order_graph',
                 }
             </field>
         </record>
         <record model="ir.actions.act_window" id="sales__order.sales__order_action_need_progress">
             <field name="name">Sales Order</field>
             <field name="res_model">sales__order.sales__order</field>
-            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_mode">tree,kanban,form,graph</field>
             <field name="search_view_id" ref="sales__order.sales__order_search"/>
             <field name="context">
                 {
                     'form_view_ref': 'sales__order.sales__order_form',
                     'tree_view_ref': 'sales__order.sales__order_tree',
                     'kanban_view_ref': 'sales__order.sales__order_kanban',
+                    'graph_view_ref': 'sales__order.sales__order_graph',
                     'search_default_need_progress': 1,
                 }
             </field>
@@ -470,13 +484,14 @@
         <record model="ir.actions.act_window" id="sales__order.sales__order_action_open_order">
             <field name="name">Sales Order</field>
             <field name="res_model">sales__order.sales__order</field>
-            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_mode">tree,kanban,form,graph</field>
             <field name="search_view_id" ref="sales__order.sales__order_search"/>
             <field name="context">
                 {
                     'form_view_ref': 'sales__order.sales__order_form',
                     'tree_view_ref': 'sales__order.sales__order_tree',
                     'kanban_view_ref': 'sales__order.sales__order_kanban',
+                    'graph_view_ref': 'sales__order.sales__order_graph',
                     'search_default_open_order': 1
                 }
             </field>
@@ -484,13 +499,14 @@
         <record model="ir.actions.act_window" id="sales__order.sales__order_action_fix_order">
             <field name="name">Sales Order</field>
             <field name="res_model">sales__order.sales__order</field>
-            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_mode">tree,kanban,form,graph</field>
             <field name="search_view_id" ref="sales__order.sales__order_search"/>
             <field name="context">
                 {
                     'form_view_ref': 'sales__order.sales__order_form',
                     'tree_view_ref': 'sales__order.sales__order_tree',
                     'kanban_view_ref': 'sales__order.sales__order_kanban',
+                    'graph_view_ref': 'sales__order.sales__order_graph',
                     'search_default_fix_order': 1
                 }
             </field>
@@ -498,13 +514,14 @@
         <record model="ir.actions.act_window" id="sales__order.sales__order_action_done">
             <field name="name">Sales Order</field>
             <field name="res_model">sales__order.sales__order</field>
-            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_mode">tree,kanban,form,graph</field>
             <field name="search_view_id" ref="sales__order.sales__order_search"/>
             <field name="context">
                 {
                     'form_view_ref': 'sales__order.sales__order_form',
                     'tree_view_ref': 'sales__order.sales__order_tree',
                     'kanban_view_ref': 'sales__order.sales__order_kanban',
+                    'graph_view_ref': 'sales__order.sales__order_graph',
                     'search_default_done': 1
                 }
             </field>
@@ -512,20 +529,21 @@
         <record model="ir.actions.act_window" id="sales__order.sales__order_action_cancel">
             <field name="name">Sales Order</field>
             <field name="res_model">sales__order.sales__order</field>
-            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_mode">tree,kanban,form,graph</field>
             <field name="search_view_id" ref="sales__order.sales__order_search"/>
             <field name="context">
                 {
                     'form_view_ref': 'sales__order.sales__order_form',
                     'tree_view_ref': 'sales__order.sales__order_tree',
                     'kanban_view_ref': 'sales__order.sales__order_kanban',
+                    'graph_view_ref': 'sales__order.sales__order_graph',
                     'search_default_cancel': 1
                 }
             </field>
         </record>
 
         <!-- Top menu item -->
-        <menuitem name="Sales Order" id="sales__order.menu_root" sequence="1" web_icon="sales__order,static/img/sales_order.png"/>
+        <menuitem name="Sales Order" id="sales__order.menu_root" sequence="99" web_icon="sales__order,static/img/sales_order.png"/>
         <!-- menu categories -->
         <menuitem name="Sales Order" id="sales__order.sales__order_menu" parent="sales__order.menu_root" sequence="1"/>
         <menuitem name="Need Progress" id="sales__order.sales__order_submenu_need_progress" parent="sales__order.sales__order_menu" action="sales__order.sales__order_action_need_progress" sequence="2"/>

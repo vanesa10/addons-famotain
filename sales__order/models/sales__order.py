@@ -744,6 +744,20 @@ Deadline : {deadline}
             for product_order in rec.product_order_ids:
                 product_order.action_done()
 
+    @api.multi
+    def action_force_balance(self):
+        for rec in self:
+            if rec.state == 'send':
+                if rec.remaining != 0:
+                    new_rec = self.env['sales__order.price_line'].create({
+                        'sales_order_id': rec.id,
+                        'description': 'Balancing',
+                        'qty': 1,
+                        'amount': rec.remaining * -1,
+                        'prices_type': 'balance'
+                    })
+                rec.compute_total_price()
+
     def action_url(self):
         return {
             'name': 'Go to website',

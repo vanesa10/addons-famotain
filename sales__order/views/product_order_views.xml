@@ -35,6 +35,7 @@
                         <filter string="Cancelled" name="cancel" domain="[('state','=','cancel')]"/>
                     </group>
                     <group string="Group By">
+                        <filter string="Confirmed On" name="group_confirmed" domain="[]" context="{'group_by':'confirm_date'}"/>
                         <filter string="Deadline" name="group_deadline" domain="[]" context="{'group_by':'deadline'}"/>
                         <filter string="Sales Order" name="group_sales_order" domain="[]" context="{'group_by':'sales_order_id'}"/>
                         <filter string="Product" name="group_product" domain="[]" context="{'group_by':'product_id'}"/>
@@ -61,11 +62,12 @@
 <!--                    <field name="product_type"/>-->
                     <field name="qty" sum="qty"/>
                     <field name="product_id"/>
+                    <field name="is_customized"/>
                     <field name="currency_id" invisible="1"/>
 <!--                    <field name="product_price"/>-->
                     <field name="price" sum="Price" groups="famotain.famotain_manager"/>
                     <field name="total" sum="Total" groups="famotain.famotain_manager"/>
-                    <field name="is_customized"/>
+
                     <field name="state"/>
 <!--                    <button name="open_record" type="object" class="oe_highlight" icon="fa-asterisk text-success"/>-->
                 </tree>
@@ -95,6 +97,7 @@
                         <group>
                             <group>
                                 <field name="currency_id" invisible="1"/>
+                                <field name="deadline" />
                                 <field name="sales_order_id"/>
                                 <field name="qty"/>
                                 <field name="product_type" />
@@ -104,7 +107,6 @@
 <!--                                <field name="ribbon_color"/>-->
                             </group>
                             <group>
-                                <field name="deadline" />
                                 <field name="product_price" groups="famotain.famotain_manager"/>
                                 <field name="price"/>
                                 <field name="total"/>
@@ -115,6 +117,11 @@
                                 <div attrs="{'invisible': [('create_date', '=', False)]}">
                                     <field name="create_uid" class="oe_inline"/> -
                                     <field name="create_date" class="oe_inline"/>
+                                </div>
+                                <label for="confirm_uid" string="Confirmed By" attrs="{'invisible': [('confirm_date', '=', False)]}"/>
+                                <div attrs="{'invisible': [('confirm_date', '=', False)]}">
+                                    <field name="confirm_uid" class="oe_inline"/> -
+                                    <field name="confirm_date" class="oe_inline"/>
                                 </div>
                                 <label for="approve_uid" string="Approved By" attrs="{'invisible': [('approve_date', '=', False)]}"/>
                                 <div attrs="{'invisible': [('approve_date', '=', False)]}">
@@ -154,7 +161,7 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="sales__order.product_order_kanban">
+        <record id="sales__order.product_order_kanban" model="ir.ui.view">
           <field name="name">Product Order Kanban</field>
           <field name="model">sales__order.product_order</field>
           <field name="arch" type="xml">
@@ -216,10 +223,22 @@
           </field>
         </record>
 
+        <record id="sales__order.product_order_graph" model="ir.ui.view">
+           <field name="name">Product Order Graph</field>
+           <field name="model">sales__order.product_order</field>
+           <field name="arch" type="xml">
+                <graph string="Product Revenue Per Month" stacked="True">
+                    <field name="confirm_date" type="row"/>
+                    <field name="product_type" type="row"/>
+                    <field name="total" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
         <record id="act_open_order_count" model="ir.actions.act_window">
             <field name="name">Open Order</field>
             <field name="res_model">sales__order.product_order</field>
-            <field name="view_mode">tree,form,kanban</field>
+            <field name="view_mode">tree,form,kanban,graph</field>
             <field name="context">
                 {
                     'search_default_product_id': active_id,
@@ -232,7 +251,7 @@
             <field name="name">Fix Order</field>
             <field name="res_model">sales__order.product_order</field>
 <!--            <field name="view_type">form</field>-->
-            <field name="view_mode">tree,form,kanban</field>
+            <field name="view_mode">tree,form,kanban,graph</field>
             <field name="context">
                 {
                     'search_default_product_id': active_id,
@@ -301,7 +320,7 @@
         <record id="act_product_orders_on_sales_order" model="ir.actions.act_window">
             <field name="name">Product Orders</field>
             <field name="res_model">sales__order.product_order</field>
-            <field name="view_mode">tree,form,kanban</field>
+            <field name="view_mode">tree,form,kanban,graph</field>
             <field name="context">
                 {
                     'search_default_sales_order_id': active_id,
@@ -323,19 +342,20 @@
         <record model="ir.actions.act_window" id="sales__order.product_order_action_window">
           <field name="name">Product Order</field>
           <field name="res_model">sales__order.product_order</field>
-          <field name="view_mode">tree,kanban,form</field>
+          <field name="view_mode">tree,kanban,form,graph</field>
         </record>
 
         <record model="ir.actions.act_window" id="sales__order.product_order_action_product">
             <field name="name">Product Order</field>
             <field name="res_model">sales__order.product_order</field>
-            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_mode">tree,kanban,form,graph</field>
             <field name="search_view_id" ref="sales__order.product_order_search"/>
             <field name="context">
                 {
                     'form_view_ref': 'sales__order.product_order_form',
                     'tree_view_ref': 'sales__order.product_order_tree',
                     'kanban_view_ref': 'sales__order.product_order_kanban',
+                    'graph_view_ref': 'sales__order.product_order_graph',
                     'search_default_open_order': 1,
                     'search_default_product': 1,
                 }
@@ -344,13 +364,14 @@
         <record model="ir.actions.act_window" id="sales__order.product_order_action_package">
             <field name="name">Product Order</field>
             <field name="res_model">sales__order.product_order</field>
-            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_mode">tree,kanban,form,graph</field>
             <field name="search_view_id" ref="sales__order.product_order_search"/>
             <field name="context">
                 {
                     'form_view_ref': 'sales__order.product_order_form',
                     'tree_view_ref': 'sales__order.product_order_tree',
                     'kanban_view_ref': 'sales__order.product_order_kanban',
+                    'graph_view_ref': 'sales__order.product_order_graph',
                     'search_default_open_order': 1,
                     'search_default_package': 1,
                 }
@@ -359,13 +380,14 @@
         <record model="ir.actions.act_window" id="sales__order.product_order_action_addons">
             <field name="name">Product Order</field>
             <field name="res_model">sales__order.product_order</field>
-            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_mode">tree,kanban,form,graph</field>
             <field name="search_view_id" ref="sales__order.product_order_search"/>
             <field name="context">
                 {
                     'form_view_ref': 'sales__order.product_order_form',
                     'tree_view_ref': 'sales__order.product_order_tree',
                     'kanban_view_ref': 'sales__order.product_order_kanban',
+                    'graph_view_ref': 'sales__order.product_order_graph',
                     'search_default_open_order': 1,
                     'search_default_addons': 1,
                 }
@@ -374,13 +396,14 @@
         <record model="ir.actions.act_window" id="sales__order.product_order_action_charge">
             <field name="name">Product Order</field>
             <field name="res_model">sales__order.product_order</field>
-            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_mode">tree,kanban,form,graph</field>
             <field name="search_view_id" ref="sales__order.product_order_search"/>
             <field name="context">
                 {
                     'form_view_ref': 'sales__order.product_order_form',
                     'tree_view_ref': 'sales__order.product_order_tree',
                     'kanban_view_ref': 'sales__order.product_order_kanban',
+                    'graph_view_ref': 'sales__order.product_order_graph',
                     'search_default_open_order': 1,
                     'search_default_charge': 1,
                 }
@@ -389,13 +412,14 @@
         <record model="ir.actions.act_window" id="sales__order.product_order_action_need_progress">
             <field name="name">Product Order</field>
             <field name="res_model">sales__order.product_order</field>
-            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_mode">tree,kanban,form,graph</field>
             <field name="search_view_id" ref="sales__order.product_order_search"/>
             <field name="context">
                 {
                     'form_view_ref': 'sales__order.product_order_form',
                     'tree_view_ref': 'sales__order.product_order_tree',
                     'kanban_view_ref': 'sales__order.product_order_kanban',
+                    'graph_view_ref': 'sales__order.product_order_graph',
                     'search_default_need_progress': 1,
                 }
             </field>
@@ -403,13 +427,14 @@
         <record model="ir.actions.act_window" id="sales__order.product_order_action_open_order">
             <field name="name">Product Order</field>
             <field name="res_model">sales__order.product_order</field>
-            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_mode">tree,kanban,form,graph</field>
             <field name="search_view_id" ref="sales__order.product_order_search"/>
             <field name="context">
                 {
                     'form_view_ref': 'sales__order.product_order_form',
                     'tree_view_ref': 'sales__order.product_order_tree',
                     'kanban_view_ref': 'sales__order.product_order_kanban',
+                    'graph_view_ref': 'sales__order.product_order_graph',
                     'search_default_open_order': 1
                 }
             </field>
@@ -417,13 +442,14 @@
         <record model="ir.actions.act_window" id="sales__order.product_order_action_fix_order">
             <field name="name">Product Order</field>
             <field name="res_model">sales__order.product_order</field>
-            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_mode">tree,kanban,form,graph</field>
             <field name="search_view_id" ref="sales__order.product_order_search"/>
             <field name="context">
                 {
                     'form_view_ref': 'sales__order.product_order_form',
                     'tree_view_ref': 'sales__order.product_order_tree',
                     'kanban_view_ref': 'sales__order.product_order_kanban',
+                    'graph_view_ref': 'sales__order.product_order_graph',
                     'search_default_fix_order': 1
                 }
             </field>

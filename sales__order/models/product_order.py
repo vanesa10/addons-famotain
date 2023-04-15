@@ -52,6 +52,8 @@ class ProductOrder(models.Model):
     product_description = fields.Char('Product Description', compute='_compute_product_description', store=True)
     notes = fields.Text('Notes', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
     sequence = fields.Integer(required=True, default=10)
+    confirm_uid = fields.Many2one('res.users', 'Confirmed By', readonly=True, compute="compute_confirm_date", store=True)
+    confirm_date = fields.Datetime('Confirmed On', readonly=True, compute="compute_confirm_date", store=True)
     approve_uid = fields.Many2one('res.users', 'Approved By', readonly=True)
     approve_date = fields.Datetime('Approved On', readonly=True)
     cancel_uid = fields.Many2one('res.users', 'Cancelled By', readonly=True)
@@ -218,10 +220,19 @@ class ProductOrder(models.Model):
             rec.deadline = rec.sales_order_id.deadline
 
     @api.multi
+    @api.onchange('sales_order_id')
+    @api.depends('sales_order_id')
+    def compute_confirm_date(self):
+        for rec in self:
+            rec.confirm_date = rec.sales_order_id.confirm_date
+            rec.confirm_uid = rec.sales_order_id.confirm_uid
+
+    @api.multi
     def action_confirm(self):
         for rec in self:
             if rec.state in ['draft']:
                 rec.state = 'confirm'
+                rec.compute_confirm_date()
                 rec.product_id.change_open_order_count(1)
                 rec.product_id.change_fix_order_qty(rec.qty)
 

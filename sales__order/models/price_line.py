@@ -7,7 +7,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 PRICES_LIST = [('product', 'Product'), ('package', 'Package'), ('addons', 'Add-ons'),
-               ('charge', 'Charge'), ('discount', 'Discount'), ('shipment', 'Shipment')]
+               ('charge', 'Charge'), ('discount', 'Discount'), ('shipment', 'Shipment'), ('balance', 'Balancing')]
 
 
 class PriceLine(models.Model):
