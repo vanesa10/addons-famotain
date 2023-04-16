@@ -119,15 +119,16 @@ class WebsiteFamotain(http.Controller):
             design = False
             # design_2 = False
             # design_3 = False
-            # for product_order in sales_order.product_order_ids:
-            #     if product_order.design_image:
-            #         design = True
-            #     if product_order.design_image_2:
-            #         design_2 = True
-            #     if product_order.design_image_3:
-            #         design_3 = True
-            #     if design and design_2 and design_3:
-            #         break
+            for product_order in sales_order.product_order_ids:
+                if product_order.design_image:
+                    design = True
+                    break
+                # if product_order.design_image_2:
+                #     design_2 = True
+                # if product_order.design_image_3:
+                #     design_3 = True
+                # if design and design_2 and design_3:
+                #     break
             data = {
                 'sales_order': sales_order,
                 'design': design,

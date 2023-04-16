@@ -17,7 +17,7 @@ class BillOfMaterials(models.Model):
     name = fields.Char('Bill of Materials', default='New', readonly=True, index=True, tracking=True)
     component_id = fields.Many2one('mrp_famotain.component', 'Component', required=True, domain=[('active', '=', True)], track_visibility='onchange', readonly=True,
                          states={'draft': [('readonly', False)], 'approve': [('readonly', False)]})
-    component_type = fields.Selection(COMPONENT_TYPE_LIST, 'Component Type', related='component_id.component_type')
+    component_type = fields.Selection(COMPONENT_TYPE_LIST, 'Component Type', track_visibility='onchange', compute="_compute_component_detail", store=True, readonly=True)
     component_detail_id = fields.Many2one('mrp_famotain.component_detail', 'Component Detail', domain="[('active', '=', True), ('component_id', '=', component_id)]",
                                          track_visibility='onchange', compute="_compute_component_detail", store=True, readonly=True,
                                           states={'draft': [('readonly', False)], 'approve': [('readonly', False), ('required', True)]})
@@ -133,6 +133,8 @@ class BillOfMaterials(models.Model):
         for rec in self:
             if len(rec.component_id.component_detail_ids) == 1:
                 rec.component_detail_id = rec.component_id.component_detail_ids[0]
+            rec.component_type = rec.component_id.component_type
+
 
     @api.multi
     @api.onchange('component_detail_id', 'component_vendor_id')

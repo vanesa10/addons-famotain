@@ -11,7 +11,7 @@ _logger = logging.getLogger(__name__)
 
 class PriceCalculation(models.Model):
     _name = 'mrp_famotain.price_calculation'
-    # _order = 'sales_order_id asc'
+    _order = 'id desc'
     _description = 'Price Calculation'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
@@ -102,6 +102,9 @@ class PriceCalculation(models.Model):
             if bom.component_id.component_type in ['fabric', 'webbing']:
                 bom.unit_qty = math.ceil(bom.unit_qty)
         self._compute_material_cost()
+
+    @api.one
+    def send_to_telegram(self):
         msg_data = {
             'name': self.name,
             'qty': self.qty,
@@ -149,6 +152,7 @@ class PriceCalculation(models.Model):
 Production Cost: Rp. {unit_production_cost:,.0f}
 Material Cost: Rp. {material_cost:,.0f}
 Total Cost : Rp. {total_cost:,.0f}
+========================
 <b>Unit Cost: Rp. {unit_cost:,.0f}</b>
 """.format(**msg_data)
         send_telegram_message(msg, 'manufacturing_group')

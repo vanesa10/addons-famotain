@@ -4,6 +4,7 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 import math
 from ...famotain.models.product import PRODUCT_TYPE_LIST
+from ...famotain.models.telegram_bot import send_telegram_message
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -54,6 +55,8 @@ class ManufacturingOrder(models.Model):
     notes = fields.Text('Notes', track_visibility='onchange')
     currency_id = fields.Many2one('res.currency', 'Currency', readonly=True, default=lambda self: self.env.user.company_id.currency_id)
 
+    confirm_uid = fields.Many2one('res.users', 'Confirmed By', readonly=True, compute="compute_confirm_date", store=True)
+    confirm_date = fields.Datetime('Confirmed On', readonly=True, compute="compute_confirm_date", store=True)
     approve_uid = fields.Many2one('res.users', 'Approved By', readonly=True)
     approve_date = fields.Datetime('Approved On', readonly=True)
     cancel_uid = fields.Many2one('res.users', 'Cancelled By', readonly=True)
@@ -264,6 +267,14 @@ class ManufacturingOrder(models.Model):
             #     'total_cost': total_cost,
             #     'unit_cost': total_cost / rec.product_qty,
             # })
+
+    @api.multi
+    @api.onchange('sales_order_id')
+    @api.depends('sales_order_id')
+    def compute_confirm_date(self):
+        for rec in self:
+            rec.confirm_date = rec.sales_order_id.confirm_date
+            rec.confirm_uid = rec.sales_order_id.confirm_uid
 
     # @api.multi
     # @api.onchange('total_cost', 'product_qty')
@@ -480,6 +491,20 @@ class ProductOrder(models.Model):
                     mo = self.env['mrp_famotain.manufacturing_order'].sudo().create({'sales_order_id': rec.sales_order_id.id, 'product_order_id': rec.id})
                     rec.manufacturing_order_id = mo.id
                     mo.auto_calculate_all_bom()
+                else:
+                    if rec.product_type == 'product':
+                        msg_data = {
+                            'name': rec.name,
+                            'qty': rec.qty,
+                            'product': rec.product_id.name,
+                            'description': rec.product_description if rec.product_description else " "
+                        }
+                        msg = """
+<b>{name} Approved Without MRP</b>
+========================
+{qty}pcs {product}
+Desc: {description}""".format(**msg_data)
+                        send_telegram_message(msg, 'manufacturing_group')
             rec.manufacturing_order_id.action_approve()
 
     @api.multi

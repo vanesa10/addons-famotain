@@ -33,6 +33,7 @@
                 <form>
                     <header>
                         <button string="Calculate" name="auto_calculate_all_bom" type="object" class="oe_highlight"/>
+                        <button string="Send to Telegram" name="send_to_telegram" type="object"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">

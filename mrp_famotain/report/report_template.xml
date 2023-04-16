@@ -11,11 +11,119 @@
                                 <strong><h4><span t-field="o.name"/></h4></strong>
                             </div>
                             <div class="col-5 text-right mt24">
-                                <span t-if="o.state=='draft' or o.state=='confirm'" class="text-warning" t-field="o.state"/>
+                                <span t-if="o.state=='draft'" class="text-warning" t-field="o.state"/>
                                 <span t-if="o.state=='approve'" class="text-primary" t-field="o.state"/>
                                 <span t-if="o.state=='ready' or o.state=='on_progress' or o.state=='done'" class="text-success" t-field="o.state"/>
                                 <span t-if="o.state=='cancel'" class="text-danger" t-field="o.state"/>
                                  - <span class="text-danger"><strong>Deadline: </strong><span t-esc="o.deadline.strftime('%a, %d-%b-%Y')"/></span>
+                            </div>
+                        </div>
+
+                        <h5 class="mt16">Order</h5>
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="table o_main_table" style="width:100%">
+                                    <tr>
+                                        <th class="text-center" style="border: 1px solid #dee2e6; width: 130px;">Ref</th>
+                                        <td style="border: 1px solid #dee2e6; min-width: 200px;"><span t-field="o.sales_order_id.name"/></td>
+                                        <th class="text-center" style="border: 1px solid #dee2e6; width: 130px;">PO Ref</th>
+                                        <td style="border: 1px solid #dee2e6; min-width: 200px;"><span t-field="o.product_order_id.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center" style="border: 1px solid #dee2e6;">Product</th>
+                                        <td style="border: 1px solid #dee2e6;"><span t-field="o.product_id.name"/></td>
+                                        <th class="text-center" style="border: 1px solid #dee2e6;">Qty</th>
+                                        <td style="border: 1px solid #dee2e6;">
+                                            <span t-field="o.product_qty"/> pcs
+                                        </td>
+                                    </tr>
+                                    <tr t-if="o.sales_order_id.customer_notes">
+                                        <th class="text-center" style="border: 1px solid #dee2e6;">Customer Notes</th>
+                                        <td style="border: 1px solid #dee2e6; column-count: 3;" colspan="3">
+                                            <p t-field="o.sales_order_id.customer_notes"/>
+                                        </td>
+                                    </tr>
+                                    <tr t-if="o.notes">
+                                        <th class="text-center" style="border: 1px solid #dee2e6;">Notes</th>
+                                        <td style="border: 1px solid #dee2e6; column-count: 3;" colspan="3">
+                                            <p t-field="o.notes"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <h5 class="mt16">Product List</h5>
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="table table-sm table-striped table-active">
+                                    <tr>
+                                        <th class="text-center">Gambar</th>
+                                        <th class="text-center">Qty</th>
+                                        <th>Product</th>
+                                        <th>Color Notes</th>
+                                        <th class="text-center">Custom</th>
+                                    </tr>
+                                    <tr t-foreach="o.product_order_ids" t-as="product_order">
+                                        <td class="text-center"><img t-if="product_order.design_image_small" t-attf-src="data:image/*;base64,{{product_order.design_image}}" style="max-width:200px; max-height: 150px"/></td>
+                                        <td class="text-center"><span t-field="product_order.qty"/>pcs</td>
+                                        <td><span t-field="product_order.product_id.display_name"/></td>
+                                        <td><span t-field="product_order.fabric_color"/></td>
+                                        <td class="text-center"><span t-field="product_order.is_customized"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <h5 class="mt16">Bahan Diperlukan</h5>
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="table table-sm table-striped table-active">
+                                    <tr>
+                                        <th>BoM</th>
+                                        <th class="text-center">Gross Qty (&#177;)</th>
+                                        <th class="text-center">Qty</th>
+                                        <th>Bahan</th>
+                                        <th>Warna</th>
+                                        <th style="min-width: 150px;">Catatan</th>
+                                    </tr>
+                                    <tr t-foreach="o.bom_ids" t-as="bom">
+                                        <td><span t-field="bom.name"/></td>
+                                        <td class="text-center"><span t-esc="round(bom.unit_qty / bom.component_vendor_id.gross_qty, 2)"/> Roll</td>
+                                        <td class="text-center"><span t-field="bom.unit_qty"/> <span t-field="bom.uom_id.name"/></td>
+                                        <td><span t-field="bom.component_id.name"/></td>
+                                        <td><span t-field="bom.component_detail_id.detail"/></td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <h5 class="mt16">Potongan dan Detail Bahan</h5>
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="table table-sm table-striped table-active">
+                                    <tr>
+                                        <th class="text-center">Qty</th>
+                                        <th>Bahan</th>
+                                        <th>Warna</th>
+                                        <th>Deskripsi</th>
+                                        <th class="text-center">Lebar</th>
+                                        <th class="text-center">Tinggi</th>
+                                        <th class="text-center">Panjang</th>
+                                        <th style="min-width: 150px;">Catatan</th>
+                                    </tr>
+                                    <tr t-foreach="o.bom_line_ids" t-as="bom_line">
+                                        <td class="text-center"><span t-esc="bom_line.qty * bom_line.bom_id.qty"/> pcs</td>
+                                        <td><span t-field="bom_line.component_id.name"/></td>
+                                        <td><span t-field="bom_line.bom_id.component_detail_id.detail"/></td>
+                                        <td><span t-field="bom_line.description"/></td>
+                                        <td class="text-center"><span t-if="bom_line.width" t-field="bom_line.width"/> <span t-if="bom_line.width">cm</span></td>
+                                        <td class="text-center"><span t-if="bom_line.height" t-field="bom_line.height"/> <span t-if="bom_line.height">cm</span></td>
+                                        <td class="text-center"><span t-if="bom_line.length" t-field="bom_line.length"/> <span t-if="bom_line.length">cm</span></td>
+                                        <td></td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
                         <div class="oe_structure"/>

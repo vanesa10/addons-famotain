@@ -34,7 +34,7 @@ class ProductOrder(models.Model):
     price = fields.Monetary('Price', related="price_line_id.amount")
     # product_description = fields.Char('Description', related="product_id.description")
 
-    is_customized = fields.Boolean('Custom', track_visibility='onchange', readonly=True, default=False, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]})
+    is_customized = fields.Boolean('Custom', track_visibility='onchange', readonly=True, default=False, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]})
     qty = fields.Integer('Qty', default=1, readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
     fabric_color = fields.Char('Color Notes', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
     # ribbon_color = fields.Char('Ribbon Color', readonly=True, states={'draft': [('readonly', False)], 'confirm': [('readonly', False)], 'approve': [('readonly', False)], 'on_progress': [('readonly', False)]}, track_visibility='onchange')
