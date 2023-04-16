@@ -56,7 +56,7 @@
                         <h5 class="mt16">Product List</h5>
                         <div class="row">
                             <div class="col-12">
-                                <table class="table table-sm table-striped table-active">
+                                <table class="table table-sm table-bordered">
                                     <tr>
                                         <th class="text-center">Gambar</th>
                                         <th class="text-center">Qty</th>
@@ -78,7 +78,7 @@
                         <h5 class="mt16">Bahan Diperlukan</h5>
                         <div class="row">
                             <div class="col-12">
-                                <table class="table table-sm table-striped table-active">
+                                <table class="table table-sm table-bordered">
                                     <tr>
                                         <th>BoM</th>
                                         <th class="text-center">Gross Qty (&#177;)</th>
@@ -89,7 +89,11 @@
                                     </tr>
                                     <tr t-foreach="o.bom_ids" t-as="bom">
                                         <td><span t-field="bom.name"/></td>
-                                        <td class="text-center"><span t-esc="round(bom.unit_qty / bom.component_vendor_id.gross_qty, 2)"/> Roll</td>
+                                        <td class="text-center">
+                                            <span t-if="bom.component_vendor_id.gross_qty" t-esc="round(bom.unit_qty / bom.component_vendor_id.gross_qty, 2)"/>
+                                            <span t-if="bom.component_type=='fabric' or bom.component_type=='webbing'"> Roll</span>
+                                            <span t-if="bom.component_type=='accessories'"> Pack</span>
+                                        </td>
                                         <td class="text-center"><span t-field="bom.unit_qty"/> <span t-field="bom.uom_id.name"/></td>
                                         <td><span t-field="bom.component_id.name"/></td>
                                         <td><span t-field="bom.component_detail_id.detail"/></td>
@@ -102,7 +106,7 @@
                         <h5 class="mt16">Potongan dan Detail Bahan</h5>
                         <div class="row">
                             <div class="col-12">
-                                <table class="table table-sm table-striped table-active">
+                                <table class="table table-sm table-bordered">
                                     <tr>
                                         <th class="text-center">Qty</th>
                                         <th>Bahan</th>
