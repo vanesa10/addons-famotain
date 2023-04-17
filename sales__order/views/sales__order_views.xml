@@ -146,7 +146,7 @@
                             <field name="theme"/>
                             <label for="packaging_id" string="Packaging"/>
                             <div>
-                                <field name="packaging_id" class="oe_inline"/> -
+                                <field name="packaging_id" class="oe_inline" widget="selection"/> -
                                 <field name="packing" class="oe_inline"/>
                             </div>
                         </group>
@@ -169,7 +169,7 @@
                                     <field name="product_type" invisible="1"/>
                                     <field name="name"/>
                                     <field name="qty"/>
-                                    <field name="product_id" default_focus="1"/>
+                                    <field name="product_id" default_focus="1" widget="selection"/>
                                     <field name="fabric_color"/>
                                     <field name="is_customized"/>
                                     <field name="currency_id" invisible="1"/>
@@ -239,7 +239,6 @@
                                 <group>
                                     <field name="custom_name" widget="radio" options="{'horizontal': true}"/>
                                     <field name="thanks_card_writing"/>
-                                    <field name="customer_notes"/>
                                 </group>
                             </group>
                         </page>
@@ -370,6 +369,7 @@
                     <group>
                         <group>
                             <field name="notes"/>
+                            <field name="customer_notes"/>
                         </group>
                         <group class="oe_subtotal_footer oe_right">
                             <field name="currency_id" invisible="1"/>

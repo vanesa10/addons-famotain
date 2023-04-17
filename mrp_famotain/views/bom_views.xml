@@ -115,7 +115,8 @@
                                     <field name="unit_qty" class="oe_inline" attrs="{'readonly': [('is_calculated', '=', True)]}"/> -
                                     <field name="uom_id" class="oe_inline"/>
                                 </div>
-                                <field name="component_id" attrs="{'readonly': [('is_calculated', '=', True)]}"/>
+<!--                                <field name="component_id" attrs="{'readonly': [('is_calculated', '=', True)]}"/>-->
+                                <field name="component_id"/>
                                 <field name="component_detail_id"/>
                                 <field name="component_vendor_id"/>
                             </group>

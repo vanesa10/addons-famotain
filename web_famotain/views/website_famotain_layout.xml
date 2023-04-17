@@ -445,23 +445,23 @@
                                     <p t-if="sales_order.add_ons" t-esc="sales_order.add_ons"/>
                                     <p t-else="">-</p>
                                 </div>
-                                <div class="col-md-2">
-                                    <span class="font-weight-bold">Tambahan penulisan</span>
-                                </div>
-                                <div class="col-md-4 pb-3">
-                                    <p t-if="sales_order.additional_text" t-esc="sales_order.additional_text"/>
-                                    <p t-else="">-</p>
-                                </div>
-                                <div class="col-md-2">
-                                    <span class="font-weight-bold">Thanks card</span>
-                                </div>
-                                <div class="col-md-4 pb-3">
-                                    <p t-if="sales_order.thanks_card_writing" t-esc="sales_order.thanks_card_writing"/>
-                                    <p t-else="">-</p>
-                                </div>
-                                <div class="col-md-2">
-                                    <span class="font-weight-bold">Custom Request</span>
-                                </div>
+<!--                                <div class="col-md-2">-->
+<!--                                    <span class="font-weight-bold">Tambahan penulisan</span>-->
+<!--                                </div>-->
+<!--                                <div class="col-md-4 pb-3">-->
+<!--                                    <p t-if="sales_order.additional_text" t-esc="sales_order.additional_text"/>-->
+<!--                                    <p t-else="">-</p>-->
+<!--                                </div>-->
+<!--                                <div class="col-md-2">-->
+<!--                                    <span class="font-weight-bold">Thanks card</span>-->
+<!--                                </div>-->
+<!--                                <div class="col-md-4 pb-3">-->
+<!--                                    <p t-if="sales_order.thanks_card_writing" t-esc="sales_order.thanks_card_writing"/>-->
+<!--                                    <p t-else="">-</p>-->
+<!--                                </div>-->
+<!--                                <div class="col-md-2">-->
+<!--                                    <span class="font-weight-bold">Custom Request</span>-->
+<!--                                </div>-->
                                 <div class="col-md-4 pb-3">
                                     <p t-if="sales_order.custom_request" t-esc="sales_order.custom_request"/>
                                     <p t-else="">-</p>

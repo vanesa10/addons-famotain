@@ -52,6 +52,7 @@ class ManufacturingOrder(models.Model):
     production_cost = fields.Monetary('Production Cost', readonly=True, compute="_compute_sales", store=True) #semua production cost dr product order
 
     state = fields.Selection([('draft', 'Draft'), ('approve','Approved'), ('ready', 'Ready'), ('on_progress', 'On Progress'), ('done', 'Done'), ('cancel', 'Cancelled')], 'State', required=True, default='draft', readonly=True, track_visibility='onchange')
+    customer_notes = fields.Text('Customer Notes', related='sales_order_id.customer_notes')
     notes = fields.Text('Notes', track_visibility='onchange')
     currency_id = fields.Many2one('res.currency', 'Currency', readonly=True, default=lambda self: self.env.user.company_id.currency_id)
 
@@ -427,6 +428,8 @@ class AddProductOrderToManufacturingOrderWizard(models.TransientModel):
     is_customized = fields.Boolean('Custom', related='product_order_id.is_customized')
     qty = fields.Integer('Qty', related='product_order_id.qty')
     fabric_color = fields.Char('Color Notes', related='product_order_id.fabric_color')
+    design_image = fields.Binary("Design Image", related='product_order_id.design_image')
+    design_image_small = fields.Binary("Small-sized Design Image", related='product_order_id.design_image_small')
 
     def action_add(self):
         if self.product_order_id:
@@ -481,6 +484,20 @@ class ProductOrder(models.Model):
                     mo = self.env['mrp_famotain.manufacturing_order'].sudo().create({'sales_order_id': rec.sales_order_id.id, 'product_order_id': rec.id})
                     rec.manufacturing_order_id = mo.id
                     mo.auto_calculate_all_bom()
+                else:
+                    if rec.product_type == 'product':
+                        msg_data = {
+                            'name': rec.name,
+                            'qty': rec.qty,
+                            'product': rec.product_id.name,
+                            'description': rec.product_description if rec.product_description else " "
+                        }
+                        msg = """
+<b>{name} Confirmed Without MRP</b>
+========================
+{qty}pcs {product}
+Desc: {description}""".format(**msg_data)
+                        send_telegram_message(msg, 'manufacturing_group')
 
     @api.multi
     def action_approve(self):

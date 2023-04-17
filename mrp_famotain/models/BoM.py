@@ -20,10 +20,11 @@ class BillOfMaterials(models.Model):
     component_type = fields.Selection(COMPONENT_TYPE_LIST, 'Component Type', track_visibility='onchange', compute="_compute_component_detail", store=True, readonly=True)
     component_detail_id = fields.Many2one('mrp_famotain.component_detail', 'Component Detail', domain="[('active', '=', True), ('component_id', '=', component_id)]",
                                          track_visibility='onchange', compute="_compute_component_detail", store=True, readonly=True,
-                                          states={'draft': [('readonly', False)], 'approve': [('readonly', False), ('required', True)]})
+                                          states={'draft': [('readonly', False)], 'approve': [('readonly', False), ('required', True)],
+                                                  'on_progress': [('readonly', False)], 'done': [('readonly', False)]})
     manufacturing_order_id = fields.Many2one('mrp_famotain.manufacturing_order', 'Manufacturing Order', required=True, track_visibility='onchange', readonly=True, states={'draft': [('readonly', False)]})
 
-    product_order_id = fields.Many2one('sales__order.product_order', 'Product Order', domain="[('manufacturing_order_id', '=', manufacturing_order_id)]", readonly=True)
+    product_order_id = fields.Many2one('sales__order.product_order', 'Product Order', domain="[('manufacturing_order_id', '=', manufacturing_order_id)]", readonly=True, states={'draft': [('readonly', False)]})
     product_id = fields.Many2one('famotain.product', 'Product', related="product_order_id.product_id")
     sales_order_id = fields.Many2one('sales__order.sales__order', 'Sales Order', related="product_order_id.sales_order_id")
     color_notes = fields.Char('Color Notes', related="product_order_id.fabric_color")
@@ -78,6 +79,9 @@ class BillOfMaterials(models.Model):
         self.manufacturing_order_id._compute_material_cost()
         if 'qty' in vals:
             self.auto_calculate()
+        if 'component_id' in vals:
+            for bom_line in self.bom_line_ids:
+                bom_line.component_id = self.component_id
         return bom
 
     @api.multi
@@ -115,7 +119,7 @@ class BillOfMaterials(models.Model):
     def _compute_main_vendor(self):
         for rec in self:
             for vendor in rec.component_id.component_vendor_ids:
-                if vendor.is_main_vendor:
+                if not rec.component_vendor_id and vendor.is_main_vendor:
                     rec.component_vendor_id = vendor.id
                     break
 

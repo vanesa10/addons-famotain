@@ -7,7 +7,7 @@
                     <div class="page">
                         <div class="oe_structure"/>
                         <div class="row">
-                            <div class="col-7 mt24">
+                            <div class="col-7 mt16">
                                 <strong><h4><span t-field="o.name"/></h4></strong>
                             </div>
                             <div class="col-5 text-right mt24">
@@ -40,7 +40,9 @@
                                     <tr t-if="o.sales_order_id.customer_notes">
                                         <th class="text-center" style="border: 1px solid #dee2e6;">Customer Notes</th>
                                         <td style="border: 1px solid #dee2e6; column-count: 3;" colspan="3">
-                                            <p t-field="o.sales_order_id.customer_notes"/>
+                                            <t t-foreach="str.split(o.sales_order_id.customer_notes, '\n\n')" t-as="cust_note">
+                                                <p style="white-space: pre-wrap; width:50%; float: left;" t-raw="cust_note"/>
+                                            </t>
                                         </td>
                                     </tr>
                                     <tr t-if="o.notes">
@@ -62,6 +64,7 @@
                                         <th class="text-center">Qty</th>
                                         <th>Product</th>
                                         <th>Color Notes</th>
+                                        <th>Description</th>
                                         <th class="text-center">Custom</th>
                                     </tr>
                                     <tr t-foreach="o.product_order_ids" t-as="product_order">
@@ -69,12 +72,41 @@
                                         <td class="text-center"><span t-field="product_order.qty"/>pcs</td>
                                         <td><span t-field="product_order.product_id.display_name"/></td>
                                         <td><span t-field="product_order.fabric_color"/></td>
+                                        <td><span t-field="product_order.product_description"/></td>
                                         <td class="text-center"><span t-field="product_order.is_customized"/></td>
                                     </tr>
                                 </table>
                             </div>
                         </div>
 
+                        <t t-set="has_acc" t-value="False"/>
+                        <t t-set="accessories">
+                            <h5 class="mt16">Accessories per tas</h5>
+                            <div class="row">
+                                <div class="col-12">
+                                    <table class="table table-sm table-bordered">
+                                        <tr>
+                                            <th class="text-center">Qty</th>
+                                            <th>Accessories</th>
+                                            <th>Deskripsi</th>
+                                            <th style="min-width: 150px;">Catatan</th>
+                                        </tr>
+                                        <t t-foreach="o.bom_line_ids" t-as="bom_line">
+                                            <tr t-if="bom_line.component_type=='accessories'">
+                                                <t t-set="has_acc" t-value="True"/>
+                                                <td class="text-center"><span t-field="bom_line.qty"/> pcs</td>
+                                                <td><span t-field="bom_line.component_id.name"/></td>
+                                                <td><span t-field="bom_line.description"/></td>
+                                                <td></td>
+                                            </tr>
+                                        </t>
+                                    </table>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-if="has_acc" t-raw="accessories"/>
+
+                        <p style="page-break-after:always"/>
                         <h5 class="mt16">Bahan Diperlukan</h5>
                         <div class="row">
                             <div class="col-12">
@@ -88,16 +120,18 @@
                                         <th style="min-width: 150px;">Catatan</th>
                                     </tr>
                                     <tr t-foreach="o.bom_ids" t-as="bom">
-                                        <td><span t-field="bom.name"/></td>
-                                        <td class="text-center">
-                                            <span t-if="bom.component_vendor_id.gross_qty" t-esc="round(bom.unit_qty / bom.component_vendor_id.gross_qty, 2)"/>
-                                            <span t-if="bom.component_type=='fabric' or bom.component_type=='webbing'"> Roll</span>
-                                            <span t-if="bom.component_type=='accessories'"> Pack</span>
-                                        </td>
-                                        <td class="text-center"><span t-field="bom.unit_qty"/> <span t-field="bom.uom_id.name"/></td>
-                                        <td><span t-field="bom.component_id.name"/></td>
-                                        <td><span t-field="bom.component_detail_id.detail"/></td>
-                                        <td></td>
+                                        <t t-if="bom.state != 'cancel'">
+                                            <td><span t-field="bom.name"/></td>
+                                            <td class="text-center">
+                                                <span t-if="bom.component_vendor_id.gross_qty" t-esc="round(bom.unit_qty / bom.component_vendor_id.gross_qty, 2)"/>
+                                                <span t-if="bom.component_vendor_id.gross_qty and (bom.component_type=='fabric' or bom.component_type=='webbing')"> Roll</span>
+                                                <span t-if="bom.component_vendor_id.gross_qty and bom.component_type=='accessories'"> Pack</span>
+                                            </td>
+                                            <td class="text-center"><span t-field="bom.unit_qty"/> <span t-field="bom.uom_id.name"/></td>
+                                            <td><span t-field="bom.component_id.name"/></td>
+                                            <td><span t-field="bom.component_detail_id.detail"/></td>
+                                            <td></td>
+                                        </t>
                                     </tr>
                                 </table>
                             </div>
@@ -130,33 +164,6 @@
                                 </table>
                             </div>
                         </div>
-
-                        <t t-set="has_acc" t-value="False"/>
-                        <t t-set="accessories">
-                            <h5 class="mt16">Accessories per tas</h5>
-                            <div class="row">
-                                <div class="col-12">
-                                    <table class="table table-sm table-bordered">
-                                        <tr>
-                                            <th class="text-center">Qty</th>
-                                            <th>Accessories</th>
-                                            <th>Deskripsi</th>
-                                            <th style="min-width: 150px;">Catatan</th>
-                                        </tr>
-                                        <t t-foreach="o.bom_line_ids" t-as="bom_line">
-                                            <tr t-if="bom_line.component_type=='accessories'">
-                                                <t t-set="has_acc" t-value="True"/>
-                                                <td class="text-center"><span t-field="bom_line.qty"/> pcs</td>
-                                                <td><span t-field="bom_line.component_id.name"/></td>
-                                                <td><span t-field="bom_line.description"/></td>
-                                                <td></td>
-                                            </tr>
-                                        </t>
-                                    </table>
-                                </div>
-                            </div>
-                        </t>
-                        <t t-if="has_acc" t-raw="accessories"/>
                         <div class="oe_structure"/>
                     </div>
                 </t>
