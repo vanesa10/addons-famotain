@@ -94,6 +94,7 @@
                         <button string="Done" name="action_done" confirm="Are you sure you want to process this order?" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['on_progress'])]}"/>
                         <button string="Cancel" name="action_cancel" type="object" confirm="Are you sure you want to cancel this record?" attrs="{'invisible': [('state', 'not in', ['draft', 'approve'])]}"/>
                         <button string="Force Cancel" name="action_force_cancel" type="object" confirm="Are you sure you want to cancel this record?" attrs="{'invisible': [('state', 'in', ['cancel', 'draft', 'done'])]}" groups="famotain.famotain_manager"/>
+                        <button string="Force Calculate" name="force_auto_calculate_all_bom" type="object" confirm="Are you sure you want to cancel this record?" attrs="{'invisible': [('state', 'in', ['cancel', 'done'])]}" groups="famotain.famotain_manager"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -227,8 +228,8 @@
                         </notebook>
                         <group>
                             <group>
-                                <field name="customer_notes"/>
                                 <field name="notes"/>
+                                <field name="customer_notes"/>
                             </group>
                             <group class="oe_subtotal_footer oe_right" groups="famotain.famotain_manager">
                                 <field name="material_cost"/>
