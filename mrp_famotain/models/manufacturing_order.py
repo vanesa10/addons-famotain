@@ -422,7 +422,7 @@ class AddProductOrderToManufacturingOrderWizard(models.TransientModel):
         return self.env['mrp_famotain.manufacturing_order'].browse(self._context.get('active_id'))
 
     sales_order_id = fields.Many2one('sales__order.sales__order', 'Sales Order', readonly=True)
-    product_order_id = fields.Many2one('sales__order.product_order', 'Product Order', domain="[('sales_order_id', '=', sales_order_id), ('state', 'in', ['draft', 'confirm', 'approve'])]")
+    product_order_id = fields.Many2one('sales__order.product_order', 'Product Order', domain="[('sales_order_id', '=', sales_order_id), ('state', 'in', ['draft', 'confirm', 'approve', 'on_progress'])]")
     product_type = fields.Selection(PRODUCT_TYPE_LIST, 'Product Type', related='product_order_id.product_type')
     product_id = fields.Many2one('famotain.product', 'Product', related='product_order_id.product_id')
     is_customized = fields.Boolean('Custom', related='product_order_id.is_customized')

@@ -22,7 +22,7 @@
                         <h5 class="mt16">Order</h5>
                         <div class="row">
                             <div class="col-12">
-                                <table class="table o_main_table" style="width:100%">
+                                <table class="table table-sm table-bordered" style="width:100%">
                                     <tr>
                                         <th class="text-center" style="border: 1px solid #dee2e6; width: 130px;">Ref</th>
                                         <td style="border: 1px solid #dee2e6; min-width: 200px;"><span t-field="o.sales_order_id.name"/></td>
@@ -58,7 +58,7 @@
                         <h5 class="mt16">Product List</h5>
                         <div class="row">
                             <div class="col-12">
-                                <table class="table table-sm table-bordered">
+                                <table class="table table-sm table-striped table-active">
                                     <tr>
                                         <th class="text-center">Gambar</th>
                                         <th class="text-center">Qty</th>
@@ -84,7 +84,7 @@
                             <h5 class="mt16">Accessories per tas</h5>
                             <div class="row">
                                 <div class="col-12">
-                                    <table class="table table-sm table-bordered">
+                                    <table class="table table-sm table-striped table-active">
                                         <tr>
                                             <th class="text-center">Qty</th>
                                             <th>Accessories</th>
@@ -110,7 +110,7 @@
                         <h5 class="mt16">Bahan Diperlukan</h5>
                         <div class="row">
                             <div class="col-12">
-                                <table class="table table-sm table-bordered">
+                                <table class="table table-sm table-striped table-active">
                                     <tr>
                                         <th>BoM</th>
                                         <th class="text-center">Gross Qty (&#177;)</th>
@@ -140,7 +140,7 @@
                         <h5 class="mt16">Potongan Bahan</h5>
                         <div class="row">
                             <div class="col-12">
-                                <table class="table table-sm table-bordered">
+                                <table class="table table-sm  table-striped table-active">
                                     <tr>
                                         <th class="text-center">Qty</th>
                                         <th>Bahan</th>
